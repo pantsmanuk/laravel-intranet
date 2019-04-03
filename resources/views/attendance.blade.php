@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="table-responsive">
-            <h4>Attendance &raquo; Active Staff Whereabouts for {{$reportDate}}</h4>
+            <h4>Attendance &raquo; Active Staff Whereabouts for {{$dtLondon->toDateString()}}</h4>
             <hr>
 
             <table class="table table-bordered table-striped">
@@ -33,7 +33,7 @@
     </div>
     <div class="row justify-content-center">
         <div class="table-responsive">
-            <h4>Attendance &raquo; Historical Events Report for {{$reportDate}}</h4>
+            <h4>Attendance &raquo; Historical Events Report for {{$dtLondon->subWeekdays(1)->toDateString()}}</h4>
             <hr>
 
             <table class="table table-bordered table-striped">

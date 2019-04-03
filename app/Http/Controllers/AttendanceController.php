@@ -28,7 +28,6 @@ class HomeController extends Controller
     public function index()
     {
     	$dtLondon = new Carbon( 'now', 'Europe/London' );
-		$reportDate = $dtLondon->toDateString();
 
 		$onSite = DoorEvents::select('empref')->whereDate( 'doordate', $dtLondon->toDateString())->distinct()->get();
 		$employees = EmployeeDetails::whereIn( 'empref', $onSite )->orderBy('surname')->orderBy('forenames')->get();
@@ -41,18 +40,8 @@ class HomeController extends Controller
 			return $employee;
 		});
 
-    	$rows = DoorEvents::whereDate( 'doordate', $dtLondon->toDateString())->get();
+    	$rows = DoorEvents::whereDate( 'doordate', Carbon::now('Europe/London')->subWeekdays(1)->toDateString())->get();
 
-/*    	foreach ($employees as $value) {
-    		$eventType = DoorEvents::whereDate( 'doordate', $dtLondon->toDateString())->where( 'empref',$value->empref)
-				->latest('dooraccessref')->select('empref', 'doorevent')->first();
-    		if (is_object($eventType)) {
-				$whereabouts[] = [ 'name' => $value->name, 'event' => $eventType->eventtype ];
-			} else {
-				$whereabouts[] = [ 'name' => $value->name, 'event' => 'N/A' ];
-			}
-		} */
-
-		return view('home', compact('reportDate', 'employees', 'rows'));
+		return view('home', compact('dtLondon', 'employees', 'rows'));
     }
 }
