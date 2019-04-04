@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\DoorEvents;
+use App\Attendance;
 use App\EmployeeDetails;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use function foo\func;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -30,19 +29,21 @@ class AttendanceController extends Controller
     {
     	$dtLondon = new CarbonImmutable( 'now', 'Europe/London' );
 
-		$onSite = DoorEvents::select('empref')->whereDate( 'doordate', $dtLondon->toDateString())->distinct()->get();
+		$onSite = Attendance::select('empref')->whereDate( 'doordate', $dtLondon->toDateString())->distinct()->get();
 		$employees = EmployeeDetails::whereIn( 'empref', $onSite )->orderBy('surname')->orderBy('forenames')->get();
 
 		$employees->map(function ($employee) {
-			$dtLondon = new Carbon( 'now', 'Europe/London' );
+			$dt = new Carbon( 'now', 'Europe/London' );
 			$employee['name'] = $employee['forenames'] . ' ' . $employee['surname'];
-			$employee['doorevent'] = DoorEvents::whereDate( 'doordate', $dtLondon->toDateString())->where( 'empref',$employee->empref)
+			$employee['doorevent'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
 				->latest('dooraccessref')->select('doorevent')->first();
+			$employee['firstevent'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
+				->oldest('dooraccessref')->select('doortime')->first()->eventtime;
 			return $employee;
 		});
 
-    	$rows = DoorEvents::whereDate( 'doordate', $dtLondon->subWeekdays(1)->toDateString())->get();
+    	$events = Attendance::whereDate( 'doordate', $dtLondon->subWeekdays(1)->toDateString())->get();
 
-		return view('attendance', compact('dtLondon', 'employees', 'rows'));
+		return view('attendance', compact('dtLondon', 'employees', 'events'));
     }
 }
