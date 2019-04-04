@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="table-responsive">
-            <h4>Attendance &raquo; Active Staff Whereabouts for {{$dtLondon->toDateString()}}</h4>
+            <h4>Attendance &raquo; Office Staff for {{$dtLondon->toDateString()}}</h4>
             <hr>
 
             <table class="table table-bordered table-striped">
@@ -20,7 +20,7 @@
 					    $t_eventtype = ['In', 'Out'];?>
                     <tr>
                         <td>{{$value->name}}</td>
-                        <td>{{$t_eventtype[$value->doorevent['doorevent']]}}</td>
+                        <td>{{$t_eventtype[$value->doorevent['doorevent']]}} ({{$value->firstevent}})</td>
                     </tr>
                 @endforeach
                 <tr class="table-info">
@@ -31,7 +31,7 @@
             </table>
         </div>
     </div>
-    <div class="row justify-content-center">
+<?php /* ?>    <div class="row justify-content-center">
         <div class="table-responsive">
             <h4>Attendance &raquo; Historical Events Report for {{$dtLondon->subWeekdays(1)->toDateString()}}</h4>
             <hr>
@@ -48,7 +48,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($rows as $value)
+                @foreach ($events as $value)
                 <?php $t_count = $loop->count; ?>
                 <tr>
                     <td>{{$value->eventtime}}</td>
@@ -67,5 +67,6 @@
             </table>
         </div>
     </div>
+ <?php */ ?>
 </div>
 @endsection
