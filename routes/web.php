@@ -15,6 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/attendance', 'AttendanceController@index')->name('attendance');
+Route::get('/holidays', 'HolidayController@index')->name('holiday');

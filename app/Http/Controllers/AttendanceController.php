@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\DoorEvents;
 use App\EmployeeDetails;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use function foo\func;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class AttendanceController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -27,7 +28,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-    	$dtLondon = new Carbon( 'now', 'Europe/London' );
+    	$dtLondon = new CarbonImmutable( 'now', 'Europe/London' );
 
 		$onSite = DoorEvents::select('empref')->whereDate( 'doordate', $dtLondon->toDateString())->distinct()->get();
 		$employees = EmployeeDetails::whereIn( 'empref', $onSite )->orderBy('surname')->orderBy('forenames')->get();
@@ -40,8 +41,8 @@ class HomeController extends Controller
 			return $employee;
 		});
 
-    	$rows = DoorEvents::whereDate( 'doordate', Carbon::now('Europe/London')->subWeekdays(1)->toDateString())->get();
+    	$rows = DoorEvents::whereDate( 'doordate', $dtLondon->subWeekdays(1)->toDateString())->get();
 
-		return view('home', compact('dtLondon', 'employees', 'rows'));
+		return view('attendance', compact('dtLondon', 'employees', 'rows'));
     }
 }
