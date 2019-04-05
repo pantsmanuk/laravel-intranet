@@ -306,9 +306,9 @@ return [
 
     'sync_attributes' => [
 
-        'email' => 'userprincipalname',
-
-        'name' => 'cn',
+		'username' => 'sAMAccountName',
+		'name' => 'cn',
+        'email' => 'mail',
 
     ],
 
