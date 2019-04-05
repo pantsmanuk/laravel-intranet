@@ -30,8 +30,8 @@
                         <td>{{$holiday->days_paid}} ({{$t_entitlementRemaining-=$holiday->days_paid}})</td>
                         <td>{{$holiday->days_unpaid}}</td>
                         <?php $t_paid += $holiday->days_paid; $t_unpaid += $holiday->days_unpaid; if ($holiday->enableTools) {?>
-                        <td>[Edit]</td>
-                        <td>[Delete]</td>
+                        <td><button type="button" name="save" class="btn btn-primary"><span class="fas fa-pencil-alt"></span></button></td>
+                        <td><button type="button" class="btn btn-warning" id="delete-something" data-toggle="modal" data-target="#deleteModal"><span class="fas fa-trash-alt"></span></button></td>
                         <?php } else {?>
                         <td></td>
                         <td></td>
@@ -45,6 +45,30 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <!-- New holiday request -->
+        <a href="{{ URL::to('holidays/create') }}" class="btn btn-default">Request holiday <span class="fas fa-chevron-circle-down"></span></a>
+    </div>
+    <!-- Delete button modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete holiday request</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>This will delete the holiday request!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Delete request</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
