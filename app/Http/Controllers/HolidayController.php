@@ -58,7 +58,7 @@ class HolidayController extends Controller
 			return $holiday;
 		});
 
-		return view('holiday', compact('sYear', 'iEntitlement', 'allHolidays'));
+		return view('holidays.index', compact('sYear', 'iEntitlement', 'allHolidays'));
     }
 
     /**
@@ -68,7 +68,7 @@ class HolidayController extends Controller
      */
     public function create()
     {
-        //
+        return view('holidays.create');
     }
 
     /**
