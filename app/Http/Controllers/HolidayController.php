@@ -84,10 +84,14 @@ class HolidayController extends Controller
 			'startType' => 'numeric|between:1,3',
 			'end' => 'date_format:d/m/Y',
 			'endType' => 'numeric|between:1,2',
-			'note' => 'string|min:0|max:80',
+			'note' => 'nullable|string|max:80',
 		]);
 
-    	// @TODO we have a good request here, now we need to munge it and throw it at the DB table
+    	if(!isset($validatedData['endType'])) {
+    		$validatedData['endType'] = 2; // Default to "Full Day"
+		}
+
+    	// @TODO we have a good request, munge it and throw it at the DB table
 		// Staff::get intranet staff_id based on something from Laravel $user
 		$staff = Staff::select('staff_id')->where('name', Auth::user()->name)->get();
 		$holidayRequest['staff_id'] = (int) $staff->pluck('staff_id')->implode('');
@@ -142,8 +146,12 @@ class HolidayController extends Controller
 			$holidayRequest['holiday_type'] = "Multiple Days";
 		}
 
-		// Don't need to munge note at all (maybe)
-		$holidayRequest['note'] = $validatedData['note'];
+		// note cannot be null
+		if(isset($validatedData['note'])) {
+			$holidayRequest['note'] = $validatedData['note'];
+		} else {
+			$holidayRequest['note'] = '';
+		}
 
 		// days_paid/days_unpaid
 		$holidayRequest['days_paid'] = 0;
@@ -164,8 +172,10 @@ class HolidayController extends Controller
 		// created_at, updated_at, deleted_at are "Laravel protected"
 		//dd($holidayRequest);
 
-		// Throw the request at the DB table
+		// Throw the request at the DB table, see what sticks
     	$holiday = Holiday::create($holidayRequest);
+
+    	// Send the email for acceptance
 
     	return redirect('/holidays')->with('success', 'Holiday requested');
     }
@@ -184,12 +194,12 @@ class HolidayController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Holiday  $holiday
+     * @param  integer  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Holiday $holiday)
+    public function edit($id)
     {
-        $request = Holiday::findOrFail($holiday);
+        $holiday = Holiday::findOrFail($id);
 
         return view('holidays.edit', compact('request'));
     }
