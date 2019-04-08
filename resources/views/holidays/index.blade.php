@@ -30,8 +30,14 @@
                         <td>{{$holiday->days_paid}} ({{$t_entitlementRemaining-=$holiday->days_paid}})</td>
                         <td>{{$holiday->days_unpaid}}</td>
                         <?php $t_paid += $holiday->days_paid; $t_unpaid += $holiday->days_unpaid; if ($holiday->enableTools) {?>
-                        <td><button type="button" name="save" class="btn btn-primary"><span class="fas fa-pencil-alt"></span></button></td>
-                        <td><button type="button" class="btn btn-warning" id="delete-something" data-toggle="modal" data-target="#deleteModal"><span class="fas fa-trash-alt"></span></button></td>
+                        <td><a href="{{ route('holidays.edit',$holiday->holiday_id) }}" class="btn btn-primary"><span class="fas fa-pencil-alt"></span></a></td>
+                        <td>
+                            <form action="{{ route('holidays.destroy', $holiday->holiday_id) }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger" type="submit"><span class="fas fa-trash-alt"></span></button>
+                            </form>
+                        </td>
                         <?php } else {?>
                         <td></td>
                         <td></td>
@@ -49,7 +55,7 @@
     </div>
     <div class="row justify-content-center">
         <!-- New holiday request -->
-        <a href="{{ URL::to('holidays/create') }}" class="btn btn-default">Request holiday <span class="fas fa-chevron-circle-down"></span></a>
+        <a href="{{ route('holidays.create') }}" class="btn btn-info">Request holiday</a>
     </div>
     <!-- Delete button modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="table-responsive">
-            <h4>Request a holiday</h4>
+            <h4>Edit holiday request</h4>
             <hr>
 
             @if ($errors->any())
@@ -17,27 +17,24 @@
                 </div>
             @endif
 
-            {{ Form::open(['action' => ['HolidayController@store']]) }}
+            {{ Form::open(['action' => ['HolidayController@update']]) }}
                 <div class="form-group">
+                    @csrf
+                    @method('PATCH')
                     {{ Form::label('start', 'Start:') }}
                     <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
-                        {{ Form::text('start', NULL, ['class' => 'form-control datetimepicker-input', 'data-target' => '#startpicker', 'data-toggle' => 'datetimepicker', 'placeholder' => 'Start date', 'aria-label' => 'Start date', 'aria-describedby' => 'start-addon']) }}
+                        {{ Form::text('start', NULL, ['class' => 'form-control datetimepicker-input', 'data-target' => '#startpicker', 'data-toggle' => 'datetimepicker', 'placeholder' => 'Start date', 'aria-label' => 'Start date', 'aria-describedby' => 'start-addon', 'value' => '$request->start']) }}
                         <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                             <span class="input-group-text" id="start-addon"><span class="fas fa-calendar-alt"></span></span>
                         </div>
                     </div>
                     <div class="form-check form-check-inline">
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <label class="btn btn-secondary">
-                                {{ Form::radio('startType', '1', NULL, ['id' => 'startType1', 'aria-label' => 'Start on half day (AM)']) }} Half Day (AM)
-                            </label>
-                            <label class="btn btn-secondary">
-                                {{ Form::radio('startType', '2', NULL, ['id' => 'startType2', 'aria-label' => 'Start on half day (PM)']) }} Half Day (PM)
-                            </label>
-                            <label class="btn btn-secondary active">
-                                {{ Form::radio('startType', '3', true, ['id' => 'startType3', 'aria-label' => 'Start on full day']) }} Full Day
-                            </label>
-                        </div>
+                        {{ Form::radio('startType', '1', NULL, ['class' => 'form-check-input ml-1', 'id' => 'startType1', 'aria-label' => 'Start on half day (AM)']) }}
+                        {{ Form::label('startType', 'Half Day (AM)', ['class' => 'form-check-label', 'for' => 'startType1']) }}
+                        {{ Form::radio('startType', '2', NULL, ['class' => 'form-check-input ml-2', 'id' => 'startType2', 'aria-label' => 'Start on half day (PM)']) }}
+                        {{ Form::label('startType', 'Half Day (PM)', ['class' => 'form-check-label', 'for' => 'startType2']) }}
+                        {{ Form::radio('startType', '3', true, ['class' => 'form-check-input ml-2', 'id' => 'startType3', 'aria-label' => 'Start on full day']) }}
+                        {{ Form::label('startType', 'Full Day', ['class' => 'form-check-label', 'for' => 'startType3']) }}
                     </div>
                 </div>
                 <div class="form-group">
@@ -49,14 +46,10 @@
                         </div>
                     </div>
                     <div class="form-check form-check-inline">
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <label class="btn btn-secondary">
-                                {{ Form::radio('endType', '1', NULL, ['id' => 'endType1', 'aria-label' => 'End on half day (AM)']) }} Half Day (AM)
-                            </label>
-                            <label class="btn btn-secondary active">
-                                {{ Form::radio('endType', '2', NULL, ['id' => 'endType2', 'aria-label' => 'End on full day']) }} Full Day
-                            </label>
-                        </div>
+                        {{ Form::radio('endType', '1', NULL, ['class' => 'form-check-input ml-1', 'id' => 'endType1', 'aria-label' => 'End on half day (AM)']) }}
+                        {{ Form::label('endType', 'Half Day (AM)', ['class' => 'form-check-label', 'for' => 'endType1']) }}
+                        {{ Form::radio('endType', '2', true, ['class' => 'form-check-input ml-2', 'id' => 'endType2', 'aria-label' => 'End on full day']) }}
+                        {{ Form::label('endType', 'Full Day', ['class' => 'form-check-label', 'for' => 'endType2']) }}
                     </div>
                 </div>
                 <script type="text/javascript">

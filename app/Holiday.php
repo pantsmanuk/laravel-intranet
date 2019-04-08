@@ -10,6 +10,19 @@ class Holiday extends Model
 	use SoftDeletes;
 
 	protected $connection = 'mysql';
-	protected $dates = ['deleted_at'];
+	protected $dates = ['start','end','deleted_at'];
+	protected $fillable = [
+		'staff_id',
+		'start',
+		'end',
+		'holiday_type',
+		'note',
+		'days_paid',
+		'days_unpaid',
+		'confirmed', // I don't care
+		'approved',
+		'deleted', // I don't care
+		'nonce',
+		'machine_id'];
 	protected $primaryKey = 'holiday_id';
 }
