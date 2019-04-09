@@ -2,22 +2,22 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="table-responsive">
-            <h4>Request a holiday</h4>
-            <hr>
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul id="error">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            {{ Form::open(['action' => ['HolidayController@store']]) }}
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                Request a holiday
+            </div>
+            <div class="card-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul id="error">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div><br />
+                @endif
+                {{ Form::open(['action' => ['HolidayController@store']]) }}
                 <div class="form-group">
                     {{ Form::label('start', 'Start:') }}
                     <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
@@ -88,7 +88,8 @@
                 </div>
                 {{ Form::submit('Submit request', ['class' => 'btn btn-primary']) }}
                 {{ Form::button('Cancel', ['class' => 'btn btn-secondary', 'type' => 'reset']) }}
-            {{ Form::close() }}
+                {{ Form::close() }}
+            </div>
         </div>
     </div>
 </div>
