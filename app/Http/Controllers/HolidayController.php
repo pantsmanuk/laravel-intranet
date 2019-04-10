@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
  * Class HolidayController
  *
  * @package App\Http\Controllers
- * @todo Nonce model as part of the approval workflow
+ * @todo "Nonce model" as part of the approval workflow
  * @todo Send emails to Prim for approval
  * @todo Approval resource
  */
@@ -41,25 +41,28 @@ class HolidayController extends Controller
 		$allHolidays = Holiday::where('staff_id', $t_staffId)->where('deleted','0')
 			->whereBetween('start',[$dtYearStart->toDateString(), $dtYearEnd->toDateString()])->orderBy('start')->get();
 
-
 		// Map() paid days used until we have the DB populated
 		// Map() flag for "can be edited/deleted"
 		$allHolidays->map(function ($holiday) {
-			// For non-multiple day holidays, easier to take holiday_type and map it to a float
-			switch ($holiday['holiday_type']) {
-				case 'Half Day (AM)':
-				case 'Half Day (PM)':
-					$holiday['days_paid'] = 0.5;
-					break;
-				case 'Single Day':
-					$holiday['days_paid'] = 1;
-					break;
-				case 'Multiple Days':
-					$dt = new Carbon($holiday['start'], 'Europe/London');
-					$holiday['days_paid'] = $dt->diffInWeekdays(new Carbon($holiday['end'], 'Europe/London'));
-					break;
+			if (is_null($holiday['days_paid'])) {
+				// For non-multiple day holidays, easier to take holiday_type and map it to a float
+				switch ($holiday['holiday_type']) {
+					case 'Half Day (AM)':
+					case 'Half Day (PM)':
+						$holiday['days_paid'] = 0.5;
+						break;
+					case 'Single Day':
+						$holiday['days_paid'] = 1;
+						break;
+					case 'Multiple Days':
+						$dt = new Carbon($holiday['start'], 'Europe/London');
+						$holiday['days_paid'] = $dt->diffInWeekdays(new Carbon($holiday['end'], 'Europe/London'));
+						break;
+				}
 			}
-			$holiday['days_unpaid'] = 0;
+			if (is_null($holiday['days_unpaid'])) {
+				$holiday['days_unpaid']=0;
+			}
 			$dt = new Carbon('now','Europe/London');
 			($dt->diffInSeconds(new Carbon($holiday['start'], 'Europe/London'), false) <=0)
 				? $holiday['enableTools'] = false : $holiday['enableTools'] = true;
@@ -161,8 +164,19 @@ class HolidayController extends Controller
 			$holidayRequest['note'] = '';
 		}
 
-		// @TODO: days_paid/days_unpaid
-		$holidayRequest['days_paid'] = 0;
+		// days_paid/days_unpaid
+		switch ($holidayRequest['holiday_type']) {
+			case 'Half Day (AM)':
+			case 'Half Day (PM)':
+				$holidayRequest['days_paid'] = 0.5;
+				break;
+			case 'Single Day':
+				$holidayRequest['days_paid'] = 1;
+			case 'Multiple Days':
+				$dt = new Carbon($holidayRequest['start'], 'Europe/London');
+				$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
+				break;
+		}
 		$holidayRequest['days_unpaid'] = 0;
 
 		// approved
@@ -183,7 +197,7 @@ class HolidayController extends Controller
 		// Throw the request at the DB table, see what sticks
     	$holiday = Holiday::create($holidayRequest);
 
-    	// @TODO: Send the email for acceptance
+    	// @TODO: Send the approval email
 
     	return redirect('/holidays')->with('success', 'Holiday requested');
     }
@@ -267,7 +281,6 @@ class HolidayController extends Controller
 			$validatedData['endType'] = 2;
 		}
 
-		// @TODO we have a good request, munge it and throw it at the DB table
 		// Staff::get intranet staff_id based on something from Laravel $user
 		$staff = Staff::select('staff_id')->where('name', Auth::user()->name)->get();
 		$holidayRequest['staff_id'] = (int) $staff->pluck('staff_id')->implode('');
@@ -329,16 +342,27 @@ class HolidayController extends Controller
 			$holidayRequest['note'] = '';
 		}
 
-		// @TODO: days_paid/days_unpaid
-		$holidayRequest['days_paid'] = 0;
+		// days_paid/days_unpaid
+		switch ($holidayRequest['holiday_type']) {
+			case 'Half Day (AM)':
+			case 'Half Day (PM)':
+				$holidayRequest['days_paid'] = 0.5;
+				break;
+			case 'Single Day':
+				$holidayRequest['days_paid'] = 1;
+			case 'Multiple Days':
+				$dt = new Carbon($holidayRequest['start'], 'Europe/London');
+				$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
+				break;
+		}
 		$holidayRequest['days_unpaid'] = 0;
 
 		// approved
-		$holidayRequest['confirmed'] = 1; // I don't care
+		$holidayRequest['confirmed'] = 1; // @KLUDGE: Until the CI intranet is retired
 		$holidayRequest['approved'] = 0;
 
 		// nonce
-		$holidayRequest['deleted'] = 0; // I don't care
+		$holidayRequest['deleted'] = 0; // @KLUDGE: Until the CI intranet is retired
 		$holidayRequest['nonce'] = 0;
 
 		// machine_id - drop the last 10 chars for GGP
@@ -351,7 +375,7 @@ class HolidayController extends Controller
 		// Throw the request at the DB table, see what sticks
 		Holiday::where('holiday_id',$id)->update($holidayRequest);
 
-		// @TODO: Send the email for acceptance
+		// @TODO: Send the approval email
 
 		return redirect('/holidays')->with('success', 'Holiday request updated');
     }
@@ -365,8 +389,20 @@ class HolidayController extends Controller
     public function destroy($id)
     {
         $holiday = Holiday::findOrFail($id);
+        $holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
         $holiday->delete();
 
         return redirect('/holidays')->with('success', 'Holiday request deleted');
     }
+
+	/**
+	 * Approve the specified resource in storage.
+	 *
+	 * @param integer	$id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function approve($id)
+	{
+		// Like update, but only for `approved`. Needs to get and check `nonce`
+	}
 }
