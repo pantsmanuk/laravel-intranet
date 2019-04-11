@@ -11,21 +11,23 @@
                 <thead>
                 <tr class="table-info">
                     <th>Name</th>
-                    <th>Event Type</th>
+                    <th>First Event Time</th>
+                    <th>Last Known Location</th>
                 </tr>
                 </thead>
                 <tbody>
+                <?php $t_eventtype = ['In', 'Out'];?>
                 @foreach ($employees as $value)
-					<?php $t_count = $loop->count;
-					    $t_eventtype = ['In', 'Out'];?>
+					<?php $t_count = $loop->count;?>
                     <tr>
                         <td>{{$value->name}}</td>
-                        <td>{{$t_eventtype[$value->doorevent['doorevent']]}} ({{$value->firstevent}})</td>
+                        <td>{{$value->firstevent}}</td>
+                        <td>{{$t_eventtype[$value->doorevent['doorevent']]}} ({{$value->dooreventtime}})</td>
                     </tr>
                 @endforeach
                 <tr class="table-info">
                     <td><strong>Total:</strong></td>
-                    <td><strong>{{$t_count}}</strong></td>
+                    <td colspan="2"><strong>{{$t_count}}</strong></td>
                 </tr>
                 </tbody>
             </table>

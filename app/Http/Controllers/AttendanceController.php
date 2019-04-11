@@ -37,6 +37,8 @@ class AttendanceController extends Controller
 			$employee['name'] = $employee['forenames'] . ' ' . $employee['surname'];
 			$employee['doorevent'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
 				->latest('dooraccessref')->select('doorevent')->first();
+			$employee['dooreventtime'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
+				->latest('dooraccessref')->select('doortime')->first()->eventtime;
 			$employee['firstevent'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
 				->oldest('dooraccessref')->select('doortime')->first()->eventtime;
 			return $employee;
