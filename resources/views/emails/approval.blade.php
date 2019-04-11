@@ -18,7 +18,7 @@
                                 <td>Name</td>
                                 <td>Start</td>
                                 <td>End</td>
-                                <td>Approved</td>
+                                <td>Approval</td>
                             </tr>
                             </thead>
                             <tbody>
