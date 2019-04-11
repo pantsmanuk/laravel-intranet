@@ -20,7 +20,7 @@
                     <th colspan="2">Days used</th>
                     <th colspan="2" rowspan="2">Actions</th>
                 </tr>
-				<?php $t_entitlementRemaining = $iEntitlement; $t_paid = 0; $t_unpaid = 0;?>
+				<?php $t_entitlementRemaining = $iEntitlement; $t_paid = 0; $t_unpaid = 0; $t_approval = [0 => 'Not Approved', 1 => 'Approved'];?>
                 <tr class="table-info">
                     <th>Paid ({{$t_entitlementRemaining}})</th>
                     <th>Unpaid</th>
@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                 @foreach ($allHolidays as $holiday)
-					<?php $t_count = $loop->count; $t_approval = [0 => 'Not Approved', 1 => 'Approved']?>
+					<?php $t_count = $loop->count;?>
                     <tr>
                         <td>{{$holiday->start}}</td>
                         <td>{{$holiday->end}}</td>
