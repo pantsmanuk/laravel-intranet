@@ -4,18 +4,22 @@ namespace App\Http\Controllers;
 
 use App\ConfigDB;
 use App\Holiday;
+use App\Mail\Approval;
 use App\Staff;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class HolidayController
  *
  * @package App\Http\Controllers
- * @todo "Nonce model" as part of the approval workflow
- * @todo Send emails to Prim for approval
- * @todo Approval resource
+ * @todo "Nonce model" as part of the approval workflow?
+ * @todo Approved mailable & template
+ * @todo Denied mailable & template
+ * @todo Cancelled mailable & template
  */
 class HolidayController extends Controller
 {
@@ -142,19 +146,28 @@ class HolidayController extends Controller
 					case 1:
 						$holidayRequest['holiday_type'] = "Half Day (AM)";
 						$validatedData['endType'] = 1;
+						$holidayRequest['days_paid'] = 0.5;
+						$t_Dates = $holidayRequest['start'];
 						break;
 					case 2:
 						$holidayRequest['holiday_type'] = "Half Day (PM)";
 						$validatedData['endType'] = 2;
+						$holidayRequest['days_paid'] = 0.5;
+						$t_Dates = $holidayRequest['start'];
 						break;
 					case 3:
 						$holidayRequest['holiday_type'] = "Single Day";
 						$validatedData['endType'] = 2;
+						$holidayRequest['days_paid'] = 1;
+						$t_Dates = $holidayRequest['start'];
 						break;
 				}
 			}
 		} else {
 			$holidayRequest['holiday_type'] = "Multiple Days";
+			$dt = new Carbon($holidayRequest['start'], 'Europe/London');
+			$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
+			$t_Dates = $holidayRequest['start'].' to '.$holidayRequest['end'];
 		}
 
 		// note cannot be null
@@ -164,19 +177,7 @@ class HolidayController extends Controller
 			$holidayRequest['note'] = '';
 		}
 
-		// days_paid/days_unpaid
-		switch ($holidayRequest['holiday_type']) {
-			case 'Half Day (AM)':
-			case 'Half Day (PM)':
-				$holidayRequest['days_paid'] = 0.5;
-				break;
-			case 'Single Day':
-				$holidayRequest['days_paid'] = 1;
-			case 'Multiple Days':
-				$dt = new Carbon($holidayRequest['start'], 'Europe/London');
-				$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
-				break;
-		}
+		// days_unpaid
 		$holidayRequest['days_unpaid'] = 0;
 
 		// approved
@@ -192,12 +193,35 @@ class HolidayController extends Controller
 
 		// Other column I don't care about - updated
 		// created_at, updated_at, deleted_at are "Laravel protected"
-		//dd($holidayRequest);
 
 		// Throw the request at the DB table, see what sticks
     	$holiday = Holiday::create($holidayRequest);
 
-    	// @TODO: Send the approval email
+		// Send approval email
+		$t_Start = substr($holiday->start,0,10);
+		$t_End = substr($holiday->end,0,10);
+		$t_Overlaps = DB::connection('mysql')
+			->select('SELECT staff.name, holidays.start, holidays.end, holidays.approved
+			FROM holidays
+			JOIN staff ON holidays.staff_id=staff.staff_id
+			WHERE holidays.holiday_id!=?
+			AND (holidays.deleted_at IS NULL OR holidays.deleted=0)
+			AND (holidays.start BETWEEN ? AND ? 
+			     OR holidays.end BETWEEN ? AND ?
+			     OR (holidays.start<? AND holidays.end>?))',
+			[$holiday->holiday_id, $t_Start, $t_End, $t_Start, $t_End, $t_Start, $t_End]);
+		$t_Request = [
+			'holiday_dates'=>$t_Dates,
+			'holiday_id'=>$holiday->holiday_id,
+			'holiday_nonce'=>'holiday_nonce', // Might not need nonces, would make the logic far simpler, would make security lower...
+			'holiday_note'=>$holidayRequest['note'],
+			'holiday_overlaps'=>$t_Overlaps,
+			'holiday_type'=>$holidayRequest['holiday_type'],
+			'user_name'=>Auth::user()->name,
+			];
+
+		Mail::to('murray.crane@gmail.com')
+			->send(new Approval($t_Request));
 
     	return redirect('/holidays')->with('success', 'Holiday requested');
     }
@@ -320,19 +344,28 @@ class HolidayController extends Controller
 					case 1:
 						$holidayRequest['holiday_type'] = "Half Day (AM)";
 						$validatedData['endType'] = 1;
+						$holidayRequest['days_paid'] = 0.5;
+						$t_Dates = $holidayRequest['start'];
 						break;
 					case 2:
 						$holidayRequest['holiday_type'] = "Half Day (PM)";
 						$validatedData['endType'] = 2;
+						$holidayRequest['days_paid'] = 0.5;
+						$t_Dates = $holidayRequest['start'];
 						break;
 					case 3:
 						$holidayRequest['holiday_type'] = "Single Day";
 						$validatedData['endType'] = 2;
+						$holidayRequest['days_paid'] = 1;
+						$t_Dates = $holidayRequest['start'];
 						break;
 				}
 			}
 		} else {
 			$holidayRequest['holiday_type'] = "Multiple Days";
+			$dt = new Carbon($holidayRequest['start'], 'Europe/London');
+			$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
+			$t_Dates = $holidayRequest['start'].' to '.$holidayRequest['end'];
 		}
 
 		// note cannot be null
@@ -342,19 +375,7 @@ class HolidayController extends Controller
 			$holidayRequest['note'] = '';
 		}
 
-		// days_paid/days_unpaid
-		switch ($holidayRequest['holiday_type']) {
-			case 'Half Day (AM)':
-			case 'Half Day (PM)':
-				$holidayRequest['days_paid'] = 0.5;
-				break;
-			case 'Single Day':
-				$holidayRequest['days_paid'] = 1;
-			case 'Multiple Days':
-				$dt = new Carbon($holidayRequest['start'], 'Europe/London');
-				$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
-				break;
-		}
+		// days_unpaid
 		$holidayRequest['days_unpaid'] = 0;
 
 		// approved
@@ -375,7 +396,31 @@ class HolidayController extends Controller
 		// Throw the request at the DB table, see what sticks
 		Holiday::where('holiday_id',$id)->update($holidayRequest);
 
-		// @TODO: Send the approval email
+		// Send approval email
+		$t_Start = substr($holidayRequest['start'],0,10);
+		$t_End = substr($holidayRequest['end'],0,10);
+		$t_Overlaps = DB::connection('mysql')
+			->select('SELECT staff.name, holidays.start, holidays.end, holidays.approved
+			FROM holidays
+			JOIN staff ON holidays.staff_id=staff.staff_id
+			WHERE holidays.holiday_id!=?
+			AND (holidays.deleted_at IS NULL OR holidays.deleted=0)
+			AND (holidays.start BETWEEN ? AND ? 
+			     OR holidays.end BETWEEN ? AND ?
+			     OR (holidays.start<? AND holidays.end>?))',
+				[$id, $t_Start, $t_End, $t_Start, $t_End, $t_Start, $t_End]);
+		$t_Request = [
+			'holiday_dates'=>$t_Dates,
+			'holiday_id'=>$id,
+			'holiday_nonce'=>'holiday_nonce',
+			'holiday_note'=>$holidayRequest['note'],
+			'holiday_overlaps'=>$t_Overlaps,
+			'holiday_type'=>$holidayRequest['holiday_type'],
+			'user_name'=>Auth::user()->name,
+		];
+
+		Mail::to('murray.crane@ggpsystems.co.uk')
+			->send(new Approval($t_Request));
 
 		return redirect('/holidays')->with('success', 'Holiday request updated');
     }
@@ -392,7 +437,9 @@ class HolidayController extends Controller
         $holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
         $holiday->delete();
 
-        return redirect('/holidays')->with('success', 'Holiday request deleted');
+		// @TODO: Send cancelled email
+
+		return redirect('/holidays')->with('success', 'Holiday request deleted');
     }
 
 	/**
@@ -403,6 +450,30 @@ class HolidayController extends Controller
 	 */
 	public function approve($id)
 	{
-		// Like update, but only for `approved`. Needs to get and check `nonce`
+		$holiday = Holiday::findOrFail($id);
+		$holiday->where('holiday_id',$id)->update(['approved'=>1]);
+
+		// @TODO: Send approved email
+
+		return redirect('/holidays')->with('success', 'Holiday request approved');
+	}
+
+	/**
+	 * Deny the specified resource in storage.
+	 *
+	 * @param integer	$id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function deny($id)
+	{
+		// Like delete, but with an updated note??
+		// Needs to get and check `nonce` if we continue using it
+		$holiday = Holiday::findOrFail($id);
+		$holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
+		$holiday->delete();
+
+		// @TODO: Send denied email
+
+		return redirect('/holidays')->with('success', 'Holiday request denied');
 	}
 }
