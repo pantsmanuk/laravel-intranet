@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ConfigDB;
 use App\Holiday;
+use App\Mail\Action;
 use App\Mail\Approval;
 use App\Staff;
 use Carbon\Carbon;
@@ -438,6 +439,28 @@ class HolidayController extends Controller
         $holiday->delete();
 
 		// @TODO: Send cancelled email
+		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
+		switch ($holiday['holiday_type']) {
+			case 'Half Day (AM)':
+			case 'Half Day (PM)':
+			case 'Single Day':
+				$t_Dates = substr($t_Start,0,10);
+				break;
+			case 'Multiple Days':
+				$t_Dates = substr($t_Start,0,10).' to '.substr($t_End,0,10);
+				break;
+		}
+		$t_Request = [
+			'holiday_action'=>'Cancelled',
+			'holiday_dates'=>$t_Dates,
+			'holiday_type'=>$holiday['holiday_type'],
+			'user_name'=>Auth::user()->name,
+		];
+
+		Mail::to(Auth::user()->email)
+			->cc('holidays@ggpsystems.co.uk')
+			->send(new Action($t_Request));
 
 		return redirect('/holidays')->with('success', 'Holiday request deleted');
     }
@@ -454,6 +477,29 @@ class HolidayController extends Controller
 		$holiday->where('holiday_id',$id)->update(['approved'=>1]);
 
 		// @TODO: Send approved email
+		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
+		switch ($holiday['holiday_type']) {
+			case 'Half Day (AM)':
+			case 'Half Day (PM)':
+			case 'Single Day':
+				$t_Dates = substr($t_Start,0,10);
+				break;
+			case 'Multiple Days':
+				$t_Dates = substr($t_Start,0,10).' to '.substr($t_End,0,10);
+				break;
+		}
+		$staff = Staff::findOrFail($holiday['staff_id']);
+		$t_Request = [
+			'holiday_action'=>'Approved',
+			'holiday_dates'=>$t_Dates,
+			'holiday_type'=>$holiday['holiday_type'],
+			'user_name'=>$staff['name'],
+		];
+
+		Mail::to($staff['email'])
+			->cc('holidays@ggpsystems.co.uk')
+			->send(new Action($t_Request));
 
 		return redirect('/holidays')->with('success', 'Holiday request approved');
 	}
@@ -472,7 +518,30 @@ class HolidayController extends Controller
 		$holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
 		$holiday->delete();
 
-		// @TODO: Send denied email
+		// @TODO: Send approved email
+		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
+		switch ($holiday['holiday_type']) {
+			case 'Half Day (AM)':
+			case 'Half Day (PM)':
+			case 'Single Day':
+				$t_Dates = substr($t_Start,0,10);
+				break;
+			case 'Multiple Days':
+				$t_Dates = substr($t_Start,0,10).' to '.substr($t_End,0,10);
+				break;
+		}
+		$staff = Staff::findOrFail($holiday['staff_id']);
+		$t_Request = [
+			'holiday_action'=>'Denied',
+			'holiday_dates'=>$t_Dates,
+			'holiday_type'=>$holiday['holiday_type'],
+			'user_name'=>$staff['name'],
+		];
+
+		Mail::to($staff['email'])
+			->cc('holidays@ggpsystems.co.uk')
+			->send(new Action($t_Request));
 
 		return redirect('/holidays')->with('success', 'Holiday request denied');
 	}
