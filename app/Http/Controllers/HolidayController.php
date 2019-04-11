@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\Mail;
  *
  * @package App\Http\Controllers
  * @todo "Nonce model" as part of the approval workflow?
- * @todo Approved mailable & template
- * @todo Denied mailable & template
- * @todo Cancelled mailable & template
+ * @todo Might not need Approval/Approve/Deny handling?
  */
 class HolidayController extends Controller
 {
@@ -170,6 +168,9 @@ class HolidayController extends Controller
 			$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
 			$t_Dates = $holidayRequest['start'].' to '.$holidayRequest['end'];
 		}
+
+		// absence_id
+		$holidayRequest['absence_id'] = 1;
 
 		// note cannot be null
 		if(isset($validatedData['note'])) {
@@ -369,6 +370,9 @@ class HolidayController extends Controller
 			$t_Dates = $holidayRequest['start'].' to '.$holidayRequest['end'];
 		}
 
+		// absence_id
+		$holidayRequest['absence_id'] = 1;
+
 		// note cannot be null
 		if(isset($validatedData['note'])) {
 			$holidayRequest['note'] = $validatedData['note'];
@@ -438,7 +442,7 @@ class HolidayController extends Controller
         $holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
         $holiday->delete();
 
-		// @TODO: Send cancelled email
+		// Send cancelled email
 		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
 		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
 		switch ($holiday['holiday_type']) {
@@ -476,7 +480,7 @@ class HolidayController extends Controller
 		$holiday = Holiday::findOrFail($id);
 		$holiday->where('holiday_id',$id)->update(['approved'=>1]);
 
-		// @TODO: Send approved email
+		// Send approved email
 		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
 		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
 		switch ($holiday['holiday_type']) {
@@ -518,7 +522,7 @@ class HolidayController extends Controller
 		$holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
 		$holiday->delete();
 
-		// @TODO: Send approved email
+		// @TODO: approved email
 		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
 		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
 		switch ($holiday['holiday_type']) {
