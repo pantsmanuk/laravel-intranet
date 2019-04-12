@@ -27,8 +27,9 @@
                 </tr>
                 </thead>
                 <tbody>
+                <?php $t_count=0; ?>
                 @foreach ($allHolidays as $holiday)
-					<?php $t_count = $loop->count;?>
+                    <?php $t_count=$loop->count;?>
                     <tr>
                         <td>{{$holiday->start}}</td>
                         <td>{{$holiday->end}}</td>
