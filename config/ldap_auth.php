@@ -93,30 +93,13 @@ return [
 
         // Only allows users with a user principal name to authenticate.
         // Suitable when using ActiveDirectory.
-        // Adldap\Laravel\Scopes\UpnScope::class,
+        Adldap\Laravel\Scopes\UpnScope::class,
 
         // Only allows users with a uid to authenticate.
         // Suitable when using OpenLDAP.
         // Adldap\Laravel\Scopes\UidScope::class,
 
     ],
-
-	/**
-	 * This is 'identifiers' now, so things are different...
-	 */
-	'usernames' => [
-		'ldap' => [
-			'discover' => 'userprincipalname',
-			'authenticate' => 'distinguishedname',
-		],
-
-		'eloquent' => 'username',
-
-		'windows' => [
-			'discover' => 'samaccountname',
-			'key' => 'AUTH_USER',
-		],
-	],
 
     'identifiers' => [
 
@@ -150,9 +133,11 @@ return [
 
         'ldap' => [
 
-            'locate_users_by' => 'userprincipalname',
+//            'locate_users_by' => 'userprincipalname',
+            'locate_users_by' => 'samaccountname',
 
-            'bind_users_by' => 'distinguishedname',
+//            'bind_users_by' => 'distinguishedname',
+            'bind_users_by' => 'samaccountname',
 
         ],
 
@@ -306,8 +291,8 @@ return [
 
     'sync_attributes' => [
 
-		'username' => 'sAMAccountName',
-		'name' => 'cn',
+        'username' => 'samaccountname',
+        'name' => 'cn',
         'email' => 'mail',
 
     ],
