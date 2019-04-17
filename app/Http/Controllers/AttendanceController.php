@@ -44,12 +44,13 @@ class AttendanceController extends Controller
 			return $employee;
 		});
 
-		// @todo What about non-office staff? Can I append static records to begin with?
+		// @todo What about off-site staff? Can I append static records to begin with?
 		$offSite = collect([
-			['name'=>'Dmitry Kuznetsov', 'doorevent'=>'0'],
-			['name'=>'John Hart', 'doorevent'=>'2'],
-			['name'=>'Prim Maxwell', 'doorevent'=>'1'],
+			//['name'=>'Kiran Dower', 'doorevent'=>'1'],
 			['name'=>'Roger Gill-Carey', 'doorevent'=>'0'],
+			['name'=>'John Hart', 'doorevent'=>'2'],
+			['name'=>'Dmitry Kuznetsov', 'doorevent'=>'0'],
+			['name'=>'Prim Maxwell', 'doorevent'=>'1'],
 			['name'=>'Tim Maxwell', 'doorevent'=>'1'],
 			]);
 		//$employees->push(['attributes'=>]);
