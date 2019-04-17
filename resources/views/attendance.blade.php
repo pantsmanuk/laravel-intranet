@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="table-responsive">
-            <h4>Attendance &raquo; Office Staff for {{$dtLondon->toDateString()}}</h4>
+            <h4>On-site attendance for {{$dtLondon->toDateString()}}</h4>
             <hr>
 
             <table class="table table-bordered table-striped">
@@ -22,7 +22,36 @@
                     <tr>
                         <td>{{$value->name}}</td>
                         <td>{{$value->firstevent}}</td>
-                        <td>{{$t_eventtype[$value->doorevent['doorevent']]}} ({{$value->dooreventtime}})</td>
+                        <td>{{$t_eventtype[$value->doorevent]}} ({{$value->dooreventtime}})</td>
+                    </tr>
+                @endforeach
+                <tr class="table-info">
+                    <td><strong>Total:</strong></td>
+                    <td colspan="2"><strong>{{$t_count}}</strong></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="table-responsive">
+            <h4>Off-site attendance for {{$dtLondon->toDateString()}}</h4>
+            <hr>
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr class="table-info">
+                    <th>Name</th>
+                    <th>Last Known Location</th>
+                </tr>
+                </thead>
+                <tbody>
+				<?php $t_eventtype = ['Remote Working', 'Holiday', 'Sickness', 'Sickness', 'Conference/Exhibition/Seminar', 'Delayed', 'Existing Customer Visit', 'New Business Visit', 'External Meeting', 'Approved Absence', 'Approved Absence']; // This should match absence_lookup? ?>
+                @foreach ($offSite as $value)
+					<?php $t_count = $loop->count;?>
+                    <tr>
+                        <td>{{$value['name']}}</td>
+                        <td>{{$t_eventtype[$value['doorevent']]}}</td>
                     </tr>
                 @endforeach
                 <tr class="table-info">

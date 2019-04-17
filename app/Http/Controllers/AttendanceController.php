@@ -27,7 +27,7 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-    	$dtLondon = new CarbonImmutable( 'now', 'Europe/London' );
+		$dtLondon = new CarbonImmutable( 'now', 'Europe/London' );
 
 		$onSite = Attendance::select('empref')->whereDate( 'doordate', $dtLondon->toDateString())->distinct()->get();
 		$employees = EmployeeDetails::whereIn( 'empref', $onSite )->orderBy('surname')->orderBy('forenames')->get();
@@ -35,8 +35,8 @@ class AttendanceController extends Controller
 		$employees->map(function ($employee) {
 			$dt = new Carbon( 'now', 'Europe/London' );
 			$employee['name'] = $employee['forenames'] . ' ' . $employee['surname'];
-			$employee['doorevent'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
-				->latest('dooraccessref')->select('doorevent')->first();
+			$employee['doorevent'] = (int) Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
+				->latest('dooraccessref')->select('doorevent')->first()->doorevent;
 			$employee['dooreventtime'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
 				->latest('dooraccessref')->select('doortime')->first()->eventtime;
 			$employee['firstevent'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
@@ -44,8 +44,19 @@ class AttendanceController extends Controller
 			return $employee;
 		});
 
+		// @todo What about non-office staff? Can I append static records to begin with?
+		$offSite = collect([
+			['name'=>'Dmitry Kuznetsov', 'doorevent'=>'0'],
+			['name'=>'John Hart', 'doorevent'=>'2'],
+			['name'=>'Prim Maxwell', 'doorevent'=>'1'],
+			['name'=>'Roger Gill-Carey', 'doorevent'=>'0'],
+			['name'=>'Tim Maxwell', 'doorevent'=>'1'],
+			]);
+		//$employees->push(['attributes'=>]);
+		//dd($employees);
+
     	$events = Attendance::whereDate( 'doordate', $dtLondon->subWeekdays(1)->toDateString())->get();
 
-		return view('attendance', compact('dtLondon', 'employees', 'events'));
+		return view('attendance', compact('dtLondon', 'employees', 'offSite', 'events'));
     }
 }
