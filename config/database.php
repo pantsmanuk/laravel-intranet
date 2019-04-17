@@ -42,12 +42,12 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST_THIRD', '127.0.0.1'),
-            'port' => env('DB_PORT_THIRD', '3306'),
-            'database' => env('DB_DATABASE_THIRD', 'forge'),
-            'username' => env('DB_USERNAME_THIRD', 'forge'),
-            'password' => env('DB_PASSWORD_THIRD', ''),
-            'unix_socket' => env('DB_SOCKET_THIRD', ''),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
