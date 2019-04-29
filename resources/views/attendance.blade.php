@@ -16,7 +16,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php $t_eventtype = ['In', 'Out'];?>
+                <?php $t_count = 0;
+				$t_eventtype = ['In', 'Out'];?>
                 @foreach ($employees as $value)
 					<?php $t_count = $loop->count;?>
                     <tr>
@@ -46,7 +47,8 @@
                 </tr>
                 </thead>
                 <tbody>
-				<?php $t_eventtype = ['Remote Working', 'Holiday', 'Sickness', 'Sickness', 'Conference/Exhibition/Seminar', 'Delayed', 'Existing Customer Visit', 'New Business Visit', 'External Meeting', 'Approved Absence', 'Approved Absence']; // This should match absence_lookup? ?>
+				<?php $t_count = 0;
+				$t_eventtype = ['Remote Working', 'Holiday', 'Sickness', 'Sickness', 'Conference/Exhibition/Seminar', 'Delayed', 'Existing Customer Visit', 'New Business Visit', 'External Meeting', 'Approved Absence', 'Approved Absence']; // This should match absence_lookup? ?>
                 @foreach ($offSite as $value)
 					<?php $t_count = $loop->count;?>
                     <tr>
