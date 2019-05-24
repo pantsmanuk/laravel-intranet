@@ -29,9 +29,25 @@ class AttendanceController extends Controller
     {
 		$dtLondon = new CarbonImmutable( 'now', 'Europe/London' );
 
-		$onSite = Attendance::select('empref')->whereDate( 'doordate', $dtLondon->toDateString())->distinct()->get();
-		$employees = EmployeeDetails::whereIn( 'empref', $onSite )->orderBy('surname')->orderBy('forenames')->get();
+        $onSite = Attendance::select('empref')
+            ->whereDate( 'doordate', $dtLondon->toDateString())
+            ->groupBy('empref')
+            ->orderByRaw('MIN(doortime) ASC')
+            ->get();
 
+        // UGLY KLUDGE
+        // Get an orderByRaw() that correctly orders $employees by arrival time.
+        // MSSQL has a CASE statement that functions similarly to MySQL's FIELD().
+        $orderByRaw = "CASE empref";
+        $i=1;
+        foreach($onSite as $value){
+            $orderByRaw .= " WHEN ".$value['empref']." THEN $i";
+            $i++;
+        }
+        $orderByRaw .= " END";
+        // END UGLY KLUDGE
+
+        $employees = EmployeeDetails::whereIn( 'empref', $onSite )->orderByRaw($orderByRaw)->get();
 		$employees->map(function ($employee) {
 			$dt = new Carbon( 'now', 'Europe/London' );
 			$employee['name'] = $employee['forenames'] . ' ' . $employee['surname'];
