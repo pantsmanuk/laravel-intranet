@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Attendance;
 use App\EmployeeDetails;
+use App\Holiday;
+use App\Staff;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
 {
@@ -35,6 +36,8 @@ class AttendanceController extends Controller
             ->orderByRaw('MIN(doortime) ASC')
             ->get();
 
+        $here = $onSite->pluck('empref')->toArray();
+
         // UGLY KLUDGE
         // Get an orderByRaw() that correctly orders $employees by arrival time.
         // MSSQL has a CASE statement that functions similarly to MySQL's FIELD().
@@ -47,7 +50,7 @@ class AttendanceController extends Controller
         $orderByRaw .= " END";
         // END UGLY KLUDGE
 
-        $employees = EmployeeDetails::whereIn( 'empref', $onSite )->orderByRaw($orderByRaw)->get();
+        $employees = EmployeeDetails::whereIn('empref', $onSite)->orderByRaw($orderByRaw)->get();
 		$employees->map(function ($employee) {
 			$dt = new Carbon( 'now', 'Europe/London' );
 			$employee['name'] = $employee['forenames'] . ' ' . $employee['surname'];
@@ -60,17 +63,37 @@ class AttendanceController extends Controller
 			return $employee;
 		});
 
-		// @todo What about off-site staff? Can I append static records to begin with?
-		$offSite = collect([
-			//['name'=>'Kiran Dower', 'doorevent'=>'1'],
-			['name'=>'Roger Gill-Carey', 'doorevent'=>'0'],
-			['name'=>'John Hart', 'doorevent'=>'2'],
-			['name'=>'Dmitry Kuznetsov', 'doorevent'=>'0'],
-			['name'=>'Prim Maxwell', 'doorevent'=>'1'],
-			['name'=>'Tim Maxwell', 'doorevent'=>'1'],
-			]);
-		//$employees->push(['attributes'=>]);
-		//dd($employees);
+        $offSite = Staff::select('staff_id', 'name', 'empref', 'default_workstate')
+            ->whereDate('deleted_at','>=',$dtLondon->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->orderByRaw('surname, firstname')
+            ->get();
+        $offSite = $offSite->filter(function($employee) use ($here) {
+            if(!in_array($employee->empref, $here)) {
+                return $employee;
+            }
+        });
+        $offSite->map(function ($employee) {
+            $workstate_arr = array(1=>"On-site",
+                2=>"Remote working",
+                3=>"Not working");
+            $dt = new Carbon( 'now', 'Europe/London' );
+
+            $absence = Holiday::select('absence_lookup.name AS workstate')
+                ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
+                ->where('staff_id',$employee->staff_id)
+                ->where('start','<=',$dt->toDateTimeString())
+                ->where('end','>=',$dt->toDateTimeString())
+                ->first();
+
+            if(!is_null($absence)) {
+                $employee['doorevent'] = $absence->workstate;
+            } else {
+                $employee['doorevent'] = $workstate_arr[$employee->default_workstate];
+            }
+
+            return $employee;
+        });
 
     	$events = Attendance::whereDate( 'doordate', $dtLondon->subWeekdays(1)->toDateString())->get();
 

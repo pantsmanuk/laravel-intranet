@@ -47,13 +47,12 @@
                 </tr>
                 </thead>
                 <tbody>
-				<?php $t_count = 0;
-				$t_eventtype = ['Remote Working', 'Holiday', 'Sickness', 'Sickness', 'Conference/Exhibition/Seminar', 'Delayed', 'Existing Customer Visit', 'New Business Visit', 'External Meeting', 'Approved Absence', 'Approved Absence']; // This should match absence_lookup? ?>
+				<?php $t_count = 0; ?>
                 @foreach ($offSite as $value)
 					<?php $t_count = $loop->count;?>
                     <tr>
                         <td>{{$value['name']}}</td>
-                        <td>{{$t_eventtype[$value['doorevent']]}}</td>
+                        <td>{{$value['doorevent']}}</td>
                     </tr>
                 @endforeach
                 <tr class="table-info">
