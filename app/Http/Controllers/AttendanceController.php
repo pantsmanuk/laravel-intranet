@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Attendance;
 use App\EmployeeDetails;
-use App\Holiday;
+use App\Absence;
 use App\Staff;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -79,7 +79,7 @@ class AttendanceController extends Controller
                 3=>"Not working");
             $dt = new Carbon( 'now', 'Europe/London' );
 
-            $absence = Holiday::select('absence_lookup.name AS workstate')
+            $absence = Absence::select('absence_lookup.name AS workstate')
                 ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
                 ->where('staff_id',$employee->staff_id)
                 ->where('start','<=',$dt->toDateTimeString())

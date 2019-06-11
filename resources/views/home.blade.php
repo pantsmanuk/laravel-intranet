@@ -3,20 +3,28 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Dashboard</div>
+            <div class="table-responsive">
+                <h4>Telephone Directory</h4>
+                <hr>
 
-                    <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
-                        @endif
-
-                        You are logged in!
-                    </div>
-                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr class="table-info">
+                        <th>Extn</th>
+                        <th>Name</th>
+                        <th>External(s)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($staff as $value)
+                        <tr>
+                            <td>{{$value->extn}}</td>
+                            <td>{{$value->name}} <em>{{$value->workstate}}</em></td>
+                            <td>@foreach ($value->telephones as $telephone){{$telephone->name}}: {{$telephone->number}}<br/>@endforeach</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
