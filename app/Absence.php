@@ -5,11 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Holiday extends Model
+class Absence extends Model
 {
 	use SoftDeletes;
 
 	protected $connection = 'mysql';
+    protected $table = 'holidays';
 	protected $dates = ['start','end','deleted_at'];
 	protected $fillable = [
 		'staff_id',

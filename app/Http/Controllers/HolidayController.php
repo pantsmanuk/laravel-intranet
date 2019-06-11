@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ConfigDB;
-use App\Holiday;
+use App\Absence;
 use App\Mail\Action;
 use App\Mail\Approval;
 use App\Staff;
@@ -41,7 +41,7 @@ class HolidayController extends Controller
 		$t_staffId = (int) $staff->pluck('staff_id')->implode('');
 		$iEntitlement = (int) $staff->pluck('holiday_entitlement')->implode('');
 
-		$allHolidays = Holiday::where('staff_id', $t_staffId)->where('deleted','0')
+		$allHolidays = Absence::where('staff_id', $t_staffId)->where('deleted','0')
 			->whereBetween('start',[$dtYearStart->toDateString(), $dtYearEnd->toDateString()])->orderBy('start')->get();
 
 		// Map() paid days used until we have the DB populated
@@ -197,7 +197,7 @@ class HolidayController extends Controller
 		// created_at, updated_at, deleted_at are "Laravel protected"
 
 		// Throw the request at the DB table, see what sticks
-    	$holiday = Holiday::create($holidayRequest);
+    	$holiday = Absence::create($holidayRequest);
 
 		// Send approval email
 		$t_Start = substr($holiday->start,0,10);
@@ -225,7 +225,7 @@ class HolidayController extends Controller
 		Mail::to('murray.crane@gmail.com')
 			->send(new Approval($t_Request));
 
-    	return redirect('/holidays')->with('success', 'Holiday requested');
+    	return redirect('/holidays')->with('success', 'Absence requested');
     }
 
     /**
@@ -247,7 +247,7 @@ class HolidayController extends Controller
      */
     public function edit($id)
     {
-        $holiday = Holiday::findOrFail($id);
+        $holiday = Absence::findOrFail($id);
 
 		// start, startType, end and endType
 		$tStart = substr($holiday['start'],-8);
@@ -399,7 +399,7 @@ class HolidayController extends Controller
 		//dd($holidayRequest);
 
 		// Throw the request at the DB table, see what sticks
-		Holiday::where('holiday_id',$id)->update($holidayRequest);
+		Absence::where('holiday_id',$id)->update($holidayRequest);
 
 		// Send approval email
 		$t_Start = substr($holidayRequest['start'],0,10);
@@ -427,7 +427,7 @@ class HolidayController extends Controller
 		Mail::to('murray.crane@ggpsystems.co.uk')
 			->send(new Approval($t_Request));
 
-		return redirect('/holidays')->with('success', 'Holiday request updated');
+		return redirect('/holidays')->with('success', 'Absence request updated');
     }
 
     /**
@@ -438,7 +438,7 @@ class HolidayController extends Controller
      */
     public function destroy($id)
     {
-        $holiday = Holiday::findOrFail($id);
+        $holiday = Absence::findOrFail($id);
         $holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
         $holiday->delete();
 
@@ -466,7 +466,7 @@ class HolidayController extends Controller
 			->cc('holidays@ggpsystems.co.uk')
 			->send(new Action($t_Request));
 
-		return redirect('/holidays')->with('success', 'Holiday request deleted');
+		return redirect('/holidays')->with('success', 'Absence request deleted');
     }
 
 	/**
@@ -477,7 +477,7 @@ class HolidayController extends Controller
 	 */
 	public function approve($id)
 	{
-		$holiday = Holiday::findOrFail($id);
+		$holiday = Absence::findOrFail($id);
 		$holiday->where('holiday_id',$id)->update(['approved'=>1]);
 
 		// Send approved email
@@ -505,7 +505,7 @@ class HolidayController extends Controller
 			->cc('holidays@ggpsystems.co.uk')
 			->send(new Action($t_Request));
 
-		return redirect('/holidays')->with('success', 'Holiday request approved');
+		return redirect('/holidays')->with('success', 'Absence request approved');
 	}
 
 	/**
@@ -518,7 +518,7 @@ class HolidayController extends Controller
 	{
 		// Like delete, but with an updated note??
 		// Needs to get and check `nonce` if we continue using it
-		$holiday = Holiday::findOrFail($id);
+		$holiday = Absence::findOrFail($id);
 		$holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
 		$holiday->delete();
 
@@ -547,6 +547,6 @@ class HolidayController extends Controller
 			->cc('holidays@ggpsystems.co.uk')
 			->send(new Action($t_Request));
 
-		return redirect('/holidays')->with('success', 'Holiday request denied');
+		return redirect('/holidays')->with('success', 'Absence request denied');
 	}
 }
