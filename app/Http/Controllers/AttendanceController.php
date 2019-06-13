@@ -6,8 +6,7 @@ use App\Attendance;
 use App\EmployeeDetails;
 use App\Absence;
 use App\Staff;
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Date;
 
 class AttendanceController extends Controller
 {
@@ -28,10 +27,10 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-		$dtLondon = new CarbonImmutable( 'now', 'Europe/London' );
+        $dtLocal = Date::now()->timezone('Europe/London');
 
         $onSite = Attendance::select('empref')
-            ->whereDate( 'doordate', $dtLondon->toDateString())
+            ->whereDate( 'doordate', $dtLocal->toDateString())
             ->groupBy('empref')
             ->orderByRaw('MIN(doortime) ASC')
             ->get();
@@ -52,19 +51,19 @@ class AttendanceController extends Controller
 
         $employees = EmployeeDetails::whereIn('empref', $onSite)->orderByRaw($orderByRaw)->get();
 		$employees->map(function ($employee) {
-			$dt = new Carbon( 'now', 'Europe/London' );
+			$dt = Date::now()->timezone('Europe/London');
 			$employee['name'] = $employee['forenames'] . ' ' . $employee['surname'];
 			$employee['doorevent'] = (int) Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
-				->latest('dooraccessref')->select('doorevent')->first()->doorevent;
+				->latest('doortime')->select('doorevent')->first()->doorevent;
 			$employee['dooreventtime'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
-				->latest('dooraccessref')->select('doortime')->first()->eventtime;
+				->latest('doortime')->select('doortime')->first()->eventtime;
 			$employee['firstevent'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
-				->oldest('dooraccessref')->select('doortime')->first()->eventtime;
+				->oldest('doortime')->select('doortime')->first()->eventtime;
 			return $employee;
 		});
 
         $offSite = Staff::select('staff_id', 'name', 'empref', 'default_workstate')
-            ->whereDate('deleted_at','>=',$dtLondon->toDateTimeString())
+            ->whereDate('deleted_at','>=',$dtLocal->toDateTimeString())
             ->orWhereNull('deleted_at')
             ->orderByRaw('surname, firstname')
             ->get();
@@ -77,7 +76,7 @@ class AttendanceController extends Controller
             $workstate_arr = array(1=>"On-site",
                 2=>"Remote working",
                 3=>"Not working");
-            $dt = new Carbon( 'now', 'Europe/London' );
+            $dt = Date::now()->timezone('Europe/London');
 
             $absence = Absence::select('absence_lookup.name AS workstate')
                 ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
@@ -95,8 +94,8 @@ class AttendanceController extends Controller
             return $employee;
         });
 
-    	$events = Attendance::whereDate( 'doordate', $dtLondon->subWeekdays(1)->toDateString())->get();
+    	$events = Attendance::whereDate( 'doordate', $dtLocal->subWeekdays(1)->toDateString())->get();
 
-		return view('attendance', compact('dtLondon', 'employees', 'offSite', 'events'));
+		return view('attendance', compact('dtLocal', 'employees', 'offSite', 'events'));
     }
 }
