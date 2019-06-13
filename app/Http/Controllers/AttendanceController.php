@@ -29,13 +29,20 @@ class AttendanceController extends Controller
     {
         $dtLocal = Date::now()->timezone('Europe/London');
 
+        $active = Staff::select('empref')
+            ->whereDate('deleted_at','>=',$dtLocal->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->get();
+
+        // "Inject" the spare fobs so they will show up
+        $active->push(['empref'=>12, 'empref'=>13, 'empref'=>14]);
+
         $onSite = Attendance::select('empref')
             ->whereDate( 'doordate', $dtLocal->toDateString())
+            ->whereIn('empref', $active)
             ->groupBy('empref')
             ->orderByRaw('MIN(doortime) ASC')
             ->get();
-
-        $here = $onSite->pluck('empref')->toArray();
 
         // UGLY KLUDGE
         // Get an orderByRaw() that correctly orders $employees by arrival time.
@@ -67,6 +74,7 @@ class AttendanceController extends Controller
             ->orWhereNull('deleted_at')
             ->orderByRaw('surname, firstname')
             ->get();
+        $here = $onSite->pluck('empref')->toArray();
         $offSite = $offSite->filter(function($employee) use ($here) {
             if(!in_array($employee->empref, $here)) {
                 return $employee;
