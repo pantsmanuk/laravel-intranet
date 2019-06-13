@@ -25,6 +25,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/attendance', 'AttendanceController@index')->name('attendance');
 
+Route::resource('fobs', 'FobsController');
+
 Route::resource('holidays', 'HolidayController');
 Route::get('holidays/{holiday}/approve', 'HolidayController@approve')->name('holidays.approve');
 Route::get('holidays/{holiday}/deny', 'HolidayController@deny')->name('holidays.deny');
