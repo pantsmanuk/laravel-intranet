@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Fob;
+use App\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class FobsController extends Controller
 {
@@ -14,7 +16,20 @@ class FobsController extends Controller
      */
     public function index()
     {
-        //
+        $fob_names = array(
+            12 => '#1',
+            13 => '#2',
+            14 => '#3'
+        );
+
+        $fobs = Fob::all();
+        $fobs->map(function ($fob) use ($fob_names){
+            $fob['fob_name'] = $fob_names[$fob['empref']];
+            $fob['staff_name'] = Staff::where('staff_id',$fob['staff_id'])
+                ->pluck('name')->first();
+        });
+
+        return view('fobs.index')->with('fobs', $fobs);
     }
 
     /**
@@ -24,7 +39,21 @@ class FobsController extends Controller
      */
     public function create()
     {
-        //
+        // @todo Unused spare fobs as collection
+        $fobs = array(['empref' => 12, 'name' => 'Spare fob #1'],
+            ['empref' => 13, 'name' => 'Spare fob #2'],
+            ['empref' => 14, 'name' => 'Spare fob #3']);
+        $fobs = collect($fobs)->map(function ($fob) {
+                return (object) $fob;
+        });
+        // @todo Get unassigned staff as collection
+        $staff = Staff::select('staff_id', 'name')
+            ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->orderByRaw('firstname, surname')
+            ->get();
+
+        return view('fobs.create')->with(['fobs' => $fobs, 'staff' => $staff]);
     }
 
     /**
@@ -35,7 +64,10 @@ class FobsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->toArray();
+        $fob = Fob::create($validatedData);
+
+        return redirect('/fobs')->with('success', 'Fob assignment saved');
     }
 
     /**
@@ -57,7 +89,21 @@ class FobsController extends Controller
      */
     public function edit(Fob $fob)
     {
-        //
+        // @todo Unused spare fobs as collection
+        $fobs = array(['empref' => 12, 'name' => 'Spare fob #1'],
+            ['empref' => 13, 'name' => 'Spare fob #2'],
+            ['empref' => 14, 'name' => 'Spare fob #3']);
+        $fobs = collect($fobs)->map(function ($fob) {
+            return (object) $fob;
+        });
+        // @todo Get unassigned staff as collection
+        $staff = Staff::select('staff_id', 'name')
+            ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->orderByRaw('firstname, surname')
+            ->get();
+
+        return view('fobs.edit')->with(['fob' => $fob, 'fobs' => $fobs, 'staff' => $staff]);
     }
 
     /**
@@ -69,7 +115,9 @@ class FobsController extends Controller
      */
     public function update(Request $request, Fob $fob)
     {
-        //
+        $validatedData = $request->toArray();
+        Fob::whereId($fob->id)->update($validatedData);
+        return redirect('/fobs')->with('success', 'Fob assignment updated');
     }
 
     /**
@@ -80,6 +128,7 @@ class FobsController extends Controller
      */
     public function destroy(Fob $fob)
     {
-        //
+        $fob->delete();
+        return redirect('/fobs')->with('success', 'Fob assignment deleted');
     }
 }
