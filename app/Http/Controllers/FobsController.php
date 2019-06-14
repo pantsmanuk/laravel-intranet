@@ -39,19 +39,27 @@ class FobsController extends Controller
      */
     public function create()
     {
-        // @todo Unused spare fobs as collection
+        // Get unused spare fobs as collection
         $fobs = array(['empref' => 12, 'name' => 'Spare fob #1'],
             ['empref' => 13, 'name' => 'Spare fob #2'],
             ['empref' => 14, 'name' => 'Spare fob #3']);
         $fobs = collect($fobs)->map(function ($fob) {
-                return (object) $fob;
-        });
-        // @todo Get unassigned staff as collection
+            return (object) $fob;
+        })->whereNotIn('empref', Fob::whereDate('created_at', Date::now('Europe/London')
+            ->toDateString())
+            ->pluck('empref')
+            ->toArray());
+
+        // Get unassigned staff as collection
         $staff = Staff::select('staff_id', 'name')
             ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
             ->orWhereNull('deleted_at')
             ->orderByRaw('firstname, surname')
-            ->get();
+            ->get()
+            ->whereNotIn('staff_id', Fob::whereDate('created_at', Date::now('Europe/London')
+                ->toDateString())
+                ->pluck('staff_id')
+                ->toArray());
 
         return view('fobs.create')->with(['fobs' => $fobs, 'staff' => $staff]);
     }
