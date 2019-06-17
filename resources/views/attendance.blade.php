@@ -21,7 +21,11 @@
                 @foreach ($employees as $value)
 					<?php $t_count = $loop->count;?>
                     <tr>
-                        <td>{{$value->name}}</td>
+                        <?php if (empty($value->spare_name)) { ?>
+                            <td>{{$value->name}}</td>
+                        <?php } else { ?>
+                            <td>{{$value->spare_name}} (<em>{{$value->forenames}}</em>)</td>
+                        <?php }?>
                         <td>{{$value->firstevent}}</td>
                         <td>{{$t_eventtype[$value->doorevent]}} ({{$value->dooreventtime}})</td>
                     </tr>

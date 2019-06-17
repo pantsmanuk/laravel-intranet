@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Attendance;
 use App\EmployeeDetails;
 use App\Absence;
+use App\Fob;
 use App\Staff;
 use Illuminate\Support\Facades\Date;
 
@@ -35,7 +36,7 @@ class AttendanceController extends Controller
             ->get();
 
         // "Inject" the spare fobs so they will show up
-        $active->push(['empref'=>12, 'empref'=>13, 'empref'=>14]);
+        $active->push(['empref'=>12], ['empref'=>13], ['empref'=>14]);
 
         $onSite = Attendance::select('empref')
             ->whereDate( 'doordate', $dtLocal->toDateString())
@@ -57,9 +58,22 @@ class AttendanceController extends Controller
         // END UGLY KLUDGE
 
         $employees = EmployeeDetails::whereIn('empref', $onSite)->orderByRaw($orderByRaw)->get();
-		$employees->map(function ($employee) {
+		$employees->map(function ($employee) use ($active) {
 			$dt = Date::now()->timezone('Europe/London');
-			$employee['name'] = $employee['forenames'] . ' ' . $employee['surname'];
+            $employee['spare_name'] = '';
+            switch ($employee['empref']) {
+                case 12:
+                case 13:
+                case 14:
+                    $name = Staff::where('staff_id', Fob::where('empref',$employee['empref'])
+                        ->whereDate('created_at', Date::now('Europe/London')->toDateString())
+                        ->pluck('staff_id')
+                        ->first())
+                        ->pluck('name')
+                        ->first();
+                    $employee['spare_name'] = $name;
+                    break;
+            }
 			$employee['doorevent'] = (int) Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
 				->latest('doortime')->select('doorevent')->first()->doorevent;
 			$employee['dooreventtime'] = Attendance::whereDate( 'doordate', $dt->toDateString())->where( 'empref',$employee->empref)
