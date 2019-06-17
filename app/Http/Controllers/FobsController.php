@@ -123,7 +123,7 @@ class FobsController extends Controller
      */
     public function update(Request $request, Fob $fob)
     {
-        $validatedData = $request->toArray();
+        $validatedData = $request->except(['_token', '_method'])->toArray();
         Fob::whereId($fob->id)->update($validatedData);
         return redirect('/fobs')->with('success', 'Fob assignment updated');
     }
