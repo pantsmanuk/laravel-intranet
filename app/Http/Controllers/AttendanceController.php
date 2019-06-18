@@ -100,7 +100,7 @@ class AttendanceController extends Controller
                 3=>"Not working");
             $dt = Date::now()->timezone('Europe/London');
 
-            $absence = Absence::select('absence_lookup.name AS workstate')
+            $absence = Absence::select('absence_lookup.name AS workstate', 'holidays.note')
                 ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
                 ->where('staff_id',$employee->staff_id)
                 ->where('start','<=',$dt->toDateTimeString())
@@ -109,8 +109,10 @@ class AttendanceController extends Controller
 
             if(!is_null($absence)) {
                 $employee['doorevent'] = $absence->workstate;
+                $employee['note'] = $absence->note;
             } else {
                 $employee['doorevent'] = $workstate_arr[$employee->default_workstate];
+                $employee['note'] = "";
             }
 
             return $employee;
