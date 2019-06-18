@@ -24,15 +24,14 @@
                         <?php if (empty($value->spare_name)) { ?>
                             <td>{{$value->name}}</td>
                         <?php } else { ?>
-                            <td>{{$value->spare_name}} (<em>{{$value->forenames}}</em>)</td>
+                            <td>{{$value->spare_name}} <em>({{$value->forenames}})</em></td>
                         <?php }?>
                         <td>{{$value->firstevent}}</td>
-                        <td>{{$t_eventtype[$value->doorevent]}} ({{$value->dooreventtime}})</td>
+                        <td>{{$t_eventtype[$value->doorevent]}} <em>({{$value->dooreventtime}})</em></td>
                     </tr>
                 @endforeach
                 <tr class="table-info">
-                    <td><strong>Total:</strong></td>
-                    <td colspan="2"><strong>{{$t_count}}</strong></td>
+                    <td colspan="3"><strong>Total: {{$t_count}}</strong></td>
                 </tr>
                 </tbody>
             </table>
@@ -56,12 +55,11 @@
 					<?php $t_count = $loop->count;?>
                     <tr>
                         <td>{{$value['name']}}</td>
-                        <td>{{$value['doorevent']}}</td>
+                        <td>{{$value['doorevent']}} @if (!empty($value['note'])) <em>({{$value['note']}})</em> @endif</td>
                     </tr>
                 @endforeach
                 <tr class="table-info">
-                    <td><strong>Total:</strong></td>
-                    <td colspan="2"><strong>{{$t_count}}</strong></td>
+                    <td colspan="2"><strong>Total: {{$t_count}}</strong></td>
                 </tr>
                 </tbody>
             </table>
