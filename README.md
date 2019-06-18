@@ -1,7 +1,3 @@
-New attendance spreadsheet production tool that will automatically pull all the 
-correct data from the SQL Server database automatically and output an Excel 
-spreadsheet.
+New Laravel intranet project to replace the CodeIgniter-based intranet we currently have running.
 
-Being written in Laravel because (a) I really do want to learn Laravel and (b) 
-Laravel has a number of compelling features particularly for this project 
-(AD/LDAP authentication, Excel spreadsheet read/write code).
+Mostly as a vehicle to learn Laravel, but it otherwise has a number of compelling features that we can leverage to improve user experience.
