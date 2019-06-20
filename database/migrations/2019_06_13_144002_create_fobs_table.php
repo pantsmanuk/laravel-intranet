@@ -15,9 +15,13 @@ class CreateFobsTable extends Migration
     {
         Schema::create('fobs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('empref');
-            $table->integer('staff_id');
+            $table->integer('FobID')->comment('realaccess.empdetails.empref');
+            $table->integer('UserID')->comment('realaccess.empdetails.empref');
+            $table->timestamp('date')->comment('Unnecessary - use created_at');
+            $table->string('MachineID', 255);
+            $table->boolean('deleted')->comment('Unnecessary - use deleted_at');
             $table->timestamps();
+            $table->timestamp('deleted_at')->comment('[WARN] Not soft deletes');
         });
     }
 

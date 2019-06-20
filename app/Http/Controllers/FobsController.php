@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Fob;
 use App\Staff;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 
@@ -22,10 +23,10 @@ class FobsController extends Controller
             14 => '#3'
         );
 
-        $fobs = Fob::all();
+        $fobs = Fob::whereNull('deleted_at')->get();
         $fobs->map(function ($fob) use ($fob_names){
-            $fob['fob_name'] = $fob_names[$fob['empref']];
-            $fob['staff_name'] = Staff::where('staff_id',$fob['staff_id'])
+            $fob['fob_name'] = $fob_names[$fob['FobID']];
+            $fob['staff_name'] = Staff::where('empref', $fob['UserID'])
                 ->pluck('name')->first();
         });
 
@@ -40,25 +41,25 @@ class FobsController extends Controller
     public function create()
     {
         // Get unused spare fobs as collection
-        $fobs = array(['empref' => 12, 'name' => 'Spare fob #1'],
-            ['empref' => 13, 'name' => 'Spare fob #2'],
-            ['empref' => 14, 'name' => 'Spare fob #3']);
+        $fobs = array(['FobID' => 12, 'name' => 'Spare fob #1'],
+            ['FobID' => 13, 'name' => 'Spare fob #2'],
+            ['FobID' => 14, 'name' => 'Spare fob #3']);
         $fobs = collect($fobs)->map(function ($fob) {
             return (object) $fob;
-        })->whereNotIn('empref', Fob::whereDate('created_at', Date::now('Europe/London')
+        })->whereNotIn('FobID', Fob::whereDate('created_at', Date::now('Europe/London')
             ->toDateString())
-            ->pluck('empref')
+            ->pluck('FobID')
             ->toArray());
 
         // Get unassigned staff as collection
-        $staff = Staff::select('staff_id', 'name')
+        $staff = Staff::select('empref AS UserID', 'name')
             ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
             ->orWhereNull('deleted_at')
             ->orderByRaw('firstname, surname')
             ->get()
-            ->whereNotIn('staff_id', Fob::whereDate('created_at', Date::now('Europe/London')
+            ->whereNotIn('empref', Fob::whereDate('created_at', Date::now('Europe/London')
                 ->toDateString())
-                ->pluck('staff_id')
+                ->pluck('UserID')
                 ->toArray());
 
         return view('fobs.create')->with(['fobs' => $fobs, 'staff' => $staff]);
@@ -73,6 +74,8 @@ class FobsController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->toArray();
+        $validatedData['MachineID'] = "(".$request->ip().")".auth()->user()->name;
+        $validatedData['date'] = Date::now('Europe/London');
         $fob = Fob::create($validatedData);
 
         return redirect('/fobs')->with('success', 'Fob assignment saved');
@@ -97,15 +100,14 @@ class FobsController extends Controller
      */
     public function edit(Fob $fob)
     {
-        // @todo Unused spare fobs as collection
-        $fobs = array(['empref' => 12, 'name' => 'Spare fob #1'],
-            ['empref' => 13, 'name' => 'Spare fob #2'],
-            ['empref' => 14, 'name' => 'Spare fob #3']);
+        $fobs = array(['FobID' => 12, 'name' => 'Spare fob #1'],
+            ['FobID' => 13, 'name' => 'Spare fob #2'],
+            ['FobID' => 14, 'name' => 'Spare fob #3']);
         $fobs = collect($fobs)->map(function ($fob) {
             return (object) $fob;
         });
-        // @todo Get unassigned staff as collection
-        $staff = Staff::select('staff_id', 'name')
+
+        $staff = Staff::select('empref AS UserID', 'name')
             ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
             ->orWhereNull('deleted_at')
             ->orderByRaw('firstname, surname')
@@ -123,7 +125,8 @@ class FobsController extends Controller
      */
     public function update(Request $request, Fob $fob)
     {
-        $validatedData = $request->except(['_token', '_method'])->toArray();
+        $validatedData = $request->except(['_token', '_method']);
+        $validatedData['MachineID'] = "(".$request->ip().")".auth()->user()->name;
         Fob::whereId($fob->id)->update($validatedData);
         return redirect('/fobs')->with('success', 'Fob assignment updated');
     }

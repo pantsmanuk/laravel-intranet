@@ -21,18 +21,18 @@
                         <div class="form-group">
                             @csrf
                             @method('PATCH')
-                            <label for="empref">Spare fob:</label>
-                            <select class="form-control" id="empref" name="empref" aria-label="Spare fob selection">
+                            <label for="FobID">Spare fob:</label>
+                            <select class="form-control" id="FobID" name="FobID" aria-label="Spare fob selection">
                                 @foreach($fobs as $value)
-                                    <option value="{{$value->empref}}" aria-label="{{$value->name}}"<?php echo ($value->empref == $fob->empref) ? " selected" : "";?>>{{$value->name}}</option>
+                                    <option value="{{$value->FobID}}" aria-label="{{$value->name}}"<?php echo ($value->FobID == $fob->FobID) ? " selected" : "";?>>{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="staff_id">Staff member:</label>
-                            <select class="form-control" id="staff_id" name="staff_id" aria-label="Staff member selection">
+                            <label for="UserID">Staff member:</label>
+                            <select class="form-control" id="UserID" name="UserID" aria-label="Staff member selection">
                                 @foreach($staff as $value)
-                                    <option value="{{$value->staff_id}}" aria-label="{{$value->name}}"<?php echo ($value->staff_id == $fob->staff_id) ? " selected" : "";?>>{{$value->name}}</option>
+                                    <option value="{{$value->UserID}}" aria-label="{{$value->name}}"<?php echo ($value->UserID == $fob->UserID) ? " selected" : "";?>>{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>
