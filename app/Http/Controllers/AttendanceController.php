@@ -65,9 +65,9 @@ class AttendanceController extends Controller
                 case 12:
                 case 13:
                 case 14:
-                    $name = Staff::where('staff_id', Fob::where('empref',$employee['empref'])
+                    $name = Staff::where('empref', Fob::where('FobID',$employee['empref'])
                         ->whereDate('created_at', Date::now('Europe/London')->toDateString())
-                        ->pluck('staff_id')
+                        ->pluck('UserID')
                         ->first())
                         ->pluck('name')
                         ->first();
