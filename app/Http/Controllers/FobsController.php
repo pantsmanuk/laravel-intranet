@@ -26,7 +26,7 @@ class FobsController extends Controller
         $fobs = Fob::whereNull('deleted_at')->get();
         $fobs->map(function ($fob) use ($fob_names){
             $fob['fob_name'] = $fob_names[$fob['FobID']];
-            $fob['staff_name'] = Staff::where('empref', $fob['UserID'])
+            $fob['staff_name'] = User::where('id', $fob['UserID'])
                 ->pluck('name')->first();
         });
 

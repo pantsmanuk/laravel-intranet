@@ -13,7 +13,7 @@ class CreateFobsTable extends Migration
      */
     public function up()
     {
-        Schema::create('fobs', function (Blueprint $table) {
+        Schema::create('realaccess_fob_lookup', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('FobID')->comment('realaccess.empdetails.empref');
             $table->integer('UserID')->comment('realaccess.empdetails.empref');
@@ -32,6 +32,6 @@ class CreateFobsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fobs');
+        Schema::dropIfExists('realaccess_fob_lookup');
     }
 }

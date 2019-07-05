@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Absence;
+use App\Holiday;
 use App\Staff;
 use App\Telephone;
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Date;
 
 class HomeController extends Controller
 {
@@ -27,7 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $dtLocal = new CarbonImmutable( 'now', 'Europe/London' );
+        $dtLocal = Date::now('Europe/London');
 
         $staff = Staff::select('staff_id', 'name', 'default_workstate')
             ->whereDate('deleted_at', '>=', $dtLocal->toDateTimeString())
@@ -35,7 +34,7 @@ class HomeController extends Controller
             ->orderByRaw('firstname')
             ->get();
         $staff->map(function ($employee) {
-            $dt = new Carbon( 'now', 'Europe/London' );
+            $dt = Date::now('Europe/London');
             $workstate_arr = array(1=>"On-site",
                 2=>"Remote working",
                 3=>"Not working");
@@ -50,7 +49,7 @@ class HomeController extends Controller
                 ->where('telephone.name', '!=', 'Extn')
                 ->orderBy('telephone.name')
                 ->get();
-            $absence = Absence::select('absence_lookup.name AS workstate')
+            $absence = Holiday::select('absence_lookup.name AS workstate')
                 ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
                 ->where('staff_id',$employee->staff_id)
                 ->where('start','<=',$dt->toDateTimeString())

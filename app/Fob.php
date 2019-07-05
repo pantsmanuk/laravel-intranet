@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Fob extends Model
+class Fob extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $connection = 'mysql';
     protected $dates = [
         'date',

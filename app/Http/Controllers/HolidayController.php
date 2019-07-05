@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\ConfigDB;
-use App\Absence;
+use App\Holiday;
+use App\Config;
 use App\Mail\Action;
 use App\Mail\Approval;
 use App\Staff;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Mail;
  * Class HolidayController
  *
  * @package App\Http\Controllers
- * @todo "Nonce model" as part of the approval workflow?
- * @todo Might not need Approval/Approve/Deny handling?
  */
 class HolidayController extends Controller
 {
@@ -30,9 +28,9 @@ class HolidayController extends Controller
     public function index()
     {
 		// Get year start and end from config database
-		$dtYearStart = new Carbon(ConfigDB::select('value')->where('name','holidays_start')->get()
-			->pluck('value')->implode(''), 'Europe/London');
-		$dtYearEnd = new Carbon(ConfigDB::select('value')->where('name','holidays_end')->get()
+        $dtYearStart = Date::parse(Config::select('value')->where('name','holidays_start')->get()
+            ->pluck('value')->implode(''), 'Europe/London');
+		$dtYearEnd = Date::parse(Config::select('value')->where('name','holidays_end')->get()
 			->pluck('value')->implode(''), 'Europe/London');
 		$sYear = $dtYearStart->format('Y') . '-' . $dtYearEnd->format('Y');
 
@@ -41,7 +39,7 @@ class HolidayController extends Controller
 		$t_staffId = (int) $staff->pluck('staff_id')->implode('');
 		$iEntitlement = (int) $staff->pluck('holiday_entitlement')->implode('');
 
-		$allHolidays = Absence::where('staff_id', $t_staffId)->where('deleted','0')
+		$allHolidays = Holiday::where('staff_id', $t_staffId)->where('deleted','0')
 			->whereBetween('start',[$dtYearStart->toDateString(), $dtYearEnd->toDateString()])->orderBy('start')->get();
 
 		// Map() paid days used until we have the DB populated
@@ -58,16 +56,16 @@ class HolidayController extends Controller
 						$holiday['days_paid'] = 1;
 						break;
 					case 'Multiple Days':
-						$dt = new Carbon($holiday['start'], 'Europe/London');
-						$holiday['days_paid'] = $dt->diffInWeekdays(new Carbon($holiday['end'], 'Europe/London'));
+						$dt = Date::parse($holiday['start'], 'Europe/London');
+						$holiday['days_paid'] = $dt->diffInWeekdays(Date::parse($holiday['end'], 'Europe/London'));
 						break;
 				}
 			}
 			if (is_null($holiday['days_unpaid'])) {
 				$holiday['days_unpaid']=0;
 			}
-			$dt = new Carbon('now','Europe/London');
-			($dt->diffInSeconds(new Carbon($holiday['start'], 'Europe/London'), false) <=0)
+			$dt = Date::now('Europe/London');
+			($dt->diffInSeconds(Date::parse($holiday['start'], 'Europe/London'), false) <=0)
 				? $holiday['enableTools'] = false : $holiday['enableTools'] = true;
 			return $holiday;
 		});
@@ -135,8 +133,8 @@ class HolidayController extends Controller
 					break;
 			}
 		}
-		$holidayRequest['start'] = Carbon::createFromFormat('d/m/Y H:i:s', $validatedData['start'], 'Europe/London')->format('Y-m-d H:i:s');
-		$holidayRequest['end'] = Carbon::createFromFormat('d/m/Y H:i:s', $validatedData['end'], 'Europe/London')->format('Y-m-d H:i:s');
+		$holidayRequest['start'] = Date::createFromFormat('d/m/Y H:i:s', $validatedData['start'], 'Europe/London')->format('Y-m-d H:i:s');
+		$holidayRequest['end'] = Date::createFromFormat('d/m/Y H:i:s', $validatedData['end'], 'Europe/London')->format('Y-m-d H:i:s');
 
 		// startType and endType to enum values
 		if($validatedData['start']===$validatedData['end']) {
@@ -164,8 +162,8 @@ class HolidayController extends Controller
 			}
 		} else {
 			$holidayRequest['holiday_type'] = "Multiple Days";
-			$dt = new Carbon($holidayRequest['start'], 'Europe/London');
-			$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
+			$dt = Date::parse($holidayRequest['start'], 'Europe/London');
+			$holidayRequest['days_paid'] = $dt->diffInWeekdays(Date::parse($holidayRequest['end'], 'Europe/London'));
 			$t_Dates = $holidayRequest['start'].' to '.$holidayRequest['end'];
 		}
 
@@ -197,7 +195,7 @@ class HolidayController extends Controller
 		// created_at, updated_at, deleted_at are "Laravel protected"
 
 		// Throw the request at the DB table, see what sticks
-    	$holiday = Absence::create($holidayRequest);
+    	$holiday = Holiday::create($holidayRequest);
 
 		// Send approval email
 		$t_Start = substr($holiday->start,0,10);
@@ -247,13 +245,13 @@ class HolidayController extends Controller
      */
     public function edit($id)
     {
-        $holiday = Absence::findOrFail($id);
+        $holiday = Holiday::findOrFail($id);
 
 		// start, startType, end and endType
 		$tStart = substr($holiday['start'],-8);
 		$tEnd = substr($holiday['end'],-8);
-		$request['start'] = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y');
-		$request['end'] = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y');
+		$request['start'] = Date::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y');
+		$request['end'] = Date::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y');
 		switch($holiday['holiday_type']) {
 			case 'Half Day (AM)':
 				$request['startType']=1;
@@ -336,8 +334,8 @@ class HolidayController extends Controller
 					break;
 			}
 		}
-		$holidayRequest['start'] = Carbon::createFromFormat('d/m/Y H:i:s', $validatedData['start'], 'Europe/London')->format('Y-m-d H:i:s');
-		$holidayRequest['end'] = Carbon::createFromFormat('d/m/Y H:i:s', $validatedData['end'], 'Europe/London')->format('Y-m-d H:i:s');
+		$holidayRequest['start'] = Date::createFromFormat('d/m/Y H:i:s', $validatedData['start'], 'Europe/London')->format('Y-m-d H:i:s');
+		$holidayRequest['end'] = Date::createFromFormat('d/m/Y H:i:s', $validatedData['end'], 'Europe/London')->format('Y-m-d H:i:s');
 
 		// startType and endType to enum values
 		if($validatedData['start']===$validatedData['end']) {
@@ -365,8 +363,8 @@ class HolidayController extends Controller
 			}
 		} else {
 			$holidayRequest['holiday_type'] = "Multiple Days";
-			$dt = new Carbon($holidayRequest['start'], 'Europe/London');
-			$holidayRequest['days_paid'] = $dt->diffInWeekdays(new Carbon($holidayRequest['end'], 'Europe/London'));
+			$dt = Date::parse($holidayRequest['start'], 'Europe/London');
+			$holidayRequest['days_paid'] = $dt->diffInWeekdays(Date::parse($holidayRequest['end'], 'Europe/London'));
 			$t_Dates = $holidayRequest['start'].' to '.$holidayRequest['end'];
 		}
 
@@ -399,7 +397,7 @@ class HolidayController extends Controller
 		//dd($holidayRequest);
 
 		// Throw the request at the DB table, see what sticks
-		Absence::where('holiday_id',$id)->update($holidayRequest);
+		Holiday::where('holiday_id',$id)->update($holidayRequest);
 
 		// Send approval email
 		$t_Start = substr($holidayRequest['start'],0,10);
@@ -438,13 +436,13 @@ class HolidayController extends Controller
      */
     public function destroy($id)
     {
-        $holiday = Absence::findOrFail($id);
+        $holiday = Holiday::findOrFail($id);
         $holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
         $holiday->delete();
 
 		// Send cancelled email
-		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
-		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_Start = Date::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_End = Date::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
 		switch ($holiday['holiday_type']) {
 			case 'Half Day (AM)':
 			case 'Half Day (PM)':
@@ -477,12 +475,12 @@ class HolidayController extends Controller
 	 */
 	public function approve($id)
 	{
-		$holiday = Absence::findOrFail($id);
+		$holiday = Holiday::findOrFail($id);
 		$holiday->where('holiday_id',$id)->update(['approved'=>1]);
 
 		// Send approved email
-		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
-		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_Start = Date::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_End = Date::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
 		switch ($holiday['holiday_type']) {
 			case 'Half Day (AM)':
 			case 'Half Day (PM)':
@@ -518,13 +516,12 @@ class HolidayController extends Controller
 	{
 		// Like delete, but with an updated note??
 		// Needs to get and check `nonce` if we continue using it
-		$holiday = Absence::findOrFail($id);
+		$holiday = Holiday::findOrFail($id);
 		$holiday->where('holiday_id', $id)->update(['deleted'=>1]); // @KLUDGE: Until the CI intranet is retired
 		$holiday->delete();
 
-		// @TODO: approved email
-		$t_Start = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
-		$t_End = Carbon::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_Start = Date::createFromFormat('Y-m-d H:i:s', $holiday['start'], 'Europe/London')->format('d/m/Y H:i:s');
+		$t_End = Date::createFromFormat('Y-m-d H:i:s', $holiday['end'], 'Europe/London')->format('d/m/Y H:i:s');
 		switch ($holiday['holiday_type']) {
 			case 'Half Day (AM)':
 			case 'Half Day (PM)':

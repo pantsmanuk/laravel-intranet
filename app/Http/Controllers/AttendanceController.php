@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Attendance;
 use App\EmployeeDetails;
-use App\Absence;
+use App\Holiday;
 use App\Fob;
 use App\Staff;
 use Illuminate\Support\Facades\Date;
@@ -102,7 +102,7 @@ class AttendanceController extends Controller
                 3=>"Not working");
             $dt = Date::now()->timezone('Europe/London');
 
-            $absence = Absence::select('absence_lookup.name AS workstate', 'holidays.note')
+            $absence = Holiday::select('absence_lookup.name AS workstate', 'holidays.note')
                 ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
                 ->where('staff_id',$employee->staff_id)
                 ->where('start','<=',$dt->toDateTimeString())
