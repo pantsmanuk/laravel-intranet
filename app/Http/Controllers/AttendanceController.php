@@ -118,8 +118,6 @@ class AttendanceController extends Controller
             return $employee;
         });
 
-    	$events = Attendance::whereDate( 'doordate', $dtLocal->subWeekdays(1)->toDateString())->get();
-
 		return view('attendance', compact('dtLocal', 'employees', 'offSite', 'events'));
     }
 }
