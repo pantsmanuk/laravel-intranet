@@ -4,7 +4,8 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="table-responsive">
-                <h4>Telephone Directory</h4>
+                <h4 class="float-left">Telephone Directory</h4><h4 class="float-right">Switchboard: 020 8686 9887</h4>
+                <span class="float-none">&nbsp;</span>
                 <hr>
 
                 <table class="table table-bordered table-striped">
