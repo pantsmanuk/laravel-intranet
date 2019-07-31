@@ -19,8 +19,8 @@
                     <tbody>
                     @foreach ($staff as $value)
                         <tr>
-                            <td>{{$value->extn}}</td>
                             <td>{{$value->name}} <em>{{$value->workstate}}</em></td>
+                            <td>{{$value->extn}}</td>
                             <td>@foreach ($value->telephones as $telephone){{$telephone->name}}: {{$telephone->number}}<br/>@endforeach</td>
                         </tr>
                     @endforeach
