@@ -36,7 +36,9 @@ class AttendanceController extends Controller
             ->get();
 
         // "Inject" the spare fobs so they will show up
-        $active->push(['empref'=>12], ['empref'=>13], ['empref'=>14]);
+        $active->push(['empref'=>12]);
+        $active->push(['empref'=>13]);
+        $active->push(['empref'=>14]);
 
         $onSite = Attendance::select('empref')
             ->whereDate( 'doordate', $dtLocal->toDateString())
@@ -88,7 +90,7 @@ class AttendanceController extends Controller
             ->orWhereNull('deleted_at')
             ->orderByRaw('surname, firstname')
             ->get();
-        $here = $onSite->pluck('empref')->toArray();
+        $here = $onSite->pluck('empref')->toArray(); // @todo This *really* needs to account for assigned spare fobs
         $offSite = $offSite->filter(function($employee) use ($here) {
             if(!in_array($employee->empref, $here)) {
                 return $employee;
