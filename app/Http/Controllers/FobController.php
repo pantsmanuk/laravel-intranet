@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Fob;
-use App\Staff;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 
-class FobsController extends Controller
+class FobController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -52,15 +51,13 @@ class FobsController extends Controller
             ->toArray());
 
         // Get unassigned staff as collection
-        $staff = Staff::select('empref AS UserID', 'name')
-            ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
-            ->orWhereNull('deleted_at')
-            ->orderByRaw('firstname, surname')
-            ->get()
-            ->whereNotIn('empref', Fob::whereDate('created_at', Date::now('Europe/London')
-                ->toDateString())
+        $staff = User::select('id AS UserID', 'name')
+            ->whereNotIn('id', Fob::where('created_at', 'LIKE', Date::now('Europe/London')->toDateString()."%")
                 ->pluck('UserID')
-                ->toArray());
+                ->toArray())
+            ->whereRaw('(deleted_at >= "' . Date::now('Europe/London')->toDateTimeString() . '" OR deleted_at IS NULL)')
+            ->orderByRaw('name')
+            ->get();
 
         return view('fobs.create')->with(['fobs' => $fobs, 'staff' => $staff]);
     }
@@ -107,10 +104,10 @@ class FobsController extends Controller
             return (object) $fob;
         });
 
-        $staff = Staff::select('empref AS UserID', 'name')
+        $staff = User::select('id AS UserID', 'name')
             ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
             ->orWhereNull('deleted_at')
-            ->orderByRaw('firstname, surname')
+            ->orderByRaw('name')
             ->get();
 
         return view('fobs.edit')->with(['fob' => $fob, 'fobs' => $fobs, 'staff' => $staff]);

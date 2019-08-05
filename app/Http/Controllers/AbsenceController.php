@@ -76,7 +76,7 @@ class AbsenceController extends Controller
         } elseif ($request->approved == "on") {
             $validatedData['approved']=true;
         }
-        $absence = Absence::create($validatedData);
+        Absence::create($validatedData);
 
         return redirect('\absences')->with('success', 'Absence saved');
     }

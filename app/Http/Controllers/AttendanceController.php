@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Absence;
 use App\Attendance;
 use App\EmployeeDetails;
-use App\Holiday;
 use App\Fob;
-use App\Staff;
+use App\Workstate;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Date;
 
 class AttendanceController extends Controller
@@ -30,15 +31,15 @@ class AttendanceController extends Controller
     {
         $dtLocal = Date::now()->timezone('Europe/London');
 
-        $active = Staff::select('empref')
+        $active = User::select('id')
             ->whereDate('deleted_at','>=',$dtLocal->toDateTimeString())
             ->orWhereNull('deleted_at')
             ->get();
 
         // "Inject" the spare fobs so they will show up
-        $active->push(['empref'=>12]);
-        $active->push(['empref'=>13]);
-        $active->push(['empref'=>14]);
+        $active->push(['id'=>12]);
+        $active->push(['id'=>13]);
+        $active->push(['id'=>14]);
 
         $onSite = Attendance::select('empref')
             ->whereDate( 'doordate', $dtLocal->toDateString())
@@ -59,15 +60,16 @@ class AttendanceController extends Controller
         $orderByRaw .= " END";
         // END UGLY KLUDGE
 
+        // @Todo Deprecate EmployeeDetails, we are storing all this in Users now...
         $employees = EmployeeDetails::whereIn('empref', $onSite)->orderByRaw($orderByRaw)->get();
-		$employees->map(function ($employee) use ($active) {
+		$employees->map(function ($employee) {
 			$dt = Date::now()->timezone('Europe/London');
             $employee['spare_name'] = '';
             switch ($employee['empref']) {
                 case 12:
                 case 13:
                 case 14:
-                    $name = Staff::where('empref', Fob::where('FobID',$employee['empref'])
+                    $name = User::where('id', Fob::where('FobID',$employee['empref'])
                         ->whereDate('created_at', Date::now('Europe/London')->toDateString())
                         ->pluck('UserID')
                         ->first())
@@ -85,35 +87,35 @@ class AttendanceController extends Controller
 			return $employee;
 		});
 
-        $offSite = Staff::select('staff_id', 'name', 'empref', 'default_workstate')
-            ->whereDate('deleted_at','>=',$dtLocal->toDateTimeString())
-            ->orWhereNull('deleted_at')
-            ->orderByRaw('surname, firstname')
+        $offSite = User::select('users.id', 'users.name', 'employees.default_workstate_id')
+            ->join('employees', 'users.id', '=', 'employees.id')
+            ->whereDate('users.deleted_at','>=',$dtLocal->toDateTimeString())
+            ->orWhereNull('users.deleted_at')
+            ->orderBy('users.name')
             ->get();
         $here = $onSite->pluck('empref')->toArray(); // @todo This *really* needs to account for assigned spare fobs
         $offSite = $offSite->filter(function($employee) use ($here) {
-            if(!in_array($employee->empref, $here)) {
+            if(!in_array($employee->id, $here)) {
                 return $employee;
             }
         });
         $offSite->map(function ($employee) {
-            $workstate_arr = array(1=>"On-site",
-                2=>"Remote working",
-                3=>"Not working");
             $dt = Date::now()->timezone('Europe/London');
 
-            $absence = Holiday::select('absence_lookup.name AS workstate', 'holidays.note')
-                ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
-                ->where('staff_id',$employee->staff_id)
-                ->where('start','<=',$dt->toDateTimeString())
-                ->where('end','>=',$dt->toDateTimeString())
+            $absence = Absence::select('absence_lookup.name AS workstate', 'absences.note')
+                ->join('absence_lookup','absences.absence_id','=','absence_lookup.id')
+                ->where('absences.user_id',$employee->id)
+                ->where('absences.start_at','<=',$dt->toDateTimeString())
+                ->where('absences.end_at','>=',$dt->toDateTimeString())
                 ->first();
 
             if(!is_null($absence)) {
                 $employee['doorevent'] = $absence->workstate;
                 $employee['note'] = $absence->note;
             } else {
-                $employee['doorevent'] = $workstate_arr[$employee->default_workstate];
+                $employee['doorevent'] = Workstate::where('id', $employee->default_workstate_id)
+                    ->pluck('workstate')
+                    ->first();
                 $employee['note'] = "";
             }
 

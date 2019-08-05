@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Workstate;
 use Illuminate\Http\Request;
 
 class WorkstateController extends Controller
@@ -13,7 +14,9 @@ class WorkstateController extends Controller
      */
     public function index()
     {
-        //
+        $work_states = Workstate::all();
+
+        return view('workstates.index')->with(['workstates' => $work_states]);
     }
 
     /**
@@ -23,7 +26,7 @@ class WorkstateController extends Controller
      */
     public function create()
     {
-        //
+        return view('workstates.create');
     }
 
     /**
@@ -34,7 +37,12 @@ class WorkstateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'workstate' => 'required',
+        ]);
+        Workstate::create($validatedData);
+
+        return redirect('/workstates')->with('success', 'Work state saved');
     }
 
     /**
@@ -56,7 +64,9 @@ class WorkstateController extends Controller
      */
     public function edit($id)
     {
-        //
+        $workstate = Workstate::findOrFail($id);
+
+        return view('workstates.edit')->with(['workstate' => $workstate]);
     }
 
     /**
@@ -68,7 +78,12 @@ class WorkstateController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'workstate' => 'required',
+        ]);
+        Workstate::whereId($id)->update($validatedData);
+
+        return redirect('/workstates')->with('success', 'Work state updated');
     }
 
     /**
@@ -79,6 +94,9 @@ class WorkstateController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $work_state = Workstate::findOrFail($id);
+        $work_state->delete();
+
+        return redirect('/workstates')->with('success', 'Work state deleted');
     }
 }

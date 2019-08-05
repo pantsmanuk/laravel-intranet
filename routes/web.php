@@ -27,8 +27,10 @@ Route::get('/audit', 'AuditController@index')->name('audit');
 
 Route::resource('absencetypes', 'AbsenceLookupController');
 Route::resource('absences', 'AbsenceController');
-Route::resource('fobs', 'FobsController');
+Route::resource('config', 'ConfigController');
+Route::resource('fobs', 'FobController');
 Route::resource('holidays', 'HolidayController');
 Route::get('holidays/{holiday}/approve', 'HolidayController@approve')->name('holidays.approve');
 Route::get('holidays/{holiday}/deny', 'HolidayController@deny')->name('holidays.deny');
+Route::resource('telephones', 'TelephoneController');
 Route::resource('workstates', 'WorkstateController');

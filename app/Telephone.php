@@ -11,4 +11,8 @@ class Telephone extends Model implements Auditable
 
     protected $connection = 'mysql';
     protected $table = 'telephone';
+    protected $fillable =[
+        'name',
+        'number'
+    ];
 }

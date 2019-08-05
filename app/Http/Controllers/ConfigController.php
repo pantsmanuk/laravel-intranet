@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\AbsenceLookup;
+use App\Config;
 use Illuminate\Http\Request;
 
-class AbsenceLookupController extends Controller
+class ConfigController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,9 @@ class AbsenceLookupController extends Controller
      */
     public function index()
     {
-        $absenceLookup = AbsenceLookup::all();
+        $configs = Config::all();
 
-        return view('absencetypes.index')->with(['abstypes' => $absenceLookup]);
+        return view('config.index')->with(['configs' => $configs]);
     }
 
     /**
@@ -26,7 +26,7 @@ class AbsenceLookupController extends Controller
      */
     public function create()
     {
-        return view('absencetypes.create');
+        return view('config.create');
     }
 
     /**
@@ -39,10 +39,11 @@ class AbsenceLookupController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required',
+            'value' => 'required',
         ]);
-        AbsenceLookup::create($validatedData);
+        Config::create($validatedData);
 
-        return redirect('/absencetypes')->with('success', 'Absence type saved');
+        return redirect('/config')->with('success', 'Configuration key/value pair saved');
     }
 
     /**
@@ -64,8 +65,9 @@ class AbsenceLookupController extends Controller
      */
     public function edit($id)
     {
-        $absenceLookup = AbsenceLookup::findOrFail($id);
-        return view('absencetypes.edit')->with(['absenceLookup' => $absenceLookup]);
+        $config = Config::findOrFail($id);
+
+        return view('config.edit')->with(['config' => $config]);
     }
 
     /**
@@ -79,24 +81,24 @@ class AbsenceLookupController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required',
+            'value' => 'required',
         ]);
-        AbsenceLookup::whereId($id)->update($validatedData);
+        Config::whereId($id)->update($validatedData);
 
-        return redirect('/absencetypes')->with('success', 'Absence type updated');
+        return redirect('/config')->with('success', 'Configuration key/value pair updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
-     * @throws
      */
     public function destroy($id)
     {
-        $absenceLookup = AbsenceLookup::findOrFail($id);
-        $absenceLookup->delete();
+        $config = Config::findOrFail($id);
+        $config->delete();
 
-        return redirect('/absencetypes')->with('success', 'Absence type deleted');
+        return redirect('/workstates')->with('success', 'Configuration key/value pair deleted');
     }
 }

@@ -9,4 +9,8 @@ class Config extends Model
 {
 	protected $connection = 'mysql';
 	protected $table = 'config';
+	protected $fillable = [
+	    'name',
+        'value',
+    ];
 }

@@ -5,13 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Workstate extends Model implements Auditable
+class UserTelephoneLookup extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
     protected $connection = 'mysql';
+    protected $table = 'users_telephones_lookup';
     protected $fillable = [
-        'workstate',
+        'user_id',
+        'telephone_id',
     ];
-
 }

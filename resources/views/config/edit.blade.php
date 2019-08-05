@@ -5,7 +5,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Work States
+                    Configuration
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -17,13 +17,18 @@
                             </ul>
                         </div><br />
                     @endif
-                    <form method="post" action="{{route('workstates.store')}}">
+                    <form method="post" action="{{route('config.update', $config->id)}}">
                         <div class="form-group">
                             @csrf
-                            <label for="workstate">Work state:</label>
-                            <input class="form-control" aria-label="Work state name" placeholder="Work state name" id="workstate" name="workstate" type="text" />
+                            @method('PATCH')
+                            <label for="name">Key:</label>
+                            <input class="form-control" aria-label="Configuration key name" id="name" name="name" type="text" value="{{$config->name}}" />
                         </div>
-                        <button type="submit" class="btn btn-primary">Create work state</button>
+                        <div class="form-group">
+                            <label for="value">Value:</label>
+                            <input class="form-control" aria-label="Configuration value" id="value" name="value" type="text" value="{{$config->value}}" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update configuration key/value pair</button>
                         <button type="reset" class="btn btn-secondary">Reset form</button>
                     </form>
                 </div>

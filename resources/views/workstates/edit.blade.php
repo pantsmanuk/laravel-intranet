@@ -5,7 +5,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Absence Types
+                    Work States
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -17,14 +17,14 @@
                             </ul>
                         </div><br />
                     @endif
-                    <form method="post" action="{{route('absencetypes.update', $absenceLookup->id)}}">
+                    <form method="post" action="{{route('workstates.update', $workstate->id)}}">
                         <div class="form-group">
                             @csrf
                             @method('PATCH')
-                            <label for="name">Name:</label>
-                            <input class="form-control" aria-label="Absence type name" id="name" name="name" type="text" value="{{$absenceLookup->name}}" />
+                            <label for="workstate">Work state:</label>
+                            <input class="form-control" aria-label="Work state name" id="workstate" name="workstate" type="text" value="{{$workstate->workstate}}" />
                         </div>
-                        <button type="submit" class="btn btn-primary">Update absence type</button>
+                        <button type="submit" class="btn btn-primary">Update work state</button>
                         <button type="reset" class="btn btn-secondary">Reset form</button>
                     </form>
                 </div>

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Holiday;
-use App\Staff;
+use App\Absence;
 use App\Telephone;
+use App\Workstate;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Date;
 
 class HomeController extends Controller
@@ -28,37 +29,37 @@ class HomeController extends Controller
     {
         $dtLocal = Date::now('Europe/London');
 
-        $staff = Staff::select('staff_id', 'name', 'default_workstate')
-            ->whereDate('deleted_at', '>=', $dtLocal->toDateTimeString())
-            ->orWhereNull('deleted_at')
-            ->orderByRaw('firstname')
+        $staff = User::select('users.id', 'users.name', 'employees.default_workstate_id')
+            ->join('employees', 'users.id', '=', 'employees.id')
+            ->whereDate('users.deleted_at', '>=', $dtLocal->toDateTimeString())
+            ->orWhereNull('users.deleted_at')
+            ->orderByRaw('users.name')
             ->get();
         $staff->map(function ($employee) {
             $dt = Date::now('Europe/London');
-            $workstate_arr = array(1=>"On-site",
-                2=>"Remote working",
-                3=>"Not working");
 
-            $employee['extn'] = Telephone::join('staff_telephone_rel', 'telephone.id', '=', 'staff_telephone_rel.telephone_id')
-                ->where('staff_telephone_rel.staff_id', $employee->staff_id)
+            $employee['extn'] = Telephone::join('users_telephones_lookup', 'telephone.id', '=', 'users_telephones_lookup.telephone_id')
+                ->where('users_telephones_lookup.user_id', $employee->id)
                 ->pluck('telephone.number')
                 ->first();
             $employee['telephones'] = Telephone::select('telephone.name','telephone.number')
-                ->join('staff_telephone_rel', 'telephone.id', '=', 'staff_telephone_rel.telephone_id')
-                ->where('staff_telephone_rel.staff_id', $employee->staff_id)
+                ->join('users_telephones_lookup', 'telephone.id', '=', 'users_telephones_lookup.telephone_id')
+                ->where('users_telephones_lookup.user_id', $employee->id)
                 ->where('telephone.name', '!=', 'Extn')
                 ->orderBy('telephone.name')
                 ->get();
-            $absence = Holiday::select('absence_lookup.name AS workstate')
-                ->join('absence_lookup','holidays.absence_id','=','absence_lookup.id')
-                ->where('staff_id',$employee->staff_id)
-                ->where('start','<=',$dt->toDateTimeString())
-                ->where('end','>=',$dt->toDateTimeString())
+            $absence = Absence::select('absence_lookup.name AS workstate')
+                ->join('absence_lookup','absences.absence_id','=','absence_lookup.id')
+                ->where('absences.user_id',$employee->id)
+                ->where('absences.start_at','<=',$dt->toDateTimeString())
+                ->where('absences.end_at','>=',$dt->toDateTimeString())
                 ->first();
             if(!is_null($absence)) {
                 $employee['workstate'] = $absence->workstate;
             } else {
-                $employee['workstate'] = $workstate_arr[$employee->default_workstate];
+                $employee['workstate'] = Workstate::where('id', $employee->default_workstate_id)
+                    ->pluck('workstate')
+                    ->first();
             }
             return $employee;
         });

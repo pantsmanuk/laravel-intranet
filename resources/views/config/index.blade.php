@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="table-responsive">
-                <h4>Work States</h4>
+                <h4>Configuration</h4>
                 <hr>
                 @if(session()->get('success'))
                     <div class="alert alert-success">
@@ -16,22 +16,24 @@
                     <tr class="table-info">
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Value</th>
                         <th colspan="2">Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php $t_count=0; ?>
-                    @foreach ($workstates as $value)
+                    @foreach ($configs as $value)
                         <?php $t_count=$loop->count;?>
                         <tr>
                             <td>{{$value->id}}</td>
-                            <td>{{$value->workstate}}</td>
-                            <td><a href="{{route('workstates.edit', $value->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit fob assignment"><span class="fas fa-pencil-alt"></span></a></td>
+                            <td>{{$value->name}}</td>
+                            <td>{{$value->value}}</td>
+                            <td><a href="{{route('config.edit', $value->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit configuration pair"><span class="fas fa-pencil-alt"></span></a></td>
                             <td>
-                                <form action="{{ route('workstates.destroy', $value->id) }}" method="post">
+                                <form action="{{ route('config.destroy', $value->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete fob assignment"><span class="fas fa-trash-alt"></span></button>
+                                    <button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete configuration pair"><span class="fas fa-trash-alt"></span></button>
                                 </form>
                             </td>
                         </tr>
@@ -44,7 +46,7 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <a href="{{ route('workstates.create') }}" class="btn btn-info">New work state</a>
+            <a href="{{ route('config.create') }}" class="btn btn-info">New configuration key/value pair</a>
         </div>
     </div>
 @endsection
