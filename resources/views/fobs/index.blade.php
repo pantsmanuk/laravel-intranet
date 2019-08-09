@@ -45,5 +45,8 @@
                 </table>
             </div>
         </div>
+        <div class="row justify-content-center">
+            <a href="{{ route('fobs.create') }}" class="btn btn-info">New fob assignment</a>
+        </div>
     </div>
 @endsection

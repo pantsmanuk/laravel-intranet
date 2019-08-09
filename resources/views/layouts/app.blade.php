@@ -52,8 +52,22 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                     @auth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('attendance') }}">Attendance</a>
+                        <li class="nav-item dropdown">
+                            <a id="adminNavbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                Admin <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="adminNavbarDropdown">
+                                <a class="dropdown-item" href="{{ route('attendance') }}">Attendance</a>
+                                <a class="dropdown-item" href="{{ route('audit') }}">Audit</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ route('absences.index') }}">Absences</a>
+                                <a class="dropdown-item" href="{{ route('absencetypes.index') }}">Absence Types</a>
+                                <a class="dropdown-item" href="{{ route('config.index') }}">Configuration</a>
+                                <a class="dropdown-item" href="{{ route('fobs.index') }}">Spare Fobs</a>
+                                <a class="dropdown-item" href="{{ route('staff.index') }}">Staff</a>
+                                <a class="dropdown-item" href="{{ route('telephones.index') }}">Telephones</a>
+                                <a class="dropdown-item" href="{{ route('workstates.index') }}">Work States</a>
+                            </div>
                         </li>
                     @endauth
                     </ul>
@@ -77,8 +91,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('holidays.index') }}">Holidays</a>
-                                    <a class="dropdown-item" href="{{ route('fobs.index') }}">Spare Fobs</a>
+                                    <a class="dropdown-item" href="{{ route('holidays.index') }}">Book Holiday</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

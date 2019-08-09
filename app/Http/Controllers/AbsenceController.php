@@ -24,9 +24,8 @@ class AbsenceController extends Controller
             ->pluck('value')->implode(''), 'Europe/London');
         $sYear = $dtYearStart->format('Y') . '-' . $dtYearEnd->format('Y');
 
-        $absences = Absence::select('absences.id', 'users.name AS user_name', 'absences.start_at', 'absences.end_at',
-        'absence_lookup.name AS absence_type', 'absences.note', 'absences.days_paid', 'absences.days_unpaid',
-        'absences.approved')
+        $absences = Absence::select('absences.id', 'users.name AS user_name', 'start_at', 'end_at', 'absence_id',
+            'absence_lookup.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
             ->join('users', 'absences.user_id', '=', 'users.id')
             ->join('absence_lookup', 'absences.absence_id', '=', 'absence_lookup.id')
             ->whereDate('start_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))

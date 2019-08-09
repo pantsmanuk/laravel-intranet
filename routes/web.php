@@ -25,12 +25,13 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/attendance', 'AttendanceController@index')->name('attendance');
 Route::get('/audit', 'AuditController@index')->name('audit');
 
-Route::resource('absencetypes', 'AbsenceLookupController');
 Route::resource('absences', 'AbsenceController');
+Route::resource('absencetypes', 'AbsenceLookupController');
 Route::resource('config', 'ConfigController');
 Route::resource('fobs', 'FobController');
 Route::resource('holidays', 'HolidayController');
-Route::get('holidays/{holiday}/approve', 'HolidayController@approve')->name('holidays.approve');
-Route::get('holidays/{holiday}/deny', 'HolidayController@deny')->name('holidays.deny');
+Route::get('holidays/{secret}/approve', 'HolidayController@approve')->name('holidays.approve');
+Route::get('holidays/{secret}/deny', 'HolidayController@deny')->name('holidays.deny');
+Route::resource('staff', 'EmployeeController');
 Route::resource('telephones', 'TelephoneController');
 Route::resource('workstates', 'WorkstateController');

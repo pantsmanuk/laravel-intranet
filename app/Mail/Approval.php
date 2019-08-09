@@ -2,10 +2,13 @@
 
 namespace App\Mail;
 
+use App\Config;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Approval extends Mailable
 {
@@ -13,11 +16,11 @@ class Approval extends Mailable
 
     public $holiday_dates;
 	public $holiday_id;
-	public $holiday_nonce;
     public $holiday_note;
 	public $holiday_overlaps;
     public $holiday_type;
     public $user_name;
+    public $uuid;
 
     /**
      * Create a new message instance.
@@ -29,11 +32,11 @@ class Approval extends Mailable
     {
     	$this->holiday_dates = $request['holiday_dates'];
 		$this->holiday_id = $request['holiday_id'];
-		$this->holiday_nonce = $request['holiday_note'];
 		$this->holiday_note = $request['holiday_note'];
 		$this->holiday_overlaps = $request['holiday_overlaps'];
 		$this->holiday_type = $request['holiday_type'];
 		$this->user_name = $request['user_name'];
+		$this->uuid = (string) Str::orderedUuid();
     }
 
     /**
@@ -43,7 +46,8 @@ class Approval extends Mailable
      */
     public function build()
     {
-        return $this->from('donotreply@ggpsystems.co.uk','Holiday Booking Page')
+        DB::insert("INSERT INTO uuid (id_bin, id) VALUES (UNHEX(REPLACE(?,'-','')), ?)", [$this->uuid, $this->holiday_id]);
+        return $this->from(Config::where('name', '=' ,'email_sender')->pluck('value')->first(),'Holiday Booking Page')
 			->subject($this->holiday_type.' holiday request for '.$this->user_name.' on '.$this->holiday_dates)
 			->view('emails.approval');
     }

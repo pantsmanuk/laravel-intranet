@@ -122,6 +122,6 @@ class AttendanceController extends Controller
             return $employee;
         });
 
-		return view('attendance', compact('dtLocal', 'employees', 'offSite', 'events'));
+		return view('attendance.index', compact('dtLocal', 'employees', 'offSite', 'events'));
     }
 }

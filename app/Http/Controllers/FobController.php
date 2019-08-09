@@ -22,7 +22,7 @@ class FobController extends Controller
             14 => '#3'
         );
 
-        $fobs = Fob::whereNull('deleted_at')->get();
+        $fobs = Fob::whereNull('deleted_at')->orderBy('created_at', 'DESC')->get();
         $fobs->map(function ($fob) use ($fob_names){
             $fob['fob_name'] = $fob_names[$fob['FobID']];
             $fob['staff_name'] = User::where('id', $fob['UserID'])
@@ -73,7 +73,7 @@ class FobController extends Controller
         $validatedData = $request->toArray();
         $validatedData['MachineID'] = "(".$request->ip().")".auth()->user()->name;
         $validatedData['date'] = Date::now('Europe/London');
-        $fob = Fob::create($validatedData);
+        Fob::create($validatedData);
 
         return redirect('/fobs')->with('success', 'Fob assignment saved');
     }
