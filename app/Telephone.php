@@ -9,8 +9,6 @@ class Telephone extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $connection = 'mysql';
-    protected $table = 'telephone';
     protected $fillable =[
         'name',
         'number'

@@ -9,7 +9,6 @@ class UserTelephoneLookup extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $connection = 'mysql';
     protected $table = 'users_telephones_lookup';
     protected $fillable = [
         'user_id',

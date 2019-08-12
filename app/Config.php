@@ -3,11 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Config extends Model
+class Config extends Model implements Auditable
 {
-	protected $connection = 'mysql';
+    use \OwenIt\Auditing\Auditable;
+
 	protected $table = 'config';
 	protected $fillable = [
 	    'name',

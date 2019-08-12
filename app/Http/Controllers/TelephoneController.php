@@ -21,7 +21,7 @@ class TelephoneController extends Controller
         // UserTelephoneLookup in the first instance?
         $telephones = UserTelephoneLookup::select('users_telephones_lookup.id AS lookup_id', 'user_id', 'telephone_id',
             'u.name AS user_name', 't.name', 't.number')
-            ->join('telephone AS t', 'users_telephones_lookup.telephone_id', '=', 't.id')
+            ->join('telephones AS t', 'users_telephones_lookup.telephone_id', '=', 't.id')
             ->join('users AS u', 'users_telephones_lookup.user_id', '=', 'u.id')
             ->orderByRaw('u.name, t.id ASC')
             ->get();

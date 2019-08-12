@@ -4,6 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/***
+ * Class EmployeeDetails
+ * @package App
+ *
+ * Is this used?
+ */
 class EmployeeDetails extends Model
 {
 	protected $connection = 'sqlsrv2';

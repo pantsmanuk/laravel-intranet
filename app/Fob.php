@@ -9,10 +9,8 @@ class Fob extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $connection = 'mysql';
     protected $dates = [
         'date',
-        'deleted_at'
     ];
     protected $table = 'realaccess_fob_lookup';
     protected $fillable = [
@@ -20,6 +18,5 @@ class Fob extends Model implements Auditable
         'UserID',
         'date',
         'MachineID',
-        'deleted_at',
     ];
 }

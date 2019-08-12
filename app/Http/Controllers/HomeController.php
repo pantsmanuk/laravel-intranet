@@ -38,15 +38,15 @@ class HomeController extends Controller
         $staff->map(function ($employee) {
             $dt = Date::now('Europe/London');
 
-            $employee['extn'] = Telephone::join('users_telephones_lookup', 'telephone.id', '=', 'users_telephones_lookup.telephone_id')
+            $employee['extn'] = Telephone::join('users_telephones_lookup', 'telephones.id', '=', 'users_telephones_lookup.telephone_id')
                 ->where('users_telephones_lookup.user_id', $employee->id)
-                ->pluck('telephone.number')
+                ->pluck('telephones.number')
                 ->first();
-            $employee['telephones'] = Telephone::select('telephone.name','telephone.number')
-                ->join('users_telephones_lookup', 'telephone.id', '=', 'users_telephones_lookup.telephone_id')
+            $employee['telephones'] = Telephone::select('telephones.name','telephones.number')
+                ->join('users_telephones_lookup', 'telephones.id', '=', 'users_telephones_lookup.telephone_id')
                 ->where('users_telephones_lookup.user_id', $employee->id)
-                ->where('telephone.name', '!=', 'Extn')
-                ->orderBy('telephone.name')
+                ->where('telephones.name', '!=', 'Extn')
+                ->orderBy('telephones.name')
                 ->get();
             $absence = Absence::select('absence_lookup.name AS workstate')
                 ->join('absence_lookup','absences.absence_id','=','absence_lookup.id')

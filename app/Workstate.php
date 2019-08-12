@@ -9,7 +9,6 @@ class Workstate extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $connection = 'mysql';
     protected $fillable = [
         'workstate',
     ];
