@@ -54,7 +54,7 @@ class FobController extends Controller
 
         // Get unassigned staff as collection
         $staff = User::select('id AS UserID', 'name')
-            ->whereNotIn('id', Fob::where('created_at', 'LIKE', Date::now('Europe/London')->toDateString()."%")
+            ->whereNotIn('id', Fob::where('created_at', 'LIKE', Date::now('Europe/London')->toDateString().'%')
                 ->pluck('UserID')
                 ->toArray())
             ->whereRaw('(deleted_at >= "'.Date::now('Europe/London')->toDateTimeString().'" OR deleted_at IS NULL)')

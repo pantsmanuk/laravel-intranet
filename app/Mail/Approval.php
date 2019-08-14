@@ -46,8 +46,12 @@ class Approval extends Mailable
      */
     public function build()
     {
-        DB::insert("INSERT INTO uuid (id_bin, id) VALUES (UNHEX(REPLACE(?,'-','')), ?)", [$this->uuid, $this->holiday_id]);
-        return $this->from(Config::where('name', '=', 'email_sender')->pluck('value')->first(), 'Holiday Booking Page')
+        DB::insert("INSERT INTO uuid (id_bin, id) VALUES (UNHEX(REPLACE(?,'-','')), ?)",
+            [$this->uuid, $this->holiday_id]);
+
+        return $this->from(Config::where('name', '=', 'email_sender')
+                ->pluck('value')
+                ->first(), 'Holiday Booking Page')
             ->subject($this->holiday_type.' holiday request for '.$this->user_name.' on '.$this->holiday_dates)
             ->view('emails.approval');
     }

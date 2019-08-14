@@ -56,6 +56,7 @@ class AbsenceLookupController extends Controller
     public function edit($id)
     {
         $absenceLookup = AbsenceLookup::findOrFail($id);
+
         return view('absencetypes.edit')->with(['absenceLookup' => $absenceLookup]);
     }
 

@@ -59,7 +59,7 @@ class EmployeeController extends Controller
         $staffData['password'] = 'Passw0rd'; // Default value for new staff
         User::create($staffData);
 
-        $employeeData['started_at'] = $validatedData['start'] . " 09:00:00";
+        $employeeData['started_at'] = $validatedData['start']." 09:00:00";
         $employeeData['holiday_entitlement'] = 20.0; // Default value for new staff
         $employeeData['holiday_carried_forward'] = 0.0; // Default value for new staff
         $employeeData['days_per_week'] = 5; // Default value for new staff

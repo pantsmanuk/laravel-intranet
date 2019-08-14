@@ -65,7 +65,7 @@ class TelephoneController extends Controller
         $telephone = Telephone::create($telephoneData);
 
         $lookupData = [
-            'user_id' => $validatedData['user_id'],
+            'user_id'      => $validatedData['user_id'],
             'telephone_id' => $telephone['id'],
         ];
         UserTelephoneLookup::create($lookupData);
