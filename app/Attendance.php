@@ -42,14 +42,6 @@ class Attendance extends Model
         return $t_event[$this->doorevent];
     }
 
-    public function getNameAttribute()
-    {
-        $re = '/Name: ([\w]+.[\w]+)/m';
-        preg_match_all($re, $this->details, $name, PREG_SET_ORDER, 0);
-
-        return $name[0][1];
-    }
-
     public function getSiteAttribute()
     {
         $t_site = [1 => 'AMP House'];

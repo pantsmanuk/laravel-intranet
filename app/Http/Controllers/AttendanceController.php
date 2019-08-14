@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Absence;
 use App\Attendance;
-use App\EmployeeDetails;
 use App\Fob;
+use App\User;
 use App\Workstate;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Date;
 
 class AttendanceController extends Controller
@@ -29,7 +28,7 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        $dtLocal = Date::now()->timezone('Europe/London');
+        $dtLocal = Date::now('Europe/London');
 
         $active = User::select('id')
             ->whereDate('deleted_at', '>=', $dtLocal->toDateTimeString())
@@ -47,55 +46,43 @@ class AttendanceController extends Controller
             ->groupBy('empref')
             ->orderByRaw('MIN(doortime) ASC')
             ->get();
+        $onSite->map(function ($employee) {
+            $dt = Date::now('Europe/London');
+            $user = User::find($employee->empref);
 
-        // UGLY KLUDGE
-        // Get an orderByRaw() that correctly orders $employees by arrival time.
-        // MSSQL has a CASE statement that functions similarly to MySQL's FIELD().
-        $orderByRaw = 'CASE empref';
-        $i = 1;
-        foreach ($onSite as $value) {
-            $orderByRaw .= ' WHEN '.$value['empref']." THEN $i";
-            $i++;
-        }
-        $orderByRaw .= ' END';
-        // END UGLY KLUDGE
-
-        // @Todo Deprecate EmployeeDetails, we are storing all this in Users now...
-        $employees = EmployeeDetails::whereIn('empref', $onSite)->orderByRaw($orderByRaw)->get();
-        $employees->map(function ($employee) {
-            $dt = Date::now()->timezone('Europe/London');
             $employee['spare_name'] = '';
-            switch ($employee['empref']) {
+            switch ($employee->empref) {
                 case 12:
                 case 13:
                 case 14:
-                    $name = User::where('id', Fob::where('FobID', $employee['empref'])
-                        ->whereDate('created_at', Date::now('Europe/London')->toDateString())
+                    $name = User::find(Fob::where('FobID', $employee->empref)
+                        ->whereDate('created_at', $dt->toDateString())
                         ->pluck('UserID')
                         ->first())
-                        ->pluck('name')
-                        ->first();
+                        ->name;
                     $employee['spare_name'] = $name;
                     break;
             }
-            $employee['doorevent'] = (int) Attendance::whereDate('doordate', $dt->toDateString())
+            $employee['name'] = $user->name;
+            $employee['forenames'] = $user->forenames;
+            $employee['door_event'] = Attendance::whereDate('doordate', $dt->toDateString())
                 ->where('empref', $employee->empref)
                 ->latest('doortime')
                 ->select('doorevent')
                 ->first()
-                ->doorevent;
-            $employee['dooreventtime'] = Attendance::whereDate('doordate', $dt->toDateString())
+                ->event_type;
+            $employee['door_event_time'] = Attendance::whereDate('doordate', $dt->toDateString())
                 ->where('empref', $employee->empref)
                 ->latest('doortime')
                 ->select('doortime')
                 ->first()
-                ->eventtime;
-            $employee['firstevent'] = Attendance::whereDate('doordate', $dt->toDateString())
+                ->event_time;
+            $employee['first_event'] = Attendance::whereDate('doordate', $dt->toDateString())
                 ->where('empref', $employee->empref)
                 ->oldest('doortime')
                 ->select('doortime')
                 ->first()
-                ->eventtime;
+                ->event_time;
 
             return $employee;
         });
@@ -123,10 +110,10 @@ class AttendanceController extends Controller
                 ->first();
 
             if (!is_null($absence)) {
-                $employee['doorevent'] = $absence->workstate;
-                $employee['note'] = $absence->note;
+                $employee['door_event'] = $absence->workstate;
+                $employee['note'] = trim($absence->note);
             } else {
-                $employee['doorevent'] = Workstate::where('id', $employee->default_workstate_id)
+                $employee['door_event'] = Workstate::where('id', $employee->default_workstate_id)
                     ->pluck('workstate')
                     ->first();
                 $employee['note'] = '';
@@ -135,6 +122,6 @@ class AttendanceController extends Controller
             return $employee;
         });
 
-        return view('attendance.index', compact('dtLocal', 'employees', 'offSite', 'events'));
+        return view('attendance.index')->with(['onSite'=>$onSite, 'offSite'=>$offSite]);
     }
 }
