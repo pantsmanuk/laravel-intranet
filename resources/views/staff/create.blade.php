@@ -15,30 +15,36 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div><br />
+                        </div><br/>
                     @endif
                     <form method="post" action="{{route('staff.store')}}">
                         <div class="form-group">
                             @csrf
                             <label for="name">Name:</label>
-                            <input class="form-control" aria-label="Name" placeholder="Name" id="name" name="name" type="text" />
+                            <input class="form-control" aria-label="Name" placeholder="Name" id="name" name="name"
+                                   type="text"/>
                         </div>
                         <div class="form-group">
                             <label for="username">Username:</label>
-                            <input class="form-control" aria-label="Username" placeholder="Username" id="username" name="username" type="text" />
+                            <input class="form-control" aria-label="Username" placeholder="Username" id="username"
+                                   name="username" type="text"/>
                         </div>
                         <div class="form-group">
                             <label for="start">Start:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
-                                <input class="form-control datetimepicker-input" data-target="#startpicker" data-toggle="datetimepicker" aria-label="Start date" aria-describedby="start-addon" placeholder="Start date" id="start" name="start" type="text" />
+                                <input class="form-control datetimepicker-input" data-target="#startpicker"
+                                       data-toggle="datetimepicker" aria-label="Start date"
+                                       aria-describedby="start-addon" placeholder="Start date" id="start" name="start"
+                                       type="text"/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datepicker">
-                                    <span class="input-group-text" id="start-addon"><span class="fas fa-calendar-alt"></span></span>
+                                    <span class="input-group-text" id="start-addon"><span
+                                                class="fas fa-calendar-alt"></span></span>
                                 </div>
                                 <script type="text/javascript">
-                                    $(function() {
+                                    $(function () {
                                         $('#startpicker').datetimepicker({
                                             locale: 'en-gb',
-                                            daysOfWeekDisabled: [0,6],
+                                            daysOfWeekDisabled: [0, 6],
                                             format: 'YYYY-MM-DD',
                                             minDate: 'moment',
                                             useCurrent: false

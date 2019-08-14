@@ -18,9 +18,9 @@ class AbsenceController extends Controller
      */
     public function index()
     {
-        $dtYearStart = Date::parse(Config::select('value')->where('name','holidays_start')->get()
+        $dtYearStart = Date::parse(Config::select('value')->where('name', 'holidays_start')->get()
             ->pluck('value')->implode(''), 'Europe/London');
-        $dtYearEnd = Date::parse(Config::select('value')->where('name','holidays_end')->get()
+        $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
             ->pluck('value')->implode(''), 'Europe/London');
         $sYear = $dtYearStart->format('Y') . '-' . $dtYearEnd->format('Y');
 
@@ -56,7 +56,7 @@ class AbsenceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -71,9 +71,9 @@ class AbsenceController extends Controller
             'days_unpaid' => 'required|numeric'
         ]);
         if (!isset($request->approved)) {
-            $validatedData['approved']=false;
+            $validatedData['approved'] = false;
         } elseif ($request->approved == "on") {
-            $validatedData['approved']=true;
+            $validatedData['approved'] = true;
         }
         Absence::create($validatedData);
 
@@ -83,7 +83,7 @@ class AbsenceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\absence  $absence
+     * @param \App\absence $absence
      * @return \Illuminate\Http\Response
      */
     public function show(Absence $absence)
@@ -94,14 +94,14 @@ class AbsenceController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Absence  $absence
+     * @param \App\Absence $absence
      * @return \Illuminate\Http\Response
      */
     public function edit(Absence $absence)
     {
-        $dtYearStart = Date::parse(Config::select('value')->where('name','holidays_start')->get()
+        $dtYearStart = Date::parse(Config::select('value')->where('name', 'holidays_start')->get()
             ->pluck('value')->implode(''), 'Europe/London');
-        $dtYearEnd = Date::parse(Config::select('value')->where('name','holidays_end')->get()
+        $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
             ->pluck('value')->implode(''), 'Europe/London');
         $staff = User::select('id AS empref', 'name')
             ->whereDate('deleted_at', '>=', $dtYearStart->toDateTimeString())
@@ -122,8 +122,8 @@ class AbsenceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Absence  $absence
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Absence $absence
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Absence $absence)
@@ -138,9 +138,9 @@ class AbsenceController extends Controller
             'days_unpaid' => 'required|numeric'
         ]);
         if (!isset($request->approved)) {
-            $validatedData['approved']=false;
+            $validatedData['approved'] = false;
         } elseif ($request->approved == "on") {
-            $validatedData['approved']=true;
+            $validatedData['approved'] = true;
         }
         Absence::whereId($absence->id)->update($validatedData);
 
@@ -150,7 +150,7 @@ class AbsenceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Absence $absence
+     * @param Absence $absence
      * @return \Illuminate\Http\Response
      */
     public function destroy($absence)

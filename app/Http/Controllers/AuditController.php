@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Audit;
-use Illuminate\Foundation\Auth\User;
+use App\User;
 
 class AuditController extends Controller
 {
@@ -16,7 +16,7 @@ class AuditController extends Controller
     {
         $audit = Audit::all();
         $audit->map(function ($entry) {
-            $entry['user_name'] = User::find($entry['user_id'])->name;
+            $entry['user_name'] = User::where('id', $entry['user_id'])->pluck('name')->first();
 
             return $entry;
         });

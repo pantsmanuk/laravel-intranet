@@ -23,15 +23,15 @@ class HolidayController extends Controller
      */
     public function index()
     {
-        $dtYearStart = Date::parse(Config::select('value')->where('name','holidays_start')->get()
+        $dtYearStart = Date::parse(Config::select('value')->where('name', 'holidays_start')->get()
             ->pluck('value')->implode(''), 'Europe/London');
-        $dtYearEnd = Date::parse(Config::select('value')->where('name','holidays_end')->get()
+        $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
             ->pluck('value')->implode(''), 'Europe/London');
         $sYear = $dtYearStart->format('Y') . '-' . $dtYearEnd->format('Y');
 
         $absences = Absence::select('absences.id', 'start_at', 'end_at', 'absence_id', 'absence_lookup.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
             ->join('absence_lookup', 'absences.absence_id', '=', 'absence_lookup.id')
-            ->where('user_id','=',auth()->id())
+            ->where('user_id', '=', auth()->id())
             ->whereDate('start_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))
             ->whereDate('end_at', '<=', $dtYearEnd->format('Y-m-d H:i:s'))
             ->get();
@@ -53,7 +53,7 @@ class HolidayController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -90,7 +90,7 @@ class HolidayController extends Controller
         $holidayData['absence_id'] = 1;
         $holidayData['note'] = $validatedData['note'];
 
-        if ($validatedData['start_at']===$validatedData['end_at']) {
+        if ($validatedData['start_at'] === $validatedData['end_at']) {
             $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F');
             switch ($validatedData['start_type']) {
                 case 1:
@@ -127,7 +127,7 @@ class HolidayController extends Controller
             'user_name' => Auth::user()->name,
         ];
 
-        Mail::to(Config::where('name', '=' ,'email_approval')->pluck('value')->first())->send(new Approval($aRequest));
+        Mail::to(Config::where('name', '=', 'email_approval')->pluck('value')->first())->send(new Approval($aRequest));
 
         return redirect('/holidays')->with('success', 'Holiday requested');
     }
@@ -135,7 +135,7 @@ class HolidayController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -146,7 +146,7 @@ class HolidayController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -188,8 +188,8 @@ class HolidayController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -226,7 +226,7 @@ class HolidayController extends Controller
         $holidayData['absence_id'] = 1;
         $holidayData['note'] = $validatedData['note'];
 
-        if ($validatedData['start_at']===$validatedData['end_at']) {
+        if ($validatedData['start_at'] === $validatedData['end_at']) {
             $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F');
             switch ($validatedData['start_type']) {
                 case 1:
@@ -263,7 +263,7 @@ class HolidayController extends Controller
             'user_name' => Auth::user()->name,
         ];
 
-        Mail::to(Config::where('name', '=' ,'email_approval')->pluck('value')->first())
+        Mail::to(Config::where('name', '=', 'email_approval')->pluck('value')->first())
             ->send(new Approval($aRequest));
 
         return redirect('/holidays')->with('success', 'Holiday request updated');
@@ -272,7 +272,7 @@ class HolidayController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -293,13 +293,13 @@ class HolidayController extends Controller
                 }
             } else {
                 $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                    . ' to ' . Date::parse($holiday->end_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = Auth::user()->name;
 
             Mail::to(Auth::user()->email)
-                ->cc(Config::where('name', '=' ,'email_notification')->pluck('value')->first())
+                ->cc(Config::where('name', '=', 'email_notification')->pluck('value')->first())
                 ->send(new Action($aRequest));
 
             return redirect('/holidays')->with('success', 'Holiday request deleted');
@@ -311,16 +311,17 @@ class HolidayController extends Controller
     /**
      * Approve the specified resource in storage.
      *
-     * @param string    $secret
+     * @param string $secret
      * @return \Illuminate\Http\Response
      */
     public function approve($secret)
     {
         $aData = explode(' ', Crypt::decryptString($secret));
-        $id = $aData[0]; $uuid = $aData[1];
+        $id = $aData[0];
+        $uuid = $aData[1];
 
         $holiday = Absence::findOrFail($id);
-        $stored_uuid = DB::table('uuid')->where('id','=', $id)->pluck('id_text')->first();
+        $stored_uuid = DB::table('uuid')->where('id', '=', $id)->pluck('id_text')->first();
 
         if ($stored_uuid === strtoupper($uuid)) {
             $holiday->update(['approved' => 1]);
@@ -344,7 +345,7 @@ class HolidayController extends Controller
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();
 
             Mail::to(User::whereId($holiday->user_id)->pluck('email')->first())
-                ->cc(Config::where('name', '=' ,'email_notification')->pluck('value')->first())
+                ->cc(Config::where('name', '=', 'email_notification')->pluck('value')->first())
                 ->send(new Action($aRequest));
 
             return redirect('/holidays')->with('success', 'Holiday request approved');
@@ -356,16 +357,17 @@ class HolidayController extends Controller
     /**
      * Deny the specified resource in storage.
      *
-     * @param string    $secret
+     * @param string $secret
      * @return \Illuminate\Http\Response
      */
     public function deny($secret)
     {
         $aData = explode(' ', Crypt::decryptString($secret));
-        $id = $aData[0]; $uuid = $aData[1];
+        $id = $aData[0];
+        $uuid = $aData[1];
 
         $holiday = Absence::findOrFail($id);
-        $stored_uuid = DB::table('uuid')->where('id','=', $id)->pluck('id_text')->first();
+        $stored_uuid = DB::table('uuid')->where('id', '=', $id)->pluck('id_text')->first();
 
         if ($stored_uuid === strtoupper($uuid)) {
             $holiday->delete();
@@ -383,13 +385,13 @@ class HolidayController extends Controller
                 }
             } else {
                 $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                    . ' to ' . Date::parse($holiday->end_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();
 
             Mail::to(User::whereId($holiday->user_id)->pluck('email')->first())
-                ->cc(Config::where('name', '=' ,'email_notification')->pluck('value')->first())
+                ->cc(Config::where('name', '=', 'email_notification')->pluck('value')->first())
                 ->send(new Action($aRequest));
 
             return redirect('/holidays')->with('success', 'Holiday request denied');

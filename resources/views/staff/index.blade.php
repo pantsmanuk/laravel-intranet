@@ -26,10 +26,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $t_count=0; ?>
+                    <?php $t_count = 0; ?>
                     @foreach ($staff as $user)
-                        <?php $t_count=$loop->count;?>
-                        <tr<?php if(!is_null($user->deleted_at)) echo ' class="table-warning"'?>>
+                        <?php $t_count = $loop->count;?>
+                        <tr<?php if (!is_null($user->deleted_at)) echo ' class="table-warning"'?>>
                             <td>{{$user->id}}</td>
                             <td>{{$user->name}}</td>
                             <td>{{$user->started_at}}</td>
@@ -38,13 +38,15 @@
                             <td>{{$user->holiday_entitlement}}</td>
                             <td>{{$user->holiday_carried_forward}}</td>
                             <td>{{$user->workstate}}</td>
-                            <td><a href="{{route('staff.edit', $user->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit staff member"><span class="fas fa-pencil-alt"></span></a></td>
+                            <td><a href="{{route('staff.edit', $user->id)}}" class="btn btn-primary"
+                                   data-toggle="tooltip" data-placement="top" title="Edit staff member"><span
+                                            class="fas fa-pencil-alt"></span></a></td>
                             <td>
                                 <form action="{{ route('staff.destroy', $user->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                    <?php if(is_null($user->deleted_at)) {
-                                    echo '<button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete staff member"><span class="fas fa-trash-alt"></span></button>';
+                                    <?php if (is_null($user->deleted_at)) {
+                                        echo '<button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete staff member"><span class="fas fa-trash-alt"></span></button>';
                                     } ?>
                                 </form>
                             </td>

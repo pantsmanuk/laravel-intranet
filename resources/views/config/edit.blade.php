@@ -15,18 +15,20 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div><br />
+                        </div><br/>
                     @endif
                     <form method="post" action="{{route('config.update', $config->id)}}">
                         <div class="form-group">
                             @csrf
                             @method('PATCH')
                             <label for="name">Key:</label>
-                            <input class="form-control" aria-label="Configuration key name" id="name" name="name" type="text" value="{{$config->name}}" />
+                            <input class="form-control" aria-label="Configuration key name" id="name" name="name"
+                                   type="text" value="{{$config->name}}"/>
                         </div>
                         <div class="form-group">
                             <label for="value">Value:</label>
-                            <input class="form-control" aria-label="Configuration value" id="value" name="value" type="text" value="{{$config->value}}" />
+                            <input class="form-control" aria-label="Configuration value" id="value" name="value"
+                                   type="text" value="{{$config->value}}"/>
                         </div>
                         <button type="submit" class="btn btn-primary">Update configuration key/value pair</button>
                         <button type="reset" class="btn btn-secondary">Reset form</button>

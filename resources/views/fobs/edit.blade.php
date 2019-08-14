@@ -15,7 +15,7 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div><br />
+                        </div><br/>
                     @endif
                     <form method="post" action="{{route('fobs.update', $fob->id)}}">
                         <div class="form-group">
@@ -24,7 +24,8 @@
                             <label for="FobID">Spare fob:</label>
                             <select class="form-control" id="FobID" name="FobID" aria-label="Spare fob selection">
                                 @foreach($fobs as $value)
-                                    <option value="{{$value->FobID}}" aria-label="{{$value->name}}"<?php echo ($value->FobID == $fob->FobID) ? " selected" : "";?>>{{$value->name}}</option>
+                                    <option value="{{$value->FobID}}"
+                                            aria-label="{{$value->name}}"<?php echo ($value->FobID == $fob->FobID) ? " selected" : "";?>>{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -32,7 +33,8 @@
                             <label for="UserID">Staff member:</label>
                             <select class="form-control" id="UserID" name="UserID" aria-label="Staff member selection">
                                 @foreach($staff as $value)
-                                    <option value="{{$value->UserID}}" aria-label="{{$value->name}}"<?php echo ($value->UserID == $fob->UserID) ? " selected" : "";?>>{{$value->name}}</option>
+                                    <option value="{{$value->UserID}}"
+                                            aria-label="{{$value->name}}"<?php echo ($value->UserID == $fob->UserID) ? " selected" : "";?>>{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>

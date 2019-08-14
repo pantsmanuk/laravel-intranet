@@ -15,7 +15,7 @@ class Employee extends Model implements Auditable
         'started_at',
         'ended_at',
     ];
-    protected $fillable =[
+    protected $fillable = [
         'started_at',
         'ended_at',
         'holiday_entitlement',

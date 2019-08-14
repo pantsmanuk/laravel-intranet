@@ -15,14 +15,15 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div><br />
+                        </div><br/>
                     @endif
                     <form method="post" action="{{route('absencetypes.update', $absenceLookup->id)}}">
                         <div class="form-group">
                             @csrf
                             @method('PATCH')
                             <label for="name">Name:</label>
-                            <input class="form-control" aria-label="Absence type name" id="name" name="name" type="text" value="{{$absenceLookup->name}}" />
+                            <input class="form-control" aria-label="Absence type name" id="name" name="name" type="text"
+                                   value="{{$absenceLookup->name}}"/>
                         </div>
                         <button type="submit" class="btn btn-primary">Update absence type</button>
                         <button type="reset" class="btn btn-secondary">Reset form</button>

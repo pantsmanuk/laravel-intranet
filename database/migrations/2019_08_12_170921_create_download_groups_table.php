@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTelephonesTable extends Migration
+class CreateDownloadGroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateTelephonesTable extends Migration
      */
     public function up()
     {
-        Schema::create('telephones', function (Blueprint $table) {
+        Schema::create('download_groups', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 16);
-            $table->string('number', 16);
+            $table->string('name', 20);
+            $table->string('files', 60);
             $table->timestamps();
+
+            $table->unique('name');
         });
     }
 
@@ -28,6 +30,6 @@ class CreateTelephonesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('telephones');
+        Schema::dropIfExists('download_groups');
     }
 }

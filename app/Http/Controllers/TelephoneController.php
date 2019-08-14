@@ -47,7 +47,7 @@ class TelephoneController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -73,7 +73,7 @@ class TelephoneController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -84,7 +84,7 @@ class TelephoneController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -102,8 +102,8 @@ class TelephoneController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -120,14 +120,14 @@ class TelephoneController extends Controller
         $telephoneData = array(
             'name' => $validatedData['name'],
             'number' => $validatedData['number']);
-        if($telephone['name']!=$telephoneData['name'] || $telephone['number']!=$telephoneData['number']) {
+        if ($telephone['name'] != $telephoneData['name'] || $telephone['number'] != $telephoneData['number']) {
             $telephone = Telephone::whereId($lookup['telephone_id'])->update($telephoneData);
         }
 
         $lookupData = array(
-            'user_id' => (int) $validatedData['user_id'],
+            'user_id' => (int)$validatedData['user_id'],
             'telephone_id' => $telephone['id']);
-        if($lookup['user_id']!=$lookupData['user_id']) {
+        if ($lookup['user_id'] != $lookupData['user_id']) {
             UserTelephoneLookup::whereId($lookup['id'])->update($lookupData);
         }
 
@@ -137,7 +137,7 @@ class TelephoneController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

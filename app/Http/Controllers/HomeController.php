@@ -42,19 +42,19 @@ class HomeController extends Controller
                 ->where('users_telephones_lookup.user_id', $employee->id)
                 ->pluck('telephones.number')
                 ->first();
-            $employee['telephones'] = Telephone::select('telephones.name','telephones.number')
+            $employee['telephones'] = Telephone::select('telephones.name', 'telephones.number')
                 ->join('users_telephones_lookup', 'telephones.id', '=', 'users_telephones_lookup.telephone_id')
                 ->where('users_telephones_lookup.user_id', $employee->id)
                 ->where('telephones.name', '!=', 'Extn')
                 ->orderBy('telephones.name')
                 ->get();
             $absence = Absence::select('absence_lookup.name AS workstate')
-                ->join('absence_lookup','absences.absence_id','=','absence_lookup.id')
-                ->where('absences.user_id',$employee->id)
-                ->where('absences.start_at','<=',$dt->toDateTimeString())
-                ->where('absences.end_at','>=',$dt->toDateTimeString())
+                ->join('absence_lookup', 'absences.absence_id', '=', 'absence_lookup.id')
+                ->where('absences.user_id', $employee->id)
+                ->where('absences.start_at', '<=', $dt->toDateTimeString())
+                ->where('absences.end_at', '>=', $dt->toDateTimeString())
                 ->first();
-            if(!is_null($absence)) {
+            if (!is_null($absence)) {
                 $employee['workstate'] = $absence->workstate;
             } else {
                 $employee['workstate'] = Workstate::where('id', $employee->default_workstate_id)

@@ -29,24 +29,27 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $t_count=0; $t_approved=array('No','Yes');?>
+                    <?php $t_count = 0; $t_approved = array('No', 'Yes');?>
                     @foreach ($absences as $value)
-                        <?php $t_count=$loop->count;?>
+                        <?php $t_count = $loop->count;?>
                         <tr>
                             <td>{{$value->user_name}}</td>
                             <td>{{$value->start_at}}</td>
                             <td>{{$value->end_at}}</td>
                             <td>{{$value->absence_type}}</td>
                             <td>{{$value->note}}</td>
-                            <td><?php echo ($value->absence_type == "Holiday") ? $t_approved[$value->approved] :  "-"; ?></td>
+                            <td><?php echo ($value->absence_type == "Holiday") ? $t_approved[$value->approved] : "-"; ?></td>
                             <td>{{$value->days_paid}}</td>
                             <td>{{$value->days_unpaid}}</td>
-                            <td><a href="{{ route('absences.edit',$value->id) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit absence"><span class="fas fa-pencil-alt"></span></a></td>
+                            <td><a href="{{ route('absences.edit',$value->id) }}" class="btn btn-primary"
+                                   data-toggle="tooltip" data-placement="top" title="Edit absence"><span
+                                            class="fas fa-pencil-alt"></span></a></td>
                             <td>
                                 <form action="{{ route('absences.destroy', $value->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete absence"><span class="fas fa-trash-alt"></span></button>
+                                    <button class="btn btn-danger" data-toggle="tooltip" data-placement="top"
+                                            title="Delete absence"><span class="fas fa-trash-alt"></span></button>
                                 </form>
                             </td>
                         </tr>

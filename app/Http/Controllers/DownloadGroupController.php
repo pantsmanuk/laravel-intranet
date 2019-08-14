@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Config;
+use App\DownloadGroup;
 use Illuminate\Http\Request;
 
-class ConfigController extends Controller
+class DownloadGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,9 @@ class ConfigController extends Controller
      */
     public function index()
     {
-        $configs = Config::all();
+        $downloads = DownloadGroup::orderBy('created_at', 'desc')->get();
 
-        return view('config.index')->with(['configs' => $configs]);
+        return view('downloads.index')->with(['downloads' => $downloads]);
     }
 
     /**
@@ -26,7 +26,7 @@ class ConfigController extends Controller
      */
     public function create()
     {
-        return view('config.create');
+        return view('downloads.create');
     }
 
     /**
@@ -38,23 +38,12 @@ class ConfigController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
-            'value' => 'required',
+            'name' => 'required|string|max:20',
+            'files' => 'required|string|max:60',
         ]);
-        Config::create($validatedData);
+        DownloadGroup::create($validatedData);
 
-        return redirect('/config')->with('success', 'Configuration key/value pair saved');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return redirect('/downloads')->with('success', 'Download group saved');
     }
 
     /**
@@ -65,9 +54,9 @@ class ConfigController extends Controller
      */
     public function edit($id)
     {
-        $config = Config::findOrFail($id);
+        $download = DownloadGroup::findOrFail($id);
 
-        return view('config.edit')->with(['config' => $config]);
+        return view('downloads.edit')->with(['download' => $download]);
     }
 
     /**
@@ -80,12 +69,12 @@ class ConfigController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
-            'value' => 'required',
+            'name' => 'required|string|max:20',
+            'files' => 'required|string|max:60',
         ]);
-        Config::whereId($id)->update($validatedData);
+        DownloadGroup::whereId($id)->update($validatedData);
 
-        return redirect('/config')->with('success', 'Configuration key/value pair updated');
+        return redirect('/downloads')->with('success', 'Download group updated');
     }
 
     /**
@@ -96,9 +85,9 @@ class ConfigController extends Controller
      */
     public function destroy($id)
     {
-        $config = Config::findOrFail($id);
-        $config->delete();
+        $download = DownloadGroup::findOrFail($id);
+        $download->delete();
 
-        return redirect('/workstates')->with('success', 'Configuration key/value pair deleted');
+        return redirect('/downloads')->with('success', 'Download group deleted');
     }
 }

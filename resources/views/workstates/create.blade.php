@@ -15,13 +15,14 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                        </div><br />
+                        </div><br/>
                     @endif
                     <form method="post" action="{{route('workstates.store')}}">
                         <div class="form-group">
                             @csrf
                             <label for="workstate">Work state:</label>
-                            <input class="form-control" aria-label="Work state name" placeholder="Work state name" id="workstate" name="workstate" type="text" />
+                            <input class="form-control" aria-label="Work state name" placeholder="Work state name"
+                                   id="workstate" name="workstate" type="text"/>
                         </div>
                         <button type="submit" class="btn btn-primary">Create work state</button>
                         <button type="reset" class="btn btn-secondary">Reset form</button>

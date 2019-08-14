@@ -21,19 +21,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $t_count=0; ?>
+                    <?php $t_count = 0; ?>
                     @foreach ($fobs as $fob)
-                        <?php $t_count=$loop->count;?>
+                        <?php $t_count = $loop->count;?>
                         <tr>
                             <td>{{\Illuminate\Support\Facades\Date::parse($fob->created_at)->format('d/m/Y')}}</td>
                             <td>{{$fob->fob_name}}</td>
                             <td>{{$fob->staff_name}}</td>
-                            <td><a href="{{route('fobs.edit', $fob->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit fob assignment"><span class="fas fa-pencil-alt"></span></a></td>
+                            <td><a href="{{route('fobs.edit', $fob->id)}}" class="btn btn-primary" data-toggle="tooltip"
+                                   data-placement="top" title="Edit fob assignment"><span
+                                            class="fas fa-pencil-alt"></span></a></td>
                             <td>
                                 <form action="{{ route('fobs.destroy', $fob->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete fob assignment"><span class="fas fa-trash-alt"></span></button>
+                                    <button class="btn btn-danger" data-toggle="tooltip" data-placement="top"
+                                            title="Delete fob assignment"><span class="fas fa-trash-alt"></span>
+                                    </button>
                                 </form>
                             </td>
                         </tr>

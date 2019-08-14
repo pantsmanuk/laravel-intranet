@@ -19,7 +19,7 @@ Auth::routes([
     'register' => false,
     'reset' => false,
     'verify' => false,
-    ]);
+]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/attendance', 'AttendanceController@index')->name('attendance');
@@ -28,10 +28,12 @@ Route::get('/audit', 'AuditController@index')->name('audit');
 Route::resource('absences', 'AbsenceController');
 Route::resource('absencetypes', 'AbsenceLookupController');
 Route::resource('config', 'ConfigController');
+Route::resource('doorevents', 'DoorEventController');
+Route::resource('downloads', 'DownloadGroupController');
 Route::resource('fobs', 'FobController');
 Route::resource('holidays', 'HolidayController');
-Route::get('holidays/{secret}/approve', 'HolidayController@approve')->name('holidays.approve');
-Route::get('holidays/{secret}/deny', 'HolidayController@deny')->name('holidays.deny');
+Route::get('holidays/{secret}/approve', 'HolidayController@approve')->name('holidays.approve'); // Do these need to be here?
+Route::get('holidays/{secret}/deny', 'HolidayController@deny')->name('holidays.deny');          // Can't the resource controller "just do this"?
 Route::resource('staff', 'EmployeeController');
 Route::resource('telephones', 'TelephoneController');
 Route::resource('workstates', 'WorkstateController');

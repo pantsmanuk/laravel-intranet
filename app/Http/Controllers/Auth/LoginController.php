@@ -42,12 +42,13 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-	/**
-	 * We're using username as the database "important value"
-	 *
-	 * @return \Illuminate\Config\Repository|mixed
-	 */
-	public function username() {
-		return 'username';
-	}
+    /**
+     * We're using username as the database "important value"
+     *
+     * @return \Illuminate\Config\Repository|mixed
+     */
+    public function username()
+    {
+        return 'username';
+    }
 }

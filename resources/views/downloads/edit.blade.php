@@ -5,7 +5,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Configuration
+                    Download Groups
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -17,20 +17,23 @@
                             </ul>
                         </div><br/>
                     @endif
-                    <form method="post" action="{{route('config.store')}}">
+                    <form method="post" action="{{route('downloads.update', $download->id)}}">
                         <div class="form-group">
                             @csrf
-                            <label for="name">Key:</label>
-                            <input class="form-control" aria-label="Configuration key" placeholder="Key" id="name"
-                                   name="name" type="text"/>
+                            @method('PATCH')
+                            <label for="name">Name:</label>
+                            <input class="form-control" aria-label="Download group name"
+                                   value="{{$download->name}}" id="name" name="name" type="text"/>
                         </div>
                         <div class="form-group">
-                            <label for="value">Value:</label>
-                            <input class="form-control" aria-label="Configuration value" placeholder="Value" id="value"
-                                   name="value" type="text"/>
+                            <label for="files">Files:</label>
+                            <input class="form-control" aria-label="Files" placeholder="{{$download->files}}" id="files"
+                                   name="files" type="text"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">Create configuration key/value pair</button>
-                        <button type="reset" class="btn btn-secondary">Reset form</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Update work state</button>
+                            <button type="reset" class="btn btn-secondary">Reset form</button>
+                        </div>
                     </form>
                 </div>
             </div>

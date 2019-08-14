@@ -41,7 +41,7 @@ class EmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -71,7 +71,7 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -82,7 +82,7 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -94,7 +94,7 @@ class EmployeeController extends Controller
             ->get();
         $staff->map(function ($user) {
             $user['started_at'] = Date::parse($user['started_at'], 'Europe/London')->toDateString();
-            if(!is_null($user['ended_at'])) {
+            if (!is_null($user['ended_at'])) {
                 $user['ended_at'] = Date::parse($user['ended_at'], 'Europe/London')->toDateString();
             }
 
@@ -112,8 +112,8 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -148,7 +148,7 @@ class EmployeeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

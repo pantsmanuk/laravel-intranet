@@ -20,9 +20,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $t_count=0; ?>
+                    <?php $t_count = 0; ?>
                     @foreach ($audit as $value)
-                        <?php $t_count=$loop->count;?>
+                        <?php $t_count = $loop->count;?>
                         <tr>
                             <td>{{\Illuminate\Support\Facades\Date::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                             <td>{{$value->user_name}}</td>

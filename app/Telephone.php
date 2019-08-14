@@ -9,7 +9,7 @@ class Telephone extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $fillable =[
+    protected $fillable = [
         'name',
         'number'
     ];

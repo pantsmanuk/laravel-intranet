@@ -23,7 +23,7 @@ class FobController extends Controller
         );
 
         $fobs = Fob::whereNull('deleted_at')->orderBy('created_at', 'DESC')->get();
-        $fobs->map(function ($fob) use ($fob_names){
+        $fobs->map(function ($fob) use ($fob_names) {
             $fob['fob_name'] = $fob_names[$fob['FobID']];
             $fob['staff_name'] = User::where('id', $fob['UserID'])
                 ->pluck('name')->first();
@@ -44,7 +44,7 @@ class FobController extends Controller
             ['FobID' => 13, 'name' => 'Spare fob #2'],
             ['FobID' => 14, 'name' => 'Spare fob #3']);
         $fobs = collect($fobs)->map(function ($fob) {
-            return (object) $fob;
+            return (object)$fob;
         })->whereNotIn('FobID', Fob::whereDate('created_at', Date::now('Europe/London')
             ->toDateString())
             ->pluck('FobID')
@@ -52,7 +52,7 @@ class FobController extends Controller
 
         // Get unassigned staff as collection
         $staff = User::select('id AS UserID', 'name')
-            ->whereNotIn('id', Fob::where('created_at', 'LIKE', Date::now('Europe/London')->toDateString()."%")
+            ->whereNotIn('id', Fob::where('created_at', 'LIKE', Date::now('Europe/London')->toDateString() . "%")
                 ->pluck('UserID')
                 ->toArray())
             ->whereRaw('(deleted_at >= "' . Date::now('Europe/London')->toDateTimeString() . '" OR deleted_at IS NULL)')
@@ -65,13 +65,13 @@ class FobController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->toArray();
-        $validatedData['MachineID'] = "(".$request->ip().")".auth()->user()->name;
+        $validatedData['MachineID'] = "(" . $request->ip() . ")" . auth()->user()->name;
         $validatedData['date'] = Date::now('Europe/London');
         Fob::create($validatedData);
 
@@ -81,7 +81,7 @@ class FobController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Fob  $fob
+     * @param \App\Fob $fob
      * @return \Illuminate\Http\Response
      */
     public function show(Fob $fob)
@@ -92,7 +92,7 @@ class FobController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Fob  $fob
+     * @param \App\Fob $fob
      * @return \Illuminate\Http\Response
      */
     public function edit(Fob $fob)
@@ -101,7 +101,7 @@ class FobController extends Controller
             ['FobID' => 13, 'name' => 'Spare fob #2'],
             ['FobID' => 14, 'name' => 'Spare fob #3']);
         $fobs = collect($fobs)->map(function ($fob) {
-            return (object) $fob;
+            return (object)$fob;
         });
 
         $staff = User::select('id AS UserID', 'name')
@@ -116,14 +116,14 @@ class FobController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Fob  $fob
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Fob $fob
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Fob $fob)
     {
         $validatedData = $request->except(['_token', '_method']);
-        $validatedData['MachineID'] = "(".$request->ip().")".auth()->user()->name;
+        $validatedData['MachineID'] = "(" . $request->ip() . ")" . auth()->user()->name;
         Fob::whereId($fob->id)->update($validatedData);
         return redirect('/fobs')->with('success', 'Fob assignment updated');
     }
@@ -131,7 +131,7 @@ class FobController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Fob  $fob
+     * @param \App\Fob $fob
      * @return \Illuminate\Http\Response
      */
     public function destroy(Fob $fob)
