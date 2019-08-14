@@ -5,11 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-use Adldap\Auth\BindException;
-use Adldap\Laravel\Facades\Adldap;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-
 class LoginController extends Controller
 {
     /*
@@ -43,7 +38,7 @@ class LoginController extends Controller
     }
 
     /**
-     * We're using username as the database "important value"
+     * We're using username as the database "important value".
      *
      * @return \Illuminate\Config\Repository|mixed
      */

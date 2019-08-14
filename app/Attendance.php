@@ -23,6 +23,7 @@ class Attendance extends Model
     public function getEventDateAttribute()
     {
         $t_date = new carbon(substr($this->doordate, 0, 10));
+
         return $t_date->format('d/m/Y');
     }
 

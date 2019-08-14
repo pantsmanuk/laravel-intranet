@@ -27,7 +27,7 @@ class HolidayController extends Controller
             ->pluck('value')->implode(''), 'Europe/London');
         $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
             ->pluck('value')->implode(''), 'Europe/London');
-        $sYear = $dtYearStart->format('Y') . '-' . $dtYearEnd->format('Y');
+        $sYear = $dtYearStart->format('Y').'-'.$dtYearEnd->format('Y');
 
         $absences = Absence::select('absences.id', 'start_at', 'end_at', 'absence_id', 'absence_lookup.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
             ->join('absence_lookup', 'absences.absence_id', '=', 'absence_lookup.id')
@@ -37,7 +37,6 @@ class HolidayController extends Controller
             ->get();
 
         return view('holidays.index')->with(['sYear' => $sYear, 'absences' => $absences]);
-
     }
 
     /**
@@ -54,16 +53,17 @@ class HolidayController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'start_at' => 'required',
+            'start_at'   => 'required',
             'start_type' => 'numeric|between:1,3',
-            'end_at' => 'nullable',
-            'end_type' => 'numeric|between:1,2',
-            'note' => 'nullable|string|max:80',
+            'end_at'     => 'nullable',
+            'end_type'   => 'numeric|between:1,2',
+            'note'       => 'nullable|string|max:80',
         ]);
 
         $holidayData['user_id'] = auth()->id();
@@ -74,17 +74,17 @@ class HolidayController extends Controller
         switch ($validatedData['start_type']) {
             case 1:
             case 3:
-                $holidayData['start_at'] = $validatedData['start_at'] . " 09:00:00";
+                $holidayData['start_at'] = $validatedData['start_at'].' 09:00:00';
                 break;
             case 2:
-                $holidayData['start_at'] = $validatedData['start_at'] . " 13:00:00";
+                $holidayData['start_at'] = $validatedData['start_at'].' 13:00:00';
         }
         switch ($validatedData['end_type']) {
             case 1:
-                $holidayData['end_at'] = $validatedData['end_at'] . " 13:00:00";
+                $holidayData['end_at'] = $validatedData['end_at'].' 13:00:00';
                 break;
             case 2:
-                $holidayData['end_at'] = $validatedData['end_at'] . " 17:30:00";
+                $holidayData['end_at'] = $validatedData['end_at'].' 17:30:00';
         }
 
         $holidayData['absence_id'] = 1;
@@ -109,7 +109,7 @@ class HolidayController extends Controller
             $holidayData['days_paid'] = Date::parse($holidayData['start_at'], 'Europe/London')
                 ->diffInWeekdays(Date::parse($holidayData['end_at'], 'Europe/London'));
             $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F')
-                . ' to ' . Date::parse($holidayData['end_at'], 'Europe/London')->format('j F');
+                .' to '.Date::parse($holidayData['end_at'], 'Europe/London')->format('j F');
             $holidayType = 'Multiple Days';
         }
         $holidayData['days_unpaid'] = 0.0;
@@ -119,12 +119,12 @@ class HolidayController extends Controller
         $holiday = Absence::create($holidayData);
 
         $aRequest = [
-            'holiday_dates' => $sDates,
-            'holiday_id' => $holiday->id,
-            'holiday_note' => $holiday->note,
+            'holiday_dates'    => $sDates,
+            'holiday_id'       => $holiday->id,
+            'holiday_note'     => $holiday->note,
             'holiday_overlaps' => $cOverlaps,
-            'holiday_type' => $holidayType,
-            'user_name' => Auth::user()->name,
+            'holiday_type'     => $holidayType,
+            'user_name'        => Auth::user()->name,
         ];
 
         Mail::to(Config::where('name', '=', 'email_approval')->pluck('value')->first())->send(new Approval($aRequest));
@@ -136,6 +136,7 @@ class HolidayController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -178,17 +179,18 @@ class HolidayController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'start_at' => 'required',
+            'start_at'   => 'required',
             'start_type' => 'numeric|between:1,3',
-            'end_at' => 'nullable',
-            'end_type' => 'numeric|between:1,2',
-            'note' => 'nullable|string|max:80',
+            'end_at'     => 'nullable',
+            'end_type'   => 'numeric|between:1,2',
+            'note'       => 'nullable|string|max:80',
         ]);
 
         $holidayData['user_id'] = auth()->id();
@@ -199,17 +201,17 @@ class HolidayController extends Controller
         switch ($validatedData['start_type']) {
             case 1:
             case 3:
-                $holidayData['start_at'] = $validatedData['start_at'] . " 09:00:00";
+                $holidayData['start_at'] = $validatedData['start_at'].' 09:00:00';
                 break;
             case 2:
-                $holidayData['start_at'] = $validatedData['start_at'] . " 13:00:00";
+                $holidayData['start_at'] = $validatedData['start_at'].' 13:00:00';
         }
         switch ($validatedData['end_type']) {
             case 1:
-                $holidayData['end_at'] = $validatedData['end_at'] . " 13:00:00";
+                $holidayData['end_at'] = $validatedData['end_at'].' 13:00:00';
                 break;
             case 2:
-                $holidayData['end_at'] = $validatedData['end_at'] . " 17:30:00";
+                $holidayData['end_at'] = $validatedData['end_at'].' 17:30:00';
         }
 
         $holidayData['absence_id'] = 1;
@@ -234,7 +236,7 @@ class HolidayController extends Controller
             $holidayData['days_paid'] = Date::parse($holidayData['start_at'], 'Europe/London')
                 ->diffInWeekdays(Date::parse($holidayData['end_at'], 'Europe/London'));
             $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F')
-                . ' to ' . Date::parse($holidayData['end_at'], 'Europe/London')->format('j F');
+                .' to '.Date::parse($holidayData['end_at'], 'Europe/London')->format('j F');
             $holidayType = 'Multiple Days';
         }
         $holidayData['days_unpaid'] = 0.0;
@@ -244,12 +246,12 @@ class HolidayController extends Controller
         Absence::where('id', $id)->update($holidayData);
 
         $aRequest = [
-            'holiday_dates' => $sDates,
-            'holiday_id' => $id,
-            'holiday_note' => $holidayData['note'],
+            'holiday_dates'    => $sDates,
+            'holiday_id'       => $id,
+            'holiday_note'     => $holidayData['note'],
             'holiday_overlaps' => $cOverlaps,
-            'holiday_type' => $holidayType,
-            'user_name' => Auth::user()->name,
+            'holiday_type'     => $holidayType,
+            'user_name'        => Auth::user()->name,
         ];
 
         Mail::to(Config::where('name', '=', 'email_approval')->pluck('value')->first())
@@ -262,6 +264,7 @@ class HolidayController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -282,7 +285,7 @@ class HolidayController extends Controller
                 }
             } else {
                 $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    . ' to ' . Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = Auth::user()->name;
@@ -301,6 +304,7 @@ class HolidayController extends Controller
      * Approve the specified resource in storage.
      *
      * @param string $secret
+     *
      * @return \Illuminate\Http\Response
      */
     public function approve($secret)
@@ -328,7 +332,7 @@ class HolidayController extends Controller
                 }
             } else {
                 $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    . ' to ' . Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();
@@ -347,6 +351,7 @@ class HolidayController extends Controller
      * Deny the specified resource in storage.
      *
      * @param string $secret
+     *
      * @return \Illuminate\Http\Response
      */
     public function deny($secret)
@@ -374,7 +379,7 @@ class HolidayController extends Controller
                 }
             } else {
                 $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    . ' to ' . Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();

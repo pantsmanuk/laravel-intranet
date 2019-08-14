@@ -51,13 +51,13 @@ class AttendanceController extends Controller
         // UGLY KLUDGE
         // Get an orderByRaw() that correctly orders $employees by arrival time.
         // MSSQL has a CASE statement that functions similarly to MySQL's FIELD().
-        $orderByRaw = "CASE empref";
+        $orderByRaw = 'CASE empref';
         $i = 1;
         foreach ($onSite as $value) {
-            $orderByRaw .= " WHEN " . $value['empref'] . " THEN $i";
+            $orderByRaw .= ' WHEN '.$value['empref']." THEN $i";
             $i++;
         }
-        $orderByRaw .= " END";
+        $orderByRaw .= ' END';
         // END UGLY KLUDGE
 
         // @Todo Deprecate EmployeeDetails, we are storing all this in Users now...
@@ -78,12 +78,25 @@ class AttendanceController extends Controller
                     $employee['spare_name'] = $name;
                     break;
             }
-            $employee['doorevent'] = (int)Attendance::whereDate('doordate', $dt->toDateString())->where('empref', $employee->empref)
-                ->latest('doortime')->select('doorevent')->first()->doorevent;
-            $employee['dooreventtime'] = Attendance::whereDate('doordate', $dt->toDateString())->where('empref', $employee->empref)
-                ->latest('doortime')->select('doortime')->first()->eventtime;
-            $employee['firstevent'] = Attendance::whereDate('doordate', $dt->toDateString())->where('empref', $employee->empref)
-                ->oldest('doortime')->select('doortime')->first()->eventtime;
+            $employee['doorevent'] = (int) Attendance::whereDate('doordate', $dt->toDateString())
+                ->where('empref', $employee->empref)
+                ->latest('doortime')
+                ->select('doorevent')
+                ->first()
+                ->doorevent;
+            $employee['dooreventtime'] = Attendance::whereDate('doordate', $dt->toDateString())
+                ->where('empref', $employee->empref)
+                ->latest('doortime')
+                ->select('doortime')
+                ->first()
+                ->eventtime;
+            $employee['firstevent'] = Attendance::whereDate('doordate', $dt->toDateString())
+                ->where('empref', $employee->empref)
+                ->oldest('doortime')
+                ->select('doortime')
+                ->first()
+                ->eventtime;
+
             return $employee;
         });
 
@@ -116,7 +129,7 @@ class AttendanceController extends Controller
                 $employee['doorevent'] = Workstate::where('id', $employee->default_workstate_id)
                     ->pluck('workstate')
                     ->first();
-                $employee['note'] = "";
+                $employee['note'] = '';
             }
 
             return $employee;

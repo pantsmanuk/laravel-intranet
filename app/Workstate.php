@@ -12,5 +12,4 @@ class Workstate extends Model implements Auditable
     protected $fillable = [
         'workstate',
     ];
-
 }

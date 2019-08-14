@@ -22,7 +22,7 @@ class AbsenceController extends Controller
             ->pluck('value')->implode(''), 'Europe/London');
         $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
             ->pluck('value')->implode(''), 'Europe/London');
-        $sYear = $dtYearStart->format('Y') . '-' . $dtYearEnd->format('Y');
+        $sYear = $dtYearStart->format('Y').'-'.$dtYearEnd->format('Y');
 
         $absences = Absence::select('absences.id', 'users.name AS user_name', 'start_at', 'end_at', 'absence_id',
             'absence_lookup.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
@@ -57,22 +57,23 @@ class AbsenceController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required|numeric|between:1,25',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date',
-            'absence_id' => 'required|numeric|between:1,11',
-            'note' => 'string|max:80',
-            'days_paid' => 'required|numeric',
-            'days_unpaid' => 'required|numeric'
+            'user_id'     => 'required|numeric|between:1,25',
+            'start_at'    => 'required|date',
+            'end_at'      => 'required|date',
+            'absence_id'  => 'required|numeric|between:1,11',
+            'note'        => 'string|max:80',
+            'days_paid'   => 'required|numeric',
+            'days_unpaid' => 'required|numeric',
         ]);
         if (!isset($request->approved)) {
             $validatedData['approved'] = false;
-        } elseif ($request->approved == "on") {
+        } elseif ($request->approved == 'on') {
             $validatedData['approved'] = true;
         }
         Absence::create($validatedData);
@@ -84,6 +85,7 @@ class AbsenceController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param \App\Absence $absence
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Absence $absence)
@@ -102,9 +104,9 @@ class AbsenceController extends Controller
         $absences = AbsenceLookup::all();
 
         return view('absences.edit')->with([
-            'absence' => $absence,
-            'staff' => $staff,
-            'absences' => $absences
+            'absence'  => $absence,
+            'staff'    => $staff,
+            'absences' => $absences,
         ]);
     }
 
@@ -112,23 +114,24 @@ class AbsenceController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Absence $absence
+     * @param \App\Absence             $absence
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Absence $absence)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required|numeric|between:1,25',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date',
-            'absence_id' => 'required|numeric|between:1,11',
-            'note' => 'string|max:80',
-            'days_paid' => 'required|numeric',
-            'days_unpaid' => 'required|numeric'
+            'user_id'     => 'required|numeric|between:1,25',
+            'start_at'    => 'required|date',
+            'end_at'      => 'required|date',
+            'absence_id'  => 'required|numeric|between:1,11',
+            'note'        => 'string|max:80',
+            'days_paid'   => 'required|numeric',
+            'days_unpaid' => 'required|numeric',
         ]);
         if (!isset($request->approved)) {
             $validatedData['approved'] = false;
-        } elseif ($request->approved == "on") {
+        } elseif ($request->approved == 'on') {
             $validatedData['approved'] = true;
         }
         Absence::whereId($absence->id)->update($validatedData);
@@ -140,6 +143,7 @@ class AbsenceController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Absence $absence
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($absence)

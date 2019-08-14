@@ -61,6 +61,7 @@ class HomeController extends Controller
                     ->pluck('workstate')
                     ->first();
             }
+
             return $employee;
         });
 

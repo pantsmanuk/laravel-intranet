@@ -45,12 +45,13 @@ class DoorEventController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required',
+            'user_id'    => 'required',
             'created_at' => 'required',
         ]);
         $validatedData['event'] = (isset($request['event'])) ? 1 : 0;
@@ -63,6 +64,7 @@ class DoorEventController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -80,13 +82,14 @@ class DoorEventController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required',
+            'user_id'    => 'required',
             'created_at' => 'required',
         ]);
         $validatedData['event'] = (isset($request['event'])) ? 1 : 0;
@@ -99,6 +102,7 @@ class DoorEventController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

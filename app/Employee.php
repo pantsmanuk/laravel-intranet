@@ -21,6 +21,6 @@ class Employee extends Model implements Auditable
         'holiday_entitlement',
         'holiday_carried_forward',
         'days_per_week',
-        'default_workstate_id'
+        'default_workstate_id',
     ];
 }

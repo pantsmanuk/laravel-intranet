@@ -5,7 +5,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class Action extends Mailable
 {
@@ -20,6 +19,7 @@ class Action extends Mailable
      * Create a new message instance.
      *
      * @param array $request
+     *
      * @return void
      */
     public function __construct($request)
@@ -38,7 +38,8 @@ class Action extends Mailable
     public function build()
     {
         return $this->from('donotreply@ggpsystems.co.uk', 'Holiday Booking Page')
-            ->subject($this->holiday_action . ': ' . $this->holiday_type . ' holiday request for ' . $this->user_name . ' on ' . $this->holiday_dates)
+            ->subject($this->holiday_action.': '.$this->holiday_type.' holiday request for '.$this->user_name
+                .' on '.$this->holiday_dates)
             ->view('emails.action');
     }
 }

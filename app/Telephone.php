@@ -11,6 +11,6 @@ class Telephone extends Model implements Auditable
 
     protected $fillable = [
         'name',
-        'number'
+        'number',
     ];
 }

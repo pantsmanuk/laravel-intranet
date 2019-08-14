@@ -20,6 +20,6 @@ class EmployeeDetails extends Model
 
     public function getNameAttribute()
     {
-        return $this->forenames . ' ' . $this->surname;
+        return $this->forenames.' '.$this->surname;
     }
 }

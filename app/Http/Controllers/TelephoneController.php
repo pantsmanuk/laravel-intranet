@@ -37,7 +37,7 @@ class TelephoneController extends Controller
     public function create()
     {
         $staff = User::select('id', 'name')
-            ->whereRaw('(deleted_at >= "' . Date::now('Europe/London')->toDateTimeString() . '" OR deleted_at IS NULL)')
+            ->whereRaw('(deleted_at >= "'.Date::now('Europe/London')->toDateTimeString().'" OR deleted_at IS NULL)')
             ->orderByRaw('name')
             ->get();
 
@@ -48,23 +48,26 @@ class TelephoneController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'user_id' => 'required',
-            'name' => 'required',
-            'number' => 'required',
+            'name'    => 'required',
+            'number'  => 'required',
         ]);
-        $telephoneData = array(
-            'name' => $validatedData['name'],
-            'number' => $validatedData['number']);
+        $telephoneData = [
+            'name'   => $validatedData['name'],
+            'number' => $validatedData['number'],
+        ];
         $telephone = Telephone::create($telephoneData);
 
-        $lookupData = array(
+        $lookupData = [
             'user_id' => $validatedData['user_id'],
-            'telephone_id' => $telephone['id']);
+            'telephone_id' => $telephone['id'],
+        ];
         UserTelephoneLookup::create($lookupData);
 
         return redirect('/telephones')->with('success', 'Telephone saved');
@@ -74,6 +77,7 @@ class TelephoneController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -81,7 +85,7 @@ class TelephoneController extends Controller
         $lookup = UserTelephoneLookup::findOrFail($id);
         $telephone = Telephone::findOrFail($lookup['telephone_id']);
         $staff = User::select('id', 'name')
-            ->whereRaw('(deleted_at >= "' . Date::now('Europe/London')->toDateTimeString() . '" OR deleted_at IS NULL)')
+            ->whereRaw('(deleted_at >= "'.Date::now('Europe/London')->toDateTimeString().'" OR deleted_at IS NULL)')
             ->orderByRaw('name')
             ->get();
 
@@ -92,7 +96,8 @@ class TelephoneController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -102,20 +107,22 @@ class TelephoneController extends Controller
 
         $validatedData = $request->validate([
             'user_id' => 'required',
-            'name' => 'required',
-            'number' => 'required',
+            'name'    => 'required',
+            'number'  => 'required',
         ]);
 
-        $telephoneData = array(
-            'name' => $validatedData['name'],
-            'number' => $validatedData['number']);
+        $telephoneData = [
+            'name'   => $validatedData['name'],
+            'number' => $validatedData['number'],
+        ];
         if ($telephone['name'] != $telephoneData['name'] || $telephone['number'] != $telephoneData['number']) {
             $telephone = Telephone::whereId($lookup['telephone_id'])->update($telephoneData);
         }
 
-        $lookupData = array(
-            'user_id' => (int)$validatedData['user_id'],
-            'telephone_id' => $telephone['id']);
+        $lookupData = [
+            'user_id'      => (int) $validatedData['user_id'],
+            'telephone_id' => $telephone['id'],
+        ];
         if ($lookup['user_id'] != $lookupData['user_id']) {
             UserTelephoneLookup::whereId($lookup['id'])->update($lookupData);
         }
@@ -127,6 +134,7 @@ class TelephoneController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

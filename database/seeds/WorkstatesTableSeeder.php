@@ -15,17 +15,17 @@ class WorkstatesTableSeeder extends Seeder
     {
         $dtNow = Date::now('Europe/London');
         DB::table('workstates')->insert([
-            'workstate' => 'On-site',
+            'workstate'  => 'On-site',
             'created_at' => $dtNow,
             'updated_at' => $dtNow,
         ]);
         DB::table('workstates')->insert([
-            'workstate' => 'Remote working',
+            'workstate'  => 'Remote working',
             'created_at' => $dtNow,
             'updated_at' => $dtNow,
         ]);
         DB::table('workstates')->insert([
-            'workstate' => 'Not working',
+            'workstate'  => 'Not working',
             'created_at' => $dtNow,
             'updated_at' => $dtNow,
         ]);

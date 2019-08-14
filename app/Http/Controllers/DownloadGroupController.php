@@ -33,12 +33,13 @@ class DownloadGroupController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:20',
+            'name'  => 'required|string|max:20',
             'files' => 'required|string|max:60',
         ]);
         DownloadGroup::create($validatedData);
@@ -50,6 +51,7 @@ class DownloadGroupController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -63,13 +65,14 @@ class DownloadGroupController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:20',
+            'name'  => 'required|string|max:20',
             'files' => 'required|string|max:60',
         ]);
         DownloadGroup::whereId($id)->update($validatedData);
@@ -81,6 +84,7 @@ class DownloadGroupController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

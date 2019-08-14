@@ -33,12 +33,13 @@ class ConfigController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
+            'name'  => 'required',
             'value' => 'required',
         ]);
         Config::create($validatedData);
@@ -50,6 +51,7 @@ class ConfigController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -63,13 +65,14 @@ class ConfigController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
+            'name'  => 'required',
             'value' => 'required',
         ]);
         Config::whereId($id)->update($validatedData);
@@ -81,6 +84,7 @@ class ConfigController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

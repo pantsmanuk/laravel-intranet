@@ -42,20 +42,21 @@ class EmployeeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
+            'name'     => 'required',
             'username' => 'required',
-            'start' => 'required',
+            'start'    => 'required',
         ]);
 
         $staffData['name'] = $validatedData['name'];
         $staffData['username'] = $validatedData['username'];
-        $staffData['email'] = "changeme@ggpsystems.co.uk"; // Default value for new staff
-        $staffData['password'] = "Passw0rd"; // Default value for new staff
+        $staffData['email'] = 'changeme@ggpsystems.co.uk'; // Default value for new staff
+        $staffData['password'] = 'Passw0rd'; // Default value for new staff
         User::create($staffData);
 
         $employeeData['started_at'] = $validatedData['start'] . " 09:00:00";
@@ -72,6 +73,7 @@ class EmployeeController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -93,7 +95,7 @@ class EmployeeController extends Controller
         $workstates = Workstate::all();
 
         return view('staff.edit')->with([
-            'staff' => $staff[0],
+            'staff'      => $staff[0],
             'workstates' => $workstates,
         ]);
     }
@@ -102,31 +104,35 @@ class EmployeeController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
-            'username' => 'required',
-            'start' => 'required|date',
-            'end' => 'date|nullable',
-            'entitlement' => 'required|numeric',
+            'name'            => 'required',
+            'username'        => 'required',
+            'start'           => 'required|date',
+            'end'             => 'date|nullable',
+            'entitlement'     => 'required|numeric',
             'carried_forward' => 'required|numeric',
-            'days_per_week' => 'required|numeric',
-            'workstate_id' => 'required|numeric',
+            'days_per_week'   => 'required|numeric',
+            'workstate_id'    => 'required|numeric',
         ]);
 
-        $staffData = array('name' => $validatedData['name'],
-            'username' => $validatedData['username']);
+        $staffData = [
+            'name'     => $validatedData['name'],
+            'username' => $validatedData['username'],
+        ];
 
-        $employeeData = array('started_at' => $validatedData['start'],
-            'ended_at' => $validatedData['end'],
-            'holiday_entitlement' => $validatedData['entitlement'],
+        $employeeData = [
+            'started_at'              => $validatedData['start'],
+            'ended_at'                => $validatedData['end'],
+            'holiday_entitlement'     => $validatedData['entitlement'],
             'holiday_carried_forward' => $validatedData['carried_forward'],
-            'days_per_week' => $validatedData['days_per_week'],
-            'default_workstate_id' => $validatedData['workstate_id']);
+            'days_per_week'           => $validatedData['days_per_week'],
+        ];
 
         User::whereId($id)->update($staffData);
         Employee::whereId($id)->update($employeeData);
@@ -138,6 +144,7 @@ class EmployeeController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
