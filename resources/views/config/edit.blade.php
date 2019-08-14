@@ -30,8 +30,10 @@
                             <input class="form-control" aria-label="Configuration value" id="value" name="value"
                                    type="text" value="{{$config->value}}"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update configuration key/value pair</button>
-                        <button type="reset" class="btn btn-secondary">Reset form</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Update configuration key/value pair</button>
+                            <button type="reset" class="btn btn-secondary">Reset form</button>
+                        </div>
                     </form>
                 </div>
             </div>

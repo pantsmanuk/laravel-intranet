@@ -53,8 +53,10 @@
                                 </script>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add staff member</button>
-                        <button type="reset" class="btn btn-secondary">Reset form</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Add staff member</button>
+                            <button type="reset" class="btn btn-secondary">Reset form</button>
+                        </div>
                     </form>
                 </div>
             </div>

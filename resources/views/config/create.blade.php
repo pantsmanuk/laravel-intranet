@@ -29,8 +29,10 @@
                             <input class="form-control" aria-label="Configuration value" placeholder="Value" id="value"
                                    name="value" type="text"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">Create configuration key/value pair</button>
-                        <button type="reset" class="btn btn-secondary">Reset form</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Create configuration key/value pair</button>
+                            <button type="reset" class="btn btn-secondary">Reset form</button>
+                        </div>
                     </form>
                 </div>
             </div>

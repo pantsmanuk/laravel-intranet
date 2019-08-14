@@ -25,8 +25,10 @@
                             <input class="form-control" aria-label="Absence type name" id="name" name="name" type="text"
                                    value="{{$absenceLookup->name}}"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update absence type</button>
-                        <button type="reset" class="btn btn-secondary">Reset form</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Update absence type</button>
+                            <button type="reset" class="btn btn-secondary">Reset form</button>
+                        </div>
                     </form>
                 </div>
             </div>

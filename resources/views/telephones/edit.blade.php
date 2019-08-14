@@ -40,8 +40,10 @@
                             <input class="form-control" aria-label="Telephone number" id="number" name="number"
                                    type="text" value="{{$telephone->number}}"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update telephone</button>
-                        <button type="reset" class="btn btn-secondary">Reset form</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Update telephone</button>
+                            <button type="reset" class="btn btn-secondary">Reset form</button>
+                        </div>
                     </form>
                 </div>
             </div>

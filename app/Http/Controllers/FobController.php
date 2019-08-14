@@ -79,17 +79,6 @@ class FobController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\Fob $fob
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Fob $fob)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param \App\Fob $fob

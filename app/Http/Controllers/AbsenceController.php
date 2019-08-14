@@ -81,17 +81,6 @@ class AbsenceController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\absence $absence
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Absence $absence)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param \App\Absence $absence

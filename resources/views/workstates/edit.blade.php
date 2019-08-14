@@ -25,8 +25,10 @@
                             <input class="form-control" aria-label="Work state name" id="workstate" name="workstate"
                                    type="text" value="{{$workstate->workstate}}"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update work state</button>
-                        <button type="reset" class="btn btn-secondary">Reset form</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Update work state</button>
+                            <button type="reset" class="btn btn-secondary">Reset form</button>
+                        </div>
                     </form>
                 </div>
             </div>
