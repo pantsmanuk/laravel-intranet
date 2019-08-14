@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EmployeeDetails extends Model
 {
-    protected $connection = 'sqlsrv2';
+    protected $connection = 'sqlsrv';
     protected $table = 'empdetails';
     protected $primaryKey = 'empref';
 
