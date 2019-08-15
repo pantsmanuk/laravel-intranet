@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Workstate;
 use Illuminate\Http\Request;
 
+// @todo rename controller/class "WorkStateController"
 class WorkstateController extends Controller
 {
     /**

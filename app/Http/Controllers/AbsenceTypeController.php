@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AbsenceLookup;
 use Illuminate\Http\Request;
 
+// @todo rename controller/class "AbsenceTypeController"
 class AbsenceLookupController extends Controller
 {
     /**
