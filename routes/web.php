@@ -26,7 +26,7 @@ Route::get('/attendance', 'AttendanceController@index')->name('attendance');
 Route::get('/audit', 'AuditController@index')->name('audit');
 
 Route::resource('absences', 'AbsenceController');
-Route::resource('absencetypes', 'AbsenceLookupController');
+Route::resource('absencetypes', 'AbsenceTypeController');
 Route::resource('config', 'ConfigController');
 Route::resource('doorevents', 'DoorEventController');
 Route::resource('downloads', 'DownloadGroupController');
@@ -36,4 +36,4 @@ Route::get('holidays/{secret}/approve', 'HolidayController@approve')->name('holi
 Route::get('holidays/{secret}/deny', 'HolidayController@deny')->name('holidays.deny');          // Can't the resource controller "just do this"?
 Route::resource('staff', 'EmployeeController');
 Route::resource('telephones', 'TelephoneController');
-Route::resource('workstates', 'WorkstateController');
+Route::resource('workstates', 'WorkStateController');

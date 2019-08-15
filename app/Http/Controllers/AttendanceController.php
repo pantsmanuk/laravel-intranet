@@ -6,7 +6,7 @@ use App\Absence;
 use App\Attendance;
 use App\Fob;
 use App\User;
-use App\Workstate;
+use App\WorkState;
 use Illuminate\Support\Facades\Date;
 
 class AttendanceController extends Controller
@@ -113,7 +113,7 @@ class AttendanceController extends Controller
                 $employee['door_event'] = $absence->workstate;
                 $employee['note'] = trim($absence->note);
             } else {
-                $employee['door_event'] = Workstate::where('id', $employee->default_workstate_id)
+                $employee['door_event'] = WorkState::where('id', $employee->default_workstate_id)
                     ->pluck('workstate')
                     ->first();
                 $employee['note'] = '';

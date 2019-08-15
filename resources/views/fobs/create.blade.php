@@ -20,19 +20,19 @@
                     <form method="post" action="{{route('fobs.store')}}">
                         <div class="form-group">
                             @csrf
-                            <label for="FobID">Spare fob:</label>
-                            <select class="form-control" id="FobID" name="FobID" aria-label="Spare fob selection">
+                            <label for="fob_id">Spare fob:</label>
+                            <select class="form-control" id="fob_id" name="fob_id" aria-label="Spare fob selection">
                                 @foreach($fobs as $value)
-                                    <option value="{{$value->FobID}}"
+                                    <option value="{{$value->fob_id}}"
                                             aria-label="{{$value->name}}">{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="UserID">Staff member:</label>
-                            <select class="form-control" id="UserID" name="UserID" aria-label="Staff member selection">
+                            <label for="user_id">Staff member:</label>
+                            <select class="form-control" id="user_id" name="user_id" aria-label="Staff member selection">
                                 @foreach($staff as $value)
-                                    <option value="{{$value->UserID}}"
+                                    <option value="{{$value->user_id}}"
                                             aria-label="{{$value->name}}">{{$value->name}}</option>
                                 @endforeach
                             </select>

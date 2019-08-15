@@ -9,14 +9,9 @@ class Fob extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $dates = [
-        'date',
-    ];
-    protected $table = 'realaccess_fob_lookup';
+    protected $table = 'fobs_users';
     protected $fillable = [
-        'FobID',
-        'UserID',
-        'date',
-        'MachineID',
+        'fob_id',
+        'user_id',
     ];
 }

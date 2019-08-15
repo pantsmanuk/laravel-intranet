@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Telephone;
-use App\UserTelephoneLookup;
+use App\UserTelephone;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
@@ -19,10 +19,10 @@ class TelephoneController extends Controller
     {
         // Do a map to add in the user name from user_id, or flip this on it's head and base everything off
         // UserTelephoneLookup in the first instance?
-        $telephones = UserTelephoneLookup::select('users_telephones_lookup.id AS lookup_id', 'user_id', 'telephone_id',
+        $telephones = UserTelephone::select('users_telephones.id AS lookup_id', 'user_id', 'telephone_id',
             'u.name AS user_name', 't.name', 't.number')
-            ->join('telephones AS t', 'users_telephones_lookup.telephone_id', '=', 't.id')
-            ->join('users AS u', 'users_telephones_lookup.user_id', '=', 'u.id')
+            ->join('telephones AS t', 'users_telephones.telephone_id', '=', 't.id')
+            ->join('users AS u', 'users_telephones.user_id', '=', 'u.id')
             ->orderByRaw('u.name, t.id ASC')
             ->get();
 
@@ -68,7 +68,7 @@ class TelephoneController extends Controller
             'user_id'      => $validatedData['user_id'],
             'telephone_id' => $telephone['id'],
         ];
-        UserTelephoneLookup::create($lookupData);
+        UserTelephone::create($lookupData);
 
         return redirect('/telephones')->with('success', 'Telephone saved');
     }
@@ -82,7 +82,7 @@ class TelephoneController extends Controller
      */
     public function edit($id)
     {
-        $lookup = UserTelephoneLookup::findOrFail($id);
+        $lookup = UserTelephone::findOrFail($id);
         $telephone = Telephone::findOrFail($lookup['telephone_id']);
         $staff = User::select('id', 'name')
             ->whereRaw('(deleted_at >= "'.Date::now('Europe/London')->toDateTimeString().'" OR deleted_at IS NULL)')
@@ -102,7 +102,7 @@ class TelephoneController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $lookup = UserTelephoneLookup::findOrFail($id);
+        $lookup = UserTelephone::findOrFail($id);
         $telephone = Telephone::findOrFail($lookup['telephone_id']);
 
         $validatedData = $request->validate([
@@ -124,7 +124,7 @@ class TelephoneController extends Controller
             'telephone_id' => $telephone['id'],
         ];
         if ($lookup['user_id'] != $lookupData['user_id']) {
-            UserTelephoneLookup::whereId($lookup['id'])->update($lookupData);
+            UserTelephone::whereId($lookup['id'])->update($lookupData);
         }
 
         return redirect('/telephones')->with('success', 'Telephone updated');
@@ -139,7 +139,7 @@ class TelephoneController extends Controller
      */
     public function destroy($id)
     {
-        $lookup = UserTelephoneLookup::findOrFail($id);
+        $lookup = UserTelephone::findOrFail($id);
         $telephone = Telephone::findOrFail($lookup['telephone_id']);
         $telephone->delete();
         $lookup->delete();

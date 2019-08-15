@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Workstate;
+use App\WorkState;
 use Illuminate\Http\Request;
 
-// @todo rename controller/class "WorkStateController"
-class WorkstateController extends Controller
+class WorkStateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +14,9 @@ class WorkstateController extends Controller
      */
     public function index()
     {
-        $work_states = Workstate::all();
+        $work_states = WorkState::all();
 
-        return view('workstates.index')->with(['workstates' => $work_states]);
+        return view('workstates.index')->with(['work_states' => $work_states]);
     }
 
     /**
@@ -40,9 +39,9 @@ class WorkstateController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'workstate' => 'required',
+            'work_state' => 'required',
         ]);
-        Workstate::create($validatedData);
+        WorkState::create($validatedData);
 
         return redirect('/workstates')->with('success', 'Work state saved');
     }
@@ -56,9 +55,9 @@ class WorkstateController extends Controller
      */
     public function edit($id)
     {
-        $workstate = Workstate::findOrFail($id);
+        $work_state = WorkState::findOrFail($id);
 
-        return view('workstates.edit')->with(['workstate' => $workstate]);
+        return view('workstates.edit')->with(['work_state' => $work_state]);
     }
 
     /**
@@ -72,9 +71,9 @@ class WorkstateController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'workstate' => 'required',
+            'work_state' => 'required',
         ]);
-        Workstate::whereId($id)->update($validatedData);
+        WorkState::whereId($id)->update($validatedData);
 
         return redirect('/workstates')->with('success', 'Work state updated');
     }
@@ -88,7 +87,7 @@ class WorkstateController extends Controller
      */
     public function destroy($id)
     {
-        $work_state = Workstate::findOrFail($id);
+        $work_state = WorkState::findOrFail($id);
         $work_state->delete();
 
         return redirect('/workstates')->with('success', 'Work state deleted');

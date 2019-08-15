@@ -13,13 +13,13 @@ class Absence extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     protected $dates = [
-        'start_at',
-        'end_at',
+        'started_at',
+        'ended_at',
     ];
     protected $fillable = [
         'user_id',
-        'start_at',
-        'end_at',
+        'started_at',
+        'ended_at',
         'absence_id',
         'note',
         'days_paid',

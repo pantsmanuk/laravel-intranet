@@ -22,11 +22,13 @@ class FobController extends Controller
             14 => '#3',
         ];
 
-        $fobs = Fob::whereNull('deleted_at')->orderBy('created_at', 'DESC')->get();
+        $fobs = Fob::orderBy('created_at', 'DESC')
+            ->get();
         $fobs->map(function ($fob) use ($fob_names) {
-            $fob['fob_name'] = $fob_names[$fob['FobID']];
-            $fob['staff_name'] = User::where('id', $fob['UserID'])
-                ->pluck('name')->first();
+            $fob['fob_name'] = $fob_names[$fob['fob_id']];
+            $fob['staff_name'] = User::where('id', $fob['user_id'])
+                ->pluck('name')
+                ->first();
         });
 
         return view('fobs.index')->with('fobs', $fobs);
@@ -41,23 +43,24 @@ class FobController extends Controller
     {
         // Get unused spare fobs as collection
         $fobs = [
-            ['FobID' => 12, 'name' => 'Spare fob #1'],
-            ['FobID' => 13, 'name' => 'Spare fob #2'],
-            ['FobID' => 14, 'name' => 'Spare fob #3'],
+            ['fob_id' => 12, 'name' => 'Spare fob #1'],
+            ['fob_id' => 13, 'name' => 'Spare fob #2'],
+            ['fob_id' => 14, 'name' => 'Spare fob #3'],
         ];
         $fobs = collect($fobs)->map(function ($fob) {
             return (object) $fob;
-        })->whereNotIn('FobID', Fob::whereDate('created_at', Date::now('Europe/London')
+        })->whereNotIn('fob_id', Fob::whereDate('created_at', Date::now('Europe/London')
             ->toDateString())
-            ->pluck('FobID')
+            ->pluck('fob_id')
             ->toArray());
 
         // Get unassigned staff as collection
-        $staff = User::select('id AS UserID', 'name')
+        $staff = User::select('id AS user_id', 'name')
             ->whereNotIn('id', Fob::where('created_at', 'LIKE', Date::now('Europe/London')->toDateString().'%')
-                ->pluck('UserID')
+                ->pluck('user_id')
                 ->toArray())
-            ->whereRaw('(deleted_at >= "'.Date::now('Europe/London')->toDateTimeString().'" OR deleted_at IS NULL)')
+            ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
+            ->orWhereNull('deleted_at')
             ->orderByRaw('name')
             ->get();
 
@@ -74,8 +77,6 @@ class FobController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->toArray();
-        $validatedData['MachineID'] = '('.$request->ip().')'.auth()->user()->name; // @todo Deprecate this!
-        $validatedData['date'] = Date::now('Europe/London');
         Fob::create($validatedData);
 
         return redirect('/fobs')->with('success', 'Fob assignment saved');
@@ -91,15 +92,15 @@ class FobController extends Controller
     public function edit(Fob $fob)
     {
         $fobs = [
-            ['FobID' => 12, 'name' => 'Spare fob #1'],
-            ['FobID' => 13, 'name' => 'Spare fob #2'],
-            ['FobID' => 14, 'name' => 'Spare fob #3'],
+            ['fob_id' => 12, 'name' => 'Spare fob #1'],
+            ['fob_id' => 13, 'name' => 'Spare fob #2'],
+            ['fob_id' => 14, 'name' => 'Spare fob #3'],
         ];
         $fobs = collect($fobs)->map(function ($fob) {
             return (object) $fob;
         });
 
-        $staff = User::select('id AS UserID', 'name')
+        $staff = User::select('id AS user_id', 'name')
             ->whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
             ->orWhereNull('deleted_at')
             ->orderByRaw('name')
@@ -119,7 +120,6 @@ class FobController extends Controller
     public function update(Request $request, Fob $fob)
     {
         $validatedData = $request->except(['_token', '_method']);
-        $validatedData['MachineID'] = '('.$request->ip().')'.auth()->user()->name;
         Fob::whereId($fob->id)->update($validatedData);
 
         return redirect('/fobs')->with('success', 'Fob assignment updated');

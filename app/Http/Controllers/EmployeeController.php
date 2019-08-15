@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Employee;
 use App\User;
-use App\Workstate;
+use App\WorkState;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 
@@ -92,7 +92,7 @@ class EmployeeController extends Controller
             return $user;
         });
 
-        $workstates = Workstate::all();
+        $workstates = WorkState::all();
 
         return view('staff.edit')->with([
             'staff'      => $staff[0],

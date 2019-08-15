@@ -21,11 +21,11 @@
                     </thead>
                     <tbody>
                     <?php $t_count = 0; ?>
-                    @foreach ($workstates as $value)
+                    @foreach ($work_states as $value)
                         <?php $t_count = $loop->count;?>
                         <tr>
                             <td>{{$value->id}}</td>
-                            <td>{{$value->workstate}}</td>
+                            <td>{{$value->work_state}}</td>
                             <td><a href="{{route('workstates.edit', $value->id)}}" class="btn btn-primary"
                                    data-toggle="tooltip" data-placement="top" title="Edit fob assignment"><span
                                             class="fas fa-pencil-alt"></span></a></td>

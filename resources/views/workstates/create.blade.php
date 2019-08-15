@@ -20,9 +20,9 @@
                     <form method="post" action="{{route('workstates.store')}}">
                         <div class="form-group">
                             @csrf
-                            <label for="workstate">Work state:</label>
+                            <label for="work_state">Work state:</label>
                             <input class="form-control" aria-label="Work state name" placeholder="Work state name"
-                                   id="workstate" name="workstate" type="text"/>
+                                   id="work_state" name="work_state" type="text"/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Create work state</button>

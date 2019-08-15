@@ -34,8 +34,8 @@
                         <?php $t_count = $loop->count;?>
                         <tr>
                             <td>{{$value->user_name}}</td>
-                            <td>{{$value->start_at}}</td>
-                            <td>{{$value->end_at}}</td>
+                            <td>{{$value->started_at}}</td>
+                            <td>{{$value->ended_at}}</td>
                             <td>{{$value->absence_type}}</td>
                             <td>{{$value->note}}</td>
                             <td><?php echo ($value->absence_type == "Holiday") ? $t_approved[$value->approved] : "-"; ?></td>

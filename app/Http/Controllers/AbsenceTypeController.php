@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\AbsenceLookup;
+use App\AbsenceType;
 use Illuminate\Http\Request;
 
-// @todo rename controller/class "AbsenceTypeController"
-class AbsenceLookupController extends Controller
+class AbsenceTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +14,7 @@ class AbsenceLookupController extends Controller
      */
     public function index()
     {
-        $absenceLookup = AbsenceLookup::all();
+        $absenceLookup = AbsenceType::all();
 
         return view('absencetypes.index')->with(['abstypes' => $absenceLookup]);
     }
@@ -42,7 +41,7 @@ class AbsenceLookupController extends Controller
         $validatedData = $request->validate([
             'name' => 'required',
         ]);
-        AbsenceLookup::create($validatedData);
+        AbsenceType::create($validatedData);
 
         return redirect('/absencetypes')->with('success', 'Absence type saved');
     }
@@ -56,7 +55,7 @@ class AbsenceLookupController extends Controller
      */
     public function edit($id)
     {
-        $absenceLookup = AbsenceLookup::findOrFail($id);
+        $absenceLookup = AbsenceType::findOrFail($id);
 
         return view('absencetypes.edit')->with(['absenceLookup' => $absenceLookup]);
     }
@@ -74,7 +73,7 @@ class AbsenceLookupController extends Controller
         $validatedData = $request->validate([
             'name' => 'required',
         ]);
-        AbsenceLookup::whereId($id)->update($validatedData);
+        AbsenceType::whereId($id)->update($validatedData);
 
         return redirect('/absencetypes')->with('success', 'Absence type updated');
     }
@@ -90,7 +89,7 @@ class AbsenceLookupController extends Controller
      */
     public function destroy($id)
     {
-        $absenceLookup = AbsenceLookup::findOrFail($id);
+        $absenceLookup = AbsenceType::findOrFail($id);
         $absenceLookup->delete();
 
         return redirect('/absencetypes')->with('success', 'Absence type deleted');

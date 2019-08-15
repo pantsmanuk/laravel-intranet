@@ -21,20 +21,20 @@
                         <div class="form-group">
                             @csrf
                             @method('PATCH')
-                            <label for="FobID">Spare fob:</label>
-                            <select class="form-control" id="FobID" name="FobID" aria-label="Spare fob selection">
+                            <label for="fob_id">Spare fob:</label>
+                            <select class="form-control" id="fob_id" name="fob_id" aria-label="Spare fob selection">
                                 @foreach($fobs as $value)
-                                    <option value="{{$value->FobID}}"
-                                            aria-label="{{$value->name}}"<?php echo ($value->FobID == $fob->FobID) ? " selected" : "";?>>{{$value->name}}</option>
+                                    <option value="{{$value->fob_id}}"
+                                            aria-label="{{$value->name}}"<?php echo ($value->fob_id == $fob->fob_id) ? " selected" : "";?>>{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="UserID">Staff member:</label>
-                            <select class="form-control" id="UserID" name="UserID" aria-label="Staff member selection">
+                            <label for="user_id">Staff member:</label>
+                            <select class="form-control" id="user_id" name="user_id" aria-label="Staff member selection">
                                 @foreach($staff as $value)
-                                    <option value="{{$value->UserID}}"
-                                            aria-label="{{$value->name}}"<?php echo ($value->UserID == $fob->UserID) ? " selected" : "";?>>{{$value->name}}</option>
+                                    <option value="{{$value->user_id}}"
+                                            aria-label="{{$value->name}}"<?php echo ($value->user_id == $fob->user_id) ? " selected" : "";?>>{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>

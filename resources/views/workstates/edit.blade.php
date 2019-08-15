@@ -17,13 +17,13 @@
                             </ul>
                         </div><br/>
                     @endif
-                    <form method="post" action="{{route('workstates.update', $workstate->id)}}">
+                    <form method="post" action="{{route('workstates.update', $work_state->id)}}">
                         <div class="form-group">
                             @csrf
                             @method('PATCH')
-                            <label for="workstate">Work state:</label>
-                            <input class="form-control" aria-label="Work state name" id="workstate" name="workstate"
-                                   type="text" value="{{$workstate->workstate}}"/>
+                            <label for="work_state">Work state:</label>
+                            <input class="form-control" aria-label="Work state name" id="work_state" name="work_state"
+                                   type="text" value="{{$work_state->work_state}}"/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update work state</button>

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Absence;
-use App\AbsenceLookup;
+use App\AbsenceType;
 use App\Config;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -24,12 +24,12 @@ class AbsenceController extends Controller
             ->pluck('value')->implode(''), 'Europe/London');
         $sYear = $dtYearStart->format('Y').'-'.$dtYearEnd->format('Y');
 
-        $absences = Absence::select('absences.id', 'users.name AS user_name', 'start_at', 'end_at', 'absence_id',
-            'absence_lookup.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
+        $absences = Absence::select('absences.id', 'users.name AS user_name', 'started_at', 'ended_at', 'absence_id',
+            'absence_types.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
             ->join('users', 'absences.user_id', '=', 'users.id')
-            ->join('absence_lookup', 'absences.absence_id', '=', 'absence_lookup.id')
-            ->whereDate('start_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))
-            ->whereDate('end_at', '<=', $dtYearEnd->format('Y-m-d H:i:s'))
+            ->join('absence_types', 'absences.absence_id', '=', 'absence_types.id')
+            ->whereDate('started_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))
+            ->whereDate('ended_at', '<=', $dtYearEnd->format('Y-m-d H:i:s'))
             ->get();
 
         return view('absences.index')->with(['sYear' => $sYear, 'absences' => $absences]);
@@ -48,7 +48,7 @@ class AbsenceController extends Controller
             ->orderByRaw('name')
             ->get();
 
-        $absences = AbsenceLookup::all();
+        $absences = AbsenceType::all();
 
         return view('absences.create')->with(['staff' => $staff, 'absences' => $absences]);
     }
@@ -64,8 +64,8 @@ class AbsenceController extends Controller
     {
         $validatedData = $request->validate([
             'user_id'     => 'required|numeric|between:1,25',
-            'start_at'    => 'required|date',
-            'end_at'      => 'required|date',
+            'started_at'  => 'required|date',
+            'ended_at'    => 'required|date',
             'absence_id'  => 'required|numeric|between:1,11',
             'note'        => 'string|max:80',
             'days_paid'   => 'required|numeric',
@@ -78,18 +78,20 @@ class AbsenceController extends Controller
         }
         Absence::create($validatedData);
 
-        return redirect('\absences')->with('success', 'Absence saved');
+        return redirect('/absences')->with('success', 'Absence saved');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Absence $absence
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Absence $absence)
+    public function edit($id)
     {
+        $absence = Absence::findOrFail($id);
+
         $dtYearStart = Date::parse(Config::select('value')->where('name', 'holidays_start')->get()
             ->pluck('value')->implode(''), 'Europe/London');
         $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
@@ -101,7 +103,7 @@ class AbsenceController extends Controller
             ->orderByRaw('name')
             ->get();
 
-        $absences = AbsenceLookup::all();
+        $absences = AbsenceType::all();
 
         return view('absences.edit')->with([
             'absence'  => $absence,
@@ -114,16 +116,16 @@ class AbsenceController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Absence             $absence
+     * @param int                      $id
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Absence $absence)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
             'user_id'     => 'required|numeric|between:1,25',
-            'start_at'    => 'required|date',
-            'end_at'      => 'required|date',
+            'started_at'  => 'required|date',
+            'ended_at'    => 'required|date',
             'absence_id'  => 'required|numeric|between:1,11',
             'note'        => 'string|max:80',
             'days_paid'   => 'required|numeric',
@@ -134,20 +136,21 @@ class AbsenceController extends Controller
         } elseif ($request->approved == 'on') {
             $validatedData['approved'] = true;
         }
-        Absence::whereId($absence->id)->update($validatedData);
+        Absence::whereId($id)->update($validatedData);
 
-        return redirect('\absences')->with('success', 'Absence updated');
+        return redirect('/absences')->with('success', 'Absence updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Absence $absence
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($absence)
+    public function destroy($id)
     {
+        $absence = Absence::findOrFail($id);
         $absence->delete();
 
         return redirect('/absences')->with('success', 'Absence deleted');
