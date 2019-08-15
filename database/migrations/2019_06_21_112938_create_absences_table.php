@@ -16,8 +16,8 @@ class CreateAbsencesTable extends Migration
         Schema::create('absences', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id')->comment('empref');
-            $table->timestamp('start_at')->nullable();
-            $table->timestamp('end_at')->nullable();
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('ended_at')->nullable();
             $table->integer('absence_id');
             $table->string('note', 80)->nullable();
             $table->double('days_paid', 8, 2);

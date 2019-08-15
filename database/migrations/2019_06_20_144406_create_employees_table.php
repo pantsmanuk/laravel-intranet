@@ -20,7 +20,7 @@ class CreateEmployeesTable extends Migration
             $table->double('holiday_entitlement', 8, 2);
             $table->double('holiday_carried_forward', 8, 2);
             $table->tinyInteger('days_per_week');
-            $table->integer('default_workstate_id');
+            $table->integer('default_work_state_id');
             $table->string('machine_id', 64);
             $table->timestamps();
             $table->softDeletes();

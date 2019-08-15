@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkstatesTable extends Migration
+class CreateFobsUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateWorkstatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('workstates', function (Blueprint $table) {
+        Schema::create('fobs_users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('workstate', 32);
+            $table->integer('fob_id');
+            $table->integer('user_id')->comment('empref');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateWorkstatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('workstates');
+        Schema::dropIfExists('fobs_users');
     }
 }

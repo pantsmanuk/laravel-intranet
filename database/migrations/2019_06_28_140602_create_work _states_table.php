@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAbsenceLookupTable extends Migration
+class CreateWorkStatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateAbsenceLookupTable extends Migration
      */
     public function up()
     {
-        Schema::create('absence_lookup', function (Blueprint $table) {
+        Schema::create('work_states', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 32);
+            $table->string('work_state', 32);
             $table->timestamps();
-            $table->timestamp('deleted_at');
         });
     }
 
@@ -28,6 +27,6 @@ class CreateAbsenceLookupTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('absence_lookup');
+        Schema::dropIfExists('work_states');
     }
 }
