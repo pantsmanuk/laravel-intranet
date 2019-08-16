@@ -65,7 +65,7 @@ class AttendanceController extends Controller
                     }
                     break;
             }
-            if (!in_array($employee->empref, [12,13,14])) {
+            if (!in_array($employee->empref, [12, 13, 14])) {
                 $employee['name'] = $user->name;
                 $employee['forenames'] = $user->forenames;
             } else {
