@@ -59,9 +59,9 @@ class HolidayController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'started_at'   => 'required',
+            'started_at' => 'required',
             'start_type' => 'numeric|between:1,3',
-            'ended_at'     => 'nullable',
+            'ended_at'   => 'nullable',
             'end_type'   => 'numeric|between:1,2',
             'note'       => 'nullable|string|max:80',
         ]);
@@ -186,9 +186,9 @@ class HolidayController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'started_at'   => 'required',
+            'started_at' => 'required',
             'start_type' => 'numeric|between:1,3',
-            'ended_at'     => 'nullable',
+            'ended_at'   => 'nullable',
             'end_type'   => 'numeric|between:1,2',
             'note'       => 'nullable|string|max:80',
         ]);
