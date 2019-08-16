@@ -87,7 +87,7 @@ class AttendanceController extends Controller
             return $employee;
         });
 
-        $offSite = User::select('users.id', 'users.name', 'employees.default_workstate_id')
+        $offSite = User::select('users.id', 'users.name', 'employees.default_work_state_id')
             ->join('employees', 'users.id', '=', 'employees.id')
             ->whereDate('users.deleted_at', '>=', $dtLocal->toDateTimeString())
             ->orWhereNull('users.deleted_at')
@@ -102,19 +102,19 @@ class AttendanceController extends Controller
         $offSite->map(function ($employee) {
             $dt = Date::now()->timezone('Europe/London');
 
-            $absence = Absence::select('absence_lookup.name AS workstate', 'absences.note')
-                ->join('absence_lookup', 'absences.absence_id', '=', 'absence_lookup.id')
+            $absence = Absence::select('absence_types.name AS work_state', 'absences.note')
+                ->join('absence_types', 'absences.absence_id', '=', 'absence_types.id')
                 ->where('absences.user_id', $employee->id)
-                ->where('absences.start_at', '<=', $dt->toDateTimeString())
-                ->where('absences.end_at', '>=', $dt->toDateTimeString())
+                ->where('absences.started_at', '<=', $dt->toDateTimeString())
+                ->where('absences.ended_at', '>=', $dt->toDateTimeString())
                 ->first();
 
             if (!is_null($absence)) {
-                $employee['door_event'] = $absence->workstate;
+                $employee['door_event'] = $absence->work_state;
                 $employee['note'] = trim($absence->note);
             } else {
-                $employee['door_event'] = WorkState::where('id', $employee->default_workstate_id)
-                    ->pluck('workstate')
+                $employee['door_event'] = WorkState::where('id', $employee->default_work_state_id)
+                    ->pluck('work_state')
                     ->first();
                 $employee['note'] = '';
             }

@@ -21,12 +21,12 @@
                         <div class="form-group">
                             @csrf
                             @method('PATCH')
-                            <label for="start_at">Start:</label>
+                            <label for="started_at">Start:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="start_at"
-                                       name="start_at" data-target="#startpicker" data-toggle="datetimepicker"
+                                <input type="text" class="form-control datetimepicker-input" id="started_at"
+                                       name="started_at" data-target="#startpicker" data-toggle="datetimepicker"
                                        aria-label="Start date" aria-describedby="start-addon"
-                                       value="{{$request['start_at']}}"/>
+                                       value="{{$request['started_at']}}"/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
@@ -53,11 +53,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="end_at">End:</label>
+                            <label for="ended_at">End:</label>
                             <div class="input-group date mb-3" id="endpicker" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="end_at" name="end_at"
+                                <input type="text" class="form-control datetimepicker-input" id="ended_at" name="ended_at"
                                        data-target="#endpicker" data-toggle="datetimepicker" aria-label="End date"
-                                       aria-describedby="end-addon" value="{{$request['end_at']}}"/>
+                                       aria-describedby="end-addon" value="{{$request['ended_at']}}"/>
                                 <div class="input-group-append" data-target="#endpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="end-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
@@ -85,14 +85,14 @@
                                     format: 'YYYY-MM-DD',
                                     daysOfWeekDisabled: [0, 6],
                                     useCurrent: false,
-                                    defaultDate: '{{$request['start_at']}}',
+                                    defaultDate: '{{$request['started_at']}}',
                                 });
                                 $('#endpicker').datetimepicker({
                                     locale: 'en-gb',
                                     format: 'YYYY-MM-DD',
                                     daysOfWeekDisabled: [0, 6],
                                     useCurrent: false,
-                                    defaultDate: '{{$request['end_at']}}',
+                                    defaultDate: '{{$request['ended_at']}}',
                                 });
                                 $('#startpicker').on('change.datetimepicker', function (e) {
                                     $('#endpicker').datetimepicker('minDate', e.date);

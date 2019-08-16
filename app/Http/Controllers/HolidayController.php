@@ -29,11 +29,11 @@ class HolidayController extends Controller
             ->pluck('value')->implode(''), 'Europe/London');
         $sYear = $dtYearStart->format('Y').'-'.$dtYearEnd->format('Y');
 
-        $absences = Absence::select('absences.id', 'start_at', 'end_at', 'absence_id', 'absence_lookup.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
-            ->join('absence_lookup', 'absences.absence_id', '=', 'absence_lookup.id')
+        $absences = Absence::select('absences.id', 'started_at', 'ended_at', 'absence_id', 'absence_types.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
+            ->join('absence_types', 'absences.absence_id', '=', 'absence_types.id')
             ->where('user_id', '=', auth()->id())
-            ->whereDate('start_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))
-            ->whereDate('end_at', '<=', $dtYearEnd->format('Y-m-d H:i:s'))
+            ->whereDate('started_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))
+            ->whereDate('ended_at', '<=', $dtYearEnd->format('Y-m-d H:i:s'))
             ->get();
 
         return view('holidays.index')->with(['sYear' => $sYear, 'absences' => $absences]);
@@ -59,39 +59,39 @@ class HolidayController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'start_at'   => 'required',
+            'started_at'   => 'required',
             'start_type' => 'numeric|between:1,3',
-            'end_at'     => 'nullable',
+            'ended_at'     => 'nullable',
             'end_type'   => 'numeric|between:1,2',
             'note'       => 'nullable|string|max:80',
         ]);
 
         $holidayData['user_id'] = auth()->id();
 
-        if (is_null($validatedData['end_at'])) {
-            $validatedData['end_at'] = $validatedData['start_at'];
+        if (is_null($validatedData['ended_at'])) {
+            $validatedData['ended_at'] = $validatedData['started_at'];
         }
         switch ($validatedData['start_type']) {
             case 1:
             case 3:
-                $holidayData['start_at'] = $validatedData['start_at'].' 09:00:00';
+                $holidayData['started_at'] = $validatedData['started_at'].' 09:00:00';
                 break;
             case 2:
-                $holidayData['start_at'] = $validatedData['start_at'].' 13:00:00';
+                $holidayData['started_at'] = $validatedData['started_at'].' 13:00:00';
         }
         switch ($validatedData['end_type']) {
             case 1:
-                $holidayData['end_at'] = $validatedData['end_at'].' 13:00:00';
+                $holidayData['ended_at'] = $validatedData['ended_at'].' 13:00:00';
                 break;
             case 2:
-                $holidayData['end_at'] = $validatedData['end_at'].' 17:30:00';
+                $holidayData['ended_at'] = $validatedData['ended_at'].' 17:30:00';
         }
 
         $holidayData['absence_id'] = 1;
         $holidayData['note'] = $validatedData['note'];
 
-        if ($validatedData['start_at'] === $validatedData['end_at']) {
-            $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F');
+        if ($validatedData['started_at'] === $validatedData['ended_at']) {
+            $sDates = Date::parse($holidayData['started_at'], 'Europe/London')->format('j F');
             switch ($validatedData['start_type']) {
                 case 1:
                     $holidayData['days_paid'] = 0.5;
@@ -106,10 +106,10 @@ class HolidayController extends Controller
                     $holidayType = 'Single Day';
             }
         } else {
-            $holidayData['days_paid'] = Date::parse($holidayData['start_at'], 'Europe/London')
-                ->diffInWeekdays(Date::parse($holidayData['end_at'], 'Europe/London'));
-            $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F')
-                .' to '.Date::parse($holidayData['end_at'], 'Europe/London')->format('j F');
+            $holidayData['days_paid'] = Date::parse($holidayData['started_at'], 'Europe/London')
+                ->diffInWeekdays(Date::parse($holidayData['ended_at'], 'Europe/London'));
+            $sDates = Date::parse($holidayData['started_at'], 'Europe/London')->format('j F')
+                .' to '.Date::parse($holidayData['ended_at'], 'Europe/London')->format('j F');
             $holidayType = 'Multiple Days';
         }
         $holidayData['days_unpaid'] = 0.0;
@@ -143,13 +143,13 @@ class HolidayController extends Controller
     {
         $holiday = Absence::findOrFail($id);
         if ($holiday->user_id == auth()->id()) {
-            $request['start_at'] = substr($holiday['start_at'], 0, 10);
-            $request['end_at'] = substr($holiday['end_at'], 0, 10);
-            if ($request['start_at'] == $request['end_at']) {
+            $request['started_at'] = substr($holiday['started_at'], 0, 10);
+            $request['ended_at'] = substr($holiday['ended_at'], 0, 10);
+            if ($request['started_at'] == $request['ended_at']) {
                 if (substr($holiday->end_at, -8) == '13:00:00') {
                     $request['start_type'] = 1;
                     $request['end_type'] = 1;
-                } elseif (substr($holiday->start_at, -8) == '13:00:00') {
+                } elseif (substr($holiday->started_at, -8) == '13:00:00') {
                     $request['start_type'] = 2;
                     $request['end_type'] = 2;
                 } else {
@@ -157,12 +157,12 @@ class HolidayController extends Controller
                     $request['end_type'] = 2;
                 }
             } else {
-                if (substr($holiday->start_at, -8) == '09:00:00') {
+                if (substr($holiday->started_at, -8) == '09:00:00') {
                     $request['start_type'] = 3;
                 } else {
                     $request['start_type'] = 2;
                 }
-                if (substr($holiday->end_at, -8) == '13:00:00') {
+                if (substr($holiday->ended_at, -8) == '13:00:00') {
                     $request['end_type'] = 1;
                 } else {
                     $request['end_type'] = 2;
@@ -186,39 +186,39 @@ class HolidayController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'start_at'   => 'required',
+            'started_at'   => 'required',
             'start_type' => 'numeric|between:1,3',
-            'end_at'     => 'nullable',
+            'ended_at'     => 'nullable',
             'end_type'   => 'numeric|between:1,2',
             'note'       => 'nullable|string|max:80',
         ]);
 
         $holidayData['user_id'] = auth()->id();
 
-        if (is_null($validatedData['end_at'])) {
-            $validatedData['end_at'] = $validatedData['start_at'];
+        if (is_null($validatedData['ended_at'])) {
+            $validatedData['ended_at'] = $validatedData['started_at'];
         }
         switch ($validatedData['start_type']) {
             case 1:
             case 3:
-                $holidayData['start_at'] = $validatedData['start_at'].' 09:00:00';
+                $holidayData['started_at'] = $validatedData['started_at'].' 09:00:00';
                 break;
             case 2:
-                $holidayData['start_at'] = $validatedData['start_at'].' 13:00:00';
+                $holidayData['started_at'] = $validatedData['started_at'].' 13:00:00';
         }
         switch ($validatedData['end_type']) {
             case 1:
-                $holidayData['end_at'] = $validatedData['end_at'].' 13:00:00';
+                $holidayData['ended_at'] = $validatedData['ended_at'].' 13:00:00';
                 break;
             case 2:
-                $holidayData['end_at'] = $validatedData['end_at'].' 17:30:00';
+                $holidayData['ended_at'] = $validatedData['ended_at'].' 17:30:00';
         }
 
         $holidayData['absence_id'] = 1;
         $holidayData['note'] = $validatedData['note'];
 
-        if ($validatedData['start_at'] === $validatedData['end_at']) {
-            $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F');
+        if ($validatedData['started_at'] === $validatedData['ended_at']) {
+            $sDates = Date::parse($holidayData['started_at'], 'Europe/London')->format('j F');
             switch ($validatedData['start_type']) {
                 case 1:
                     $holidayData['days_paid'] = 0.5;
@@ -233,10 +233,10 @@ class HolidayController extends Controller
                     $holidayType = 'Single Day';
             }
         } else {
-            $holidayData['days_paid'] = Date::parse($holidayData['start_at'], 'Europe/London')
-                ->diffInWeekdays(Date::parse($holidayData['end_at'], 'Europe/London'));
-            $sDates = Date::parse($holidayData['start_at'], 'Europe/London')->format('j F')
-                .' to '.Date::parse($holidayData['end_at'], 'Europe/London')->format('j F');
+            $holidayData['days_paid'] = Date::parse($holidayData['started_at'], 'Europe/London')
+                ->diffInWeekdays(Date::parse($holidayData['ended_at'], 'Europe/London'));
+            $sDates = Date::parse($holidayData['started_at'], 'Europe/London')->format('j F')
+                .' to '.Date::parse($holidayData['ended_at'], 'Europe/London')->format('j F');
             $holidayType = 'Multiple Days';
         }
         $holidayData['days_unpaid'] = 0.0;
@@ -274,18 +274,18 @@ class HolidayController extends Controller
             $holiday->delete();
 
             $aRequest['holiday_action'] = 'Cancelled';
-            if (substr($holiday->start_at, 0, 10) == substr($holiday->end_at, 0, 10)) {
-                $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F');
-                if (substr($holiday->end_at, -8) == '13:00:00') {
+            if (substr($holiday->started_at, 0, 10) == substr($holiday->ended_at, 0, 10)) {
+                $aRequest['holiday_dates'] = Date::parse($holiday->started_at, 'Europe/London')->format('j F');
+                if (substr($holiday->ended_at, -8) == '13:00:00') {
                     $aRequest['holiday_type'] = 'Half Day (AM)';
-                } elseif (substr($holiday->start_at, -8) == '13:00:00') {
+                } elseif (substr($holiday->started_at, -8) == '13:00:00') {
                     $aRequest['holiday_type'] = 'Half Day (PM)';
                 } else {
                     $aRequest['holiday_type'] = 'Single Day';
                 }
             } else {
-                $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                $aRequest['holiday_dates'] = Date::parse($holiday->started_at, 'Europe/London')->format('j F')
+                    .' to '.Date::parse($holiday->ended_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = Auth::user()->name;
@@ -321,18 +321,18 @@ class HolidayController extends Controller
             DB::table('uuid')->where('id', '=', $id)->delete();
 
             $aRequest['holiday_action'] = 'Approved';
-            if (substr($holiday->start_at, 0, 10) == substr($holiday->end_at, 0, 10)) {
-                $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F');
-                if (substr($holiday->end_at, -8) == '13:00:00') {
+            if (substr($holiday->started_at, 0, 10) == substr($holiday->ended_at, 0, 10)) {
+                $aRequest['holiday_dates'] = Date::parse($holiday->started_at, 'Europe/London')->format('j F');
+                if (substr($holiday->ended_at, -8) == '13:00:00') {
                     $aRequest['holiday_type'] = 'Half Day (AM)';
-                } elseif (substr($holiday->start_at, -8) == '13:00:00') {
+                } elseif (substr($holiday->started_at, -8) == '13:00:00') {
                     $aRequest['holiday_type'] = 'Half Day (PM)';
                 } else {
                     $aRequest['holiday_type'] = 'Single Day';
                 }
             } else {
-                $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                $aRequest['holiday_dates'] = Date::parse($holiday->started_at, 'Europe/London')->format('j F')
+                    .' to '.Date::parse($holiday->ended_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();
@@ -368,18 +368,18 @@ class HolidayController extends Controller
             DB::table('uuid')->where('id', '=', $id)->delete();
 
             $aRequest['holiday_action'] = 'Denied';
-            if (substr($holiday->start_at, 0, 10) == substr($holiday->end_at, 0, 10)) {
-                $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F');
-                if (substr($holiday->end_at, -8) == '13:00:00') {
+            if (substr($holiday->started_at, 0, 10) == substr($holiday->ended_at, 0, 10)) {
+                $aRequest['holiday_dates'] = Date::parse($holiday->started_at, 'Europe/London')->format('j F');
+                if (substr($holiday->ended_at, -8) == '13:00:00') {
                     $aRequest['holiday_type'] = 'Half Day (AM)';
-                } elseif (substr($holiday->start_at, -8) == '13:00:00') {
+                } elseif (substr($holiday->started_at, -8) == '13:00:00') {
                     $aRequest['holiday_type'] = 'Half Day (PM)';
                 } else {
                     $aRequest['holiday_type'] = 'Single Day';
                 }
             } else {
-                $aRequest['holiday_dates'] = Date::parse($holiday->start_at, 'Europe/London')->format('j F')
-                    .' to '.Date::parse($holiday->end_at, 'Europe/London')->format('j F');
+                $aRequest['holiday_dates'] = Date::parse($holiday->started_at, 'Europe/London')->format('j F')
+                    .' to '.Date::parse($holiday->ended_at, 'Europe/London')->format('j F');
                 $aRequest['holiday_type'] = 'Multiple Days';
             }
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();

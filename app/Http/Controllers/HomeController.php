@@ -51,8 +51,8 @@ class HomeController extends Controller
             $absence = Absence::select('absence_types.name AS workstate')
                 ->join('absence_types', 'absences.absence_id', '=', 'absence_types.id')
                 ->where('absences.user_id', $employee->id)
-                ->where('absences.start_at', '<=', $dt->toDateTimeString())
-                ->where('absences.end_at', '>=', $dt->toDateTimeString())
+                ->where('absences.started_at', '<=', $dt->toDateTimeString())
+                ->where('absences.ended_at', '>=', $dt->toDateTimeString())
                 ->first();
             if (!is_null($absence)) {
                 $employee['workstate'] = $absence->workstate;

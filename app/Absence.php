@@ -33,12 +33,12 @@ class Absence extends Model implements Auditable
      */
     public static function overlaps(array $absence)
     {
-        $overlaps = self::select('users.name', 'start_at', 'end_at', 'approved')
+        $overlaps = self::select('users.name', 'started_at', 'ended_at', 'approved')
             ->join('users', 'absences.user_id', '=', 'users.id')
             ->whereRaw("absences.deleted_at IS NULL
-                AND (start_at BETWEEN '".$absence['start_at']."' AND '".$absence['end_at']."'
-                    OR end_at BETWEEN '".$absence['start_at']."' AND '".$absence['end_at']."'
-                    OR (start_at < '".$absence['start_at']."' AND end_at > '".$absence['end_at']."'))")
+                AND (started_at BETWEEN '".$absence['started_at']."' AND '".$absence['ended_at']."'
+                    OR ended_at BETWEEN '".$absence['started_at']."' AND '".$absence['ended_at']."'
+                    OR (started_at < '".$absence['started_at']."' AND ended_at > '".$absence['ended_at']."'))")
             ->get();
 
         return $overlaps;

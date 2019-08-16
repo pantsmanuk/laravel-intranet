@@ -20,11 +20,11 @@
                     <form method="post" action="{{route('holidays.store')}}">
                         <div class="form-group">
                             @csrf
-                            <label for="start_at">Start date:</label>
+                            <label for="started_at">Start date:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="Start date" aria-label="Start date"
-                                       aria-describedby="start-addon" id="start_at" name="start_at" type="text">
+                                       aria-describedby="start-addon" id="started_at" name="started_at" type="text">
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
@@ -48,11 +48,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="end_at">End date:</label>
+                            <label for="ended_at">End date:</label>
                             <div class="input-group date mb-3" id="endpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#endpicker"
                                        data-toggle="datetimepicker" placeholder="End date" aria-label="End date"
-                                       aria-describedby="end-addon" id="end_at" name="end_at" type="text">
+                                       aria-describedby="end-addon" id="ended_at" name="ended_at" type="text">
                                 <div class="input-group-append" data-target="#endpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="end-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>

@@ -42,17 +42,17 @@
                         <?php $t_count = 0; ?>
                         @foreach ($absences as $holiday)
                             <?php $t_count = $loop->count;?>
-                            <tr<?php if ($holiday->absence_id == 1 && $holiday->start_at >= now('Europe/London')) {
+                            <tr<?php if ($holiday->absence_id == 1 && $holiday->started_at >= now('Europe/London')) {
                                 echo ($holiday->approved == 0) ? ' class="table-warning"' : ' class="table-success"';
                             }?>>
-                                <td>{{$holiday->start_at}}</td>
-                                <td>{{$holiday->end_at}}</td>
+                                <td>{{$holiday->started_at}}</td>
+                                <td>{{$holiday->ended_at}}</td>
                                 <td>{{$holiday->days_paid}} ({{$t_entitlementRemaining -= $holiday->days_paid}})</td>
                                 <td>{{$holiday->days_unpaid}}</td>
                                 <td><em>({{$holiday->absence_type}})</em> {{$holiday->note}}</td>
                                 <td><?php echo ($holiday->absence_id == 1) ? $t_approval[$holiday->approved] : '-'?></td>
                                 <?php $t_paid += $holiday->days_paid; $t_unpaid += $holiday->days_unpaid;
-                                if ($holiday->absence_id == 1 && $holiday->start_at >= now('Europe/London')) {?>
+                                if ($holiday->absence_id == 1 && $holiday->started_at >= now('Europe/London')) {?>
                                 <td><a href="{{ route('holidays.edit', $holiday->id) }}" class="btn btn-primary"
                                        data-toggle="tooltip" data-placement="top" title="Edit holiday request"><span
                                                 class="fas fa-pencil-alt"></span></a></td>
