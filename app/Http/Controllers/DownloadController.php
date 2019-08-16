@@ -40,10 +40,10 @@ class DownloadController extends Controller
     }
 
     /**
-     * Show the download log based on users selection
+     * Show the download log based on user selection.
      *
      * @param \Illuminate\Http\Request $request
-     * @param integer                  $id
+     * @param int                      $id
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
