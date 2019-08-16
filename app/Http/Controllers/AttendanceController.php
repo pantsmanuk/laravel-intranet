@@ -93,19 +93,13 @@ class AttendanceController extends Controller
             ->orWhereNull('users.deleted_at')
             ->orderBy('users.name')
             ->get();
-        $here = $onSite->pluck('empref')->toArray(); // @todo This *really* needs to account for assigned spare fobs
-        $offSite = $offSite->filter(function ($employee) use ($here) {
-            if (!in_array($employee->id, $here)) {
-                return $employee;
-            }
-        });
         $offSite->map(function ($employee) {
-            $dt = Date::now()->timezone('Europe/London');
+            $dt = Date::now()->toImmutable()->timezone('Europe/London');
 
             $absence = Absence::select('absence_types.name AS work_state', 'absences.note')
                 ->join('absence_types', 'absences.absence_id', '=', 'absence_types.id')
                 ->where('absences.user_id', $employee->id)
-                ->where('absences.started_at', '<=', $dt->toDateTimeString())
+                ->where('absences.started_at', '<=', $dt->addHour()->toDateTimeString())
                 ->where('absences.ended_at', '>=', $dt->toDateTimeString())
                 ->first();
 
@@ -120,6 +114,14 @@ class AttendanceController extends Controller
             }
 
             return $employee;
+        });
+
+        // @todo This *really* needs to account for assigned spare fobs.
+        $here = $onSite->pluck('empref')->toArray();
+        $offSite = $offSite->filter(function ($employee) use ($here) {
+            if ($employee['door_event']==="Holiday" || !in_array($employee->id, $here)) {
+                return $employee;
+            }
         });
 
         return view('attendance.index')->with(['onSite'=>$onSite, 'offSite'=>$offSite]);

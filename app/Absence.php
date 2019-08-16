@@ -33,9 +33,9 @@ class Absence extends Model implements Auditable
      */
     public static function overlaps(array $absence)
     {
-        $whereRaw = "absences.deleted_at IS NULL";
+        $whereRaw = 'absences.deleted_at IS NULL';
         if (isset($absence['id'])) {
-            $whereRaw .= "        AND absences.id != ".$absence['id'];
+            $whereRaw .= '        AND absences.id != '.$absence['id'];
         }
         $whereRaw .= "        AND (started_at BETWEEN '".$absence['started_at']."' AND '".$absence['ended_at']."'
                     OR ended_at BETWEEN '".$absence['started_at']."' AND '".$absence['ended_at']."'
