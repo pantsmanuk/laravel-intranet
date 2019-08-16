@@ -122,7 +122,6 @@ class AttendanceController extends Controller
                 ->where('absences.ended_at', '>=', $dt->toDateTimeString())
                 ->first();
 
-            // @todo Add the started_at time to the offsite view?
             if (!is_null($absence)) {
                 $employee['door_event'] = $absence->work_state;
                 $employee['note'] = trim($absence->note);

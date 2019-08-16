@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="table-responsive">
-                <h4>On-site attendance for {{\Illuminate\Support\Facades\Date::now('Europe/London')->format('d/m/Y')}}</h4>
+                <h4>On-site attendance for {{\Illuminate\Support\Facades\Date::now('Europe/London')->format('j F')}}</h4>
                 <hr>
 
                 <table class="table table-bordered table-striped">
@@ -38,7 +38,7 @@
         </div>
         <div class="row justify-content-center">
             <div class="table-responsive">
-                <h4>Off-site attendance for {{\Illuminate\Support\Facades\Date::now('Europe/London')->format('d/m/Y')}}</h4>
+                <h4>Off-site attendance for {{\Illuminate\Support\Facades\Date::now('Europe/London')->format('j F')}}</h4>
                 <hr>
 
                 <table class="table table-bordered table-striped">
