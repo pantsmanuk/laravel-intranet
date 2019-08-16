@@ -193,6 +193,7 @@ class HolidayController extends Controller
             'note'       => 'nullable|string|max:80',
         ]);
 
+        $holidayData['id'] = (int) $id;
         $holidayData['user_id'] = auth()->id();
 
         if (is_null($validatedData['ended_at'])) {
