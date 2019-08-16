@@ -55,16 +55,35 @@ class AttendanceController extends Controller
                 case 12:
                 case 13:
                 case 14:
-                    $name = User::find(Fob::where('FobID', $employee->empref)
+                    $fob_user = Fob::where('fob_id', $employee->empref)
                         ->whereDate('created_at', $dt->toDateString())
-                        ->pluck('UserID')
-                        ->first())
-                        ->name;
-                    $employee['spare_name'] = $name;
+                        ->pluck('user_id')
+                        ->first();
+                    if (!empty($fob_user)) {
+                        $employee['spare_user'] = $fob_user;
+                        $employee['spare_name'] = User::find($fob_user)->name;
+                    }
                     break;
             }
-            $employee['name'] = $user->name;
-            $employee['forenames'] = $user->forenames;
+            if (!in_array($employee->empref, [12,13,14])) {
+                $employee['name'] = $user->name;
+                $employee['forenames'] = $user->forenames;
+            } else {
+                switch ($employee->empref) {
+                    case 12:
+                        $employee['forenames'] = 'Spare #1';
+                        $employee['name'] = 'Spare #1';
+                        break;
+                    case 13:
+                        $employee['forenames'] = 'Spare #1';
+                        $employee['name'] = 'Spare #2';
+                        break;
+                    case 14:
+                        $employee['forenames'] = 'Spare #1';
+                        $employee['name'] = 'Spare #3';
+                        break;
+                }
+            }
             $employee['door_event'] = Attendance::whereDate('doordate', $dt->toDateString())
                 ->where('empref', $employee->empref)
                 ->latest('doortime')
@@ -103,6 +122,7 @@ class AttendanceController extends Controller
                 ->where('absences.ended_at', '>=', $dt->toDateTimeString())
                 ->first();
 
+            // @todo Add the started_at time to the offsite view?
             if (!is_null($absence)) {
                 $employee['door_event'] = $absence->work_state;
                 $employee['note'] = trim($absence->note);
@@ -116,10 +136,10 @@ class AttendanceController extends Controller
             return $employee;
         });
 
-        // @todo This *really* needs to account for assigned spare fobs.
-        $here = $onSite->pluck('empref')->toArray();
-        $offSite = $offSite->filter(function ($employee) use ($here) {
-            if ($employee['door_event']==="Holiday" || !in_array($employee->id, $here)) {
+        $onSite_users = array_merge($onSite->pluck('empref')->toArray(), $onSite->pluck('spare_user')->toArray());
+        $offSite = $offSite->filter(function ($employee) use ($onSite_users) {
+            if ($employee['door_event'] === 'Holiday'
+                || !in_array($employee->id, $onSite_users)) {
                 return $employee;
             }
         });
