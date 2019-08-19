@@ -22,10 +22,11 @@ Auth::routes([
 ]);
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/home', 'HomeController@store')->name('home.store');
 Route::get('/attendance', 'AttendanceController@index')->name('attendance');
 Route::get('/audit', 'AuditController@index')->name('audit');
 Route::get('/log', 'DownloadController@index')->name('log');
-Route::post('/log/{id?}', 'DownloadController@s')->name('log.s');
+Route::post('/log', 'DownloadController@select')->name('log.select');
 
 Route::resource('absences', 'AbsenceController');
 Route::resource('absencetypes', 'AbsenceTypeController');

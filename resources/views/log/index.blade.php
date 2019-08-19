@@ -38,7 +38,7 @@
                     Select download group
                 </div>
                 <div class="card-body">
-                    <form method="post" action="{{route('log.s', $id)}}">
+                    <form method="post" action="{{route('log.select')}}">
                         <div class="form-group">
                             @csrf
                             <select class="form-control" id="id" name="id" aria-label="Download group selection" onchange="this.form.submit();">

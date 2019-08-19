@@ -110,7 +110,7 @@
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('holidays.index') }}">Book Holiday</a>
-                                <a class="dropdown-item" href="{{ route('log.index') }}">Download Log</a>
+                                <a class="dropdown-item" href="{{ route('log') }}">Download Log</a>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
