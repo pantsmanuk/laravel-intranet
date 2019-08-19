@@ -84,7 +84,7 @@ class HomeController extends Controller
 
         return view('home')->with([
             'remotes' => $remotes,
-            'staff' => $staff,
+            'staff'   => $staff,
         ]);
     }
 
