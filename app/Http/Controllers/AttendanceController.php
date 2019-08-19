@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Absence;
 use App\Attendance;
+use App\Config;
+use App\DoorEvent;
 use App\Fob;
+use App\Mail\Timesheet;
 use App\User;
 use App\WorkState;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Mail;
 
 class AttendanceController extends Controller
 {
@@ -143,6 +148,146 @@ class AttendanceController extends Controller
             }
         });
 
-        return view('attendance.index')->with(['onSite'=>$onSite, 'offSite'=>$offSite]);
+        return view('attendance.index')->with([
+            'onSite'  => $onSite,
+            'offSite' => $offSite
+        ]);
+    }
+
+    /**
+     * Show the attendance timesheet.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function show()
+    {
+        $dt = Date::now('Europe/London');
+        if ($dt->format('l') != 'Monday') {
+            $yesterday = $dt->subDay();
+        } else {
+            $yesterday = $dt->subDays(3);
+        }
+
+        $door_events = DoorEvent::where('user_id', auth()->id())
+            ->whereRaw('created_at LIKE "'.$yesterday->format('Y-m-d').'%"')
+            ->get();
+        $event_rows = array();
+        $i = 0;
+        $total = 0;
+        $last_event = null;
+        foreach ($door_events as $event) {
+            if ($event->event == 0) {
+                $event_rows[$i] = ['in' => $event->created_at->format('H:i')];
+                $last_time = $event->created_at;
+                $last_event = 'in';
+            } else {
+                $event_rows[$i] = array_merge($event_rows[$i], ['out' => $event->created_at->format('H:i')]);
+                if ($last_event == 'in') {
+                    $interval = $last_time->diff($event->created_at); // DateInterval
+                    $total += $last_time->diffInSeconds($event->created_at); // Seconds
+                    $event_rows[$i] = array_merge($event_rows[$i], ['sub_total' => $interval->format('%H:%I')]);
+                    $last_event = 'out';
+                    $i++;
+                }
+            }
+            // @todo Correct handling of back-to-back ins (or outs).
+        }
+
+        $events = collect([
+            'yesterday'   => $yesterday->format('j F'),
+            'door_events' => $event_rows,
+            'time_worked' => gmdate('H:i', $total),
+        ]);
+
+        return view('attendance.show')->with([
+            'events' => $events,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @throws
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $dt = Date::now('Europe/London');
+        if ($dt->format('l') != 'Monday') {
+            $yesterday = $dt->subDay();
+        } else {
+            $yesterday = $dt->subDays(3);
+        }
+
+        $door_events = DoorEvent::where('user_id', auth()->id())
+            ->whereRaw('created_at LIKE "'.$yesterday->format('Y-m-d').'%"')
+            ->get();
+        $event_rows = array();
+        $i = 0;
+        $total = 0;
+        $last_event = null;
+        foreach ($door_events as $event) {
+            if ($event->event == 0) {
+                $event_rows[$i] = ['in' => $event->created_at->format('H:i')];
+                $last_time = $event->created_at;
+                $last_event = 'in';
+            } else {
+                $event_rows[$i] = array_merge($event_rows[$i], ['out' => $event->created_at->format('H:i')]);
+                if ($last_event == 'in') {
+                    $interval = $last_time->diff($event->created_at); // DateInterval
+                    $total += $last_time->diffInSeconds($event->created_at); // Seconds
+                    $event_rows[$i] = array_merge($event_rows[$i], ['sub_total' => $interval->format('%H:%I')]);
+                    $last_event = 'out';
+                    $i++;
+                }
+            }
+            // @todo Correct handling of back-to-back ins (or outs).
+        }
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $header = ['name'=> 'Verdana',
+            'size' => 16,
+            'bold' => true];
+
+        $text = $section->addText('Attendance Events for '.$yesterday->format('j F'), $header);
+        $text = $section->addText(auth()->user()->name, ['name'=> 'Verdana', 'size' => 14, 'bold' => true]);
+        $text = $section->addText(' ', ['name'=> 'Verdana', 'size' => 14]);
+
+        $table = $section->addTable();
+
+        // Header
+        $table->addRow();
+        $table->addCell(2000)->addText('In Time', ['name'=> 'Verdana', 'bold' => true]);
+        $table->addCell(2000)->addText('Out Time', ['name'=> 'Verdana', 'bold' => true]);
+        $table->addCell(2000)->addText('Sub-total', ['name'=> 'Verdana', 'bold' => true]);
+
+        // "Data" rows here...
+        foreach($event_rows as $row) {
+            $table->addRow();
+            $table->addCell(2000)->addText($row['in']);
+            $table->addCell(2000)->addText($row['out']);
+            $table->addCell(2000)->addText($row['sub_total']);
+        }
+
+        // Footer
+        $table->addRow();
+        $table->addCell(4000, ['gridSpan' => 2])->addText('Time Working:', ['name'=> 'Verdana', 'bold' => true]);
+        $table->addCell(2000)->addText(gmdate('H:i', $total), ['bold' => true]);
+
+        $filename = $yesterday->format('d-m-Y').'.docx';
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($filename);
+
+        Mail::to(Config::where('name', '=', 'email_attendance')->pluck('value')->first())
+            ->send(new Timesheet([
+                'attachment_filename' => $filename,
+                'timesheet_date'      => $yesterday->format('j F'),
+                'user_name'           => auth()->user()->name]));
+
+        return redirect('/home')->with('success', 'Timesheet email sent');
     }
 }

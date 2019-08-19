@@ -53,12 +53,12 @@
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/home') }}">
-                {{ config('app.name', 'Laravel') }}
+            <a class="navbar-brand" href="{{url('/home')}}">
+                {{config('app.name', 'Laravel')}}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="{{ __('Toggle navigation') }}">
+                    aria-label="{{__('Toggle navigation')}}">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -72,18 +72,18 @@
                                 Admin <span class="caret"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="adminNavbarDropdown">
-                                <a class="dropdown-item" href="{{ route('attendance') }}">Attendance</a>
-                                <a class="dropdown-item" href="{{ route('audit') }}">Audit</a>
+                                <a class="dropdown-item" href="{{route('attendance')}}">Attendance</a>
+                                <a class="dropdown-item" href="{{route('audit')}}">Audit</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ route('absences.index') }}">Absences</a>
-                                <a class="dropdown-item" href="{{ route('absencetypes.index') }}">Absence Types</a>
-                                <a class="dropdown-item" href="{{ route('config.index') }}">Configuration</a>
-                                <a class="dropdown-item" href="{{ route('doorevents.index') }}">Door Events</a>
-                                <a class="dropdown-item" href="{{ route('downloads.index') }}">Download Groups</a>
-                                <a class="dropdown-item" href="{{ route('fobs.index') }}">Spare Fobs</a>
-                                <a class="dropdown-item" href="{{ route('staff.index') }}">Staff</a>
-                                <a class="dropdown-item" href="{{ route('telephones.index') }}">Telephones</a>
-                                <a class="dropdown-item" href="{{ route('workstates.index') }}">Work States</a>
+                                <a class="dropdown-item" href="{{route('absences.index')}}">Absences</a>
+                                <a class="dropdown-item" href="{{route('absencetypes.index')}}">Absence Types</a>
+                                <a class="dropdown-item" href="{{route('config.index')}}">Configuration</a>
+                                <a class="dropdown-item" href="{{route('doorevents.index')}}">Door Events</a>
+                                <a class="dropdown-item" href="{{route('downloads.index')}}">Download Groups</a>
+                                <a class="dropdown-item" href="{{route('fobs.index')}}">Spare Fobs</a>
+                                <a class="dropdown-item" href="{{route('staff.index')}}">Staff</a>
+                                <a class="dropdown-item" href="{{route('telephones.index')}}">Telephones</a>
+                                <a class="dropdown-item" href="{{route('workstates.index')}}">Work States</a>
                             </div>
                         </li>
                     @endauth
@@ -94,11 +94,11 @@
                     <!-- Authentication Links -->
                     @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            <a class="nav-link" href="{{route('login')}}">{{__('Login')}}</a>
                         </li>
                         <li class="nav-item">
                             @if (Route::has('register'))
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                <a class="nav-link" href="{{route('register')}}">{{__('Register')}}</a>
                             @endif
                         </li>
                     @else
@@ -109,15 +109,16 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('holidays.index') }}">Book Holiday</a>
-                                <a class="dropdown-item" href="{{ route('log') }}">Download Log</a>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                <a class="dropdown-item" href="{{route('attendance.show')}}">My Timesheet</a>
+                                <a class="dropdown-item" href="{{route('holidays.index')}}">Book Holiday</a>
+                                <a class="dropdown-item" href="{{route('log')}}">Download Log</a>
+                                <a class="dropdown-item" href="{{route('logout')}}"
                                    onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
+                                    {{__('Logout')}}
                                 </a>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                <form id="logout-form" action="{{route('logout')}}" method="POST"
                                       style="display: none;">
                                     @csrf
                                 </form>

@@ -15,7 +15,8 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.4.0",
         "moontoast/math": "^1.1",
-        "owen-it/laravel-auditing": "^9.2"
+        "owen-it/laravel-auditing": "^9.2",
+        "phpoffice/phpword": "^0.16.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
