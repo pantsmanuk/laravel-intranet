@@ -150,7 +150,7 @@ class AttendanceController extends Controller
 
         return view('attendance.index')->with([
             'onSite'  => $onSite,
-            'offSite' => $offSite
+            'offSite' => $offSite,
         ]);
     }
 
@@ -171,7 +171,7 @@ class AttendanceController extends Controller
         $door_events = DoorEvent::where('user_id', auth()->id())
             ->whereRaw('created_at LIKE "'.$yesterday->format('Y-m-d').'%"')
             ->get();
-        $event_rows = array();
+        $event_rows = [];
         $i = 0;
         $total = 0;
         $last_event = null;
@@ -225,7 +225,7 @@ class AttendanceController extends Controller
         $door_events = DoorEvent::where('user_id', auth()->id())
             ->whereRaw('created_at LIKE "'.$yesterday->format('Y-m-d').'%"')
             ->get();
-        $event_rows = array();
+        $event_rows = [];
         $i = 0;
         $total = 0;
         $last_event = null;
@@ -249,9 +249,11 @@ class AttendanceController extends Controller
 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
-        $header = ['name'=> 'Verdana',
+        $header = [
+            'name' => 'Verdana',
             'size' => 16,
-            'bold' => true];
+            'bold' => true
+        ];
 
         $text = $section->addText('Attendance Events for '.$yesterday->format('j F'), $header);
         $text = $section->addText(auth()->user()->name, ['name'=> 'Verdana', 'size' => 14, 'bold' => true]);
@@ -266,7 +268,7 @@ class AttendanceController extends Controller
         $table->addCell(2000)->addText('Sub-total', ['name'=> 'Verdana', 'bold' => true]);
 
         // "Data" rows here...
-        foreach($event_rows as $row) {
+        foreach ($event_rows as $row) {
             $table->addRow();
             $table->addCell(2000)->addText($row['in']);
             $table->addCell(2000)->addText($row['out']);
@@ -286,7 +288,8 @@ class AttendanceController extends Controller
             ->send(new Timesheet([
                 'attachment_filename' => $filename,
                 'timesheet_date'      => $yesterday->format('j F'),
-                'user_name'           => auth()->user()->name]));
+                'user_name'           => auth()->user()->name,
+            ]));
 
         return redirect('/home')->with('success', 'Timesheet email sent');
     }
