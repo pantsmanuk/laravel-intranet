@@ -175,6 +175,7 @@ class AttendanceController extends Controller
         $i = 0;
         $total = 0;
         $last_event = null;
+        $last_time = null;
         foreach ($door_events as $event) {
             if ($event->event == 0) {
                 $event_rows[$i] = ['in' => $event->created_at->format('H:i')];
@@ -190,7 +191,6 @@ class AttendanceController extends Controller
                     $i++;
                 }
             }
-            // @todo Correct handling of back-to-back ins (or outs).
         }
 
         $events = collect([
@@ -229,6 +229,7 @@ class AttendanceController extends Controller
         $i = 0;
         $total = 0;
         $last_event = null;
+        $last_time = null;
         foreach ($door_events as $event) {
             if ($event->event == 0) {
                 $event_rows[$i] = ['in' => $event->created_at->format('H:i')];
@@ -244,7 +245,6 @@ class AttendanceController extends Controller
                     $i++;
                 }
             }
-            // @todo Correct handling of back-to-back ins (or outs).
         }
 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
