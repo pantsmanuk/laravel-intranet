@@ -223,21 +223,10 @@ class AttendanceController extends Controller
             $yesterday = $dt->subDays(3);
         }
 
-        // @todo need to get user initials either from Employee/User or programmatically from the name
-        $initials = [
-            2  => 'KD',
-            3  => 'PM',
-            5  => 'DJ',
-            7  => 'MC',
-            9  => 'ER',
-            21 => 'TM',
-            22 => 'PB',
-            23 => 'SS',
-            24 => 'DK',
-            25 => 'RGC',
-            27 => 'AS',
-            28 => 'DW',
-        ];
+        $initials = null;
+        $matches = null;
+        preg_match_all('/[A-Z]/', ucwords(strtolower(auth()->user()->name)), $matches);
+        $initials = implode($matches[0]);
 
         $door_events = DoorEvent::where('user_id', auth()->id())
             ->whereRaw('created_at LIKE "'.$yesterday->format('Y-m-d').'%"')
