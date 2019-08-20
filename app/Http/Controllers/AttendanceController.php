@@ -13,6 +13,7 @@ use App\WorkState;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
@@ -222,6 +223,22 @@ class AttendanceController extends Controller
             $yesterday = $dt->subDays(3);
         }
 
+        // @todo need to get user initials either from Employee/User or programmatically from the name
+        $initials = [
+            2  => 'KD',
+            3  => 'PM',
+            5  => 'DJ',
+            7  => 'MC',
+            9  => 'ER',
+            21 => 'TM',
+            22 => 'PB',
+            23 => 'SS',
+            24 => 'DK',
+            25 => 'RGC',
+            27 => 'AS',
+            28 => 'DW',
+        ];
+
         $door_events = DoorEvent::where('user_id', auth()->id())
             ->whereRaw('created_at LIKE "'.$yesterday->format('Y-m-d').'%"')
             ->get();
@@ -256,40 +273,44 @@ class AttendanceController extends Controller
         ];
 
         $text = $section->addText('Attendance Events for '.$yesterday->format('j F'), $header);
-        $text = $section->addText(auth()->user()->name, ['name'=> 'Verdana', 'size' => 14, 'bold' => true]);
+        $text = $section->addText(auth()->user()->name, ['name'=> 'Verdana', 'size' => 14, 'bold' => true, 'italic' => true]);
         $text = $section->addText(' ', ['name'=> 'Verdana', 'size' => 14]);
 
         $table = $section->addTable();
 
         // Header
         $table->addRow();
-        $table->addCell(2000)->addText('In Time', ['name'=> 'Verdana', 'bold' => true]);
-        $table->addCell(2000)->addText('Out Time', ['name'=> 'Verdana', 'bold' => true]);
-        $table->addCell(2000)->addText('Sub-total', ['name'=> 'Verdana', 'bold' => true]);
+        $table->addCell(2000)->addText('In Time', ['name'=> 'Verdana', 'bold' => true, 'underline' => 'single']);
+        $table->addCell(2000)->addText('Out Time', ['name'=> 'Verdana', 'bold' => true, 'underline' => 'single']);
+        $table->addCell(2000)->addText('Sub-total', ['name'=> 'Verdana', 'bold' => true, 'underline' => 'single']);
 
         // "Data" rows here...
         foreach ($event_rows as $row) {
             $table->addRow();
-            $table->addCell(2000)->addText($row['in']);
-            $table->addCell(2000)->addText($row['out']);
-            $table->addCell(2000)->addText($row['sub_total']);
+            $table->addCell(2000)->addText($row['in'], ['name'=> 'Verdana']);
+            $table->addCell(2000)->addText($row['out'], ['name'=> 'Verdana']);
+            $table->addCell(2000)->addText($row['sub_total'], ['name'=> 'Verdana']);
         }
 
         // Footer
         $table->addRow();
-        $table->addCell(4000, ['gridSpan' => 2])->addText('Time Working:', ['name'=> 'Verdana', 'bold' => true]);
-        $table->addCell(2000)->addText(gmdate('H:i', $total), ['bold' => true]);
+        $table->addCell(4000, ['gridSpan' => 2])->addText('Time Working:', ['name'=> 'Verdana', 'bold' => true, 'underline' => 'double']);
+        $table->addCell(2000)->addText(gmdate('H:i', $total), ['name'=> 'Verdana', 'bold' => true, 'underline' => 'double']);
 
-        $filename = $yesterday->format('d-m-Y').'.docx';
+        $filename = $initials[auth()->id()].'_'.$yesterday->format('d-m-Y').'.docx';
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        $objWriter->save($filename);
+        $objWriter->save('../storage/app/public/'.$filename);
 
         Mail::to(Config::where('name', '=', 'email_attendance')->pluck('value')->first())
             ->send(new Timesheet([
-                'attachment_filename' => $filename,
+                'attachment_filename' => '../storage/app/public/'.$filename,
                 'timesheet_date'      => $yesterday->format('j F'),
                 'user_name'           => auth()->user()->name,
             ]));
+
+        if (Storage::disk('public')->exists($filename)) {
+            Storage::disk('public')->delete($filename);
+        }
 
         return redirect('/home')->with('success', 'Timesheet email sent');
     }
