@@ -252,7 +252,7 @@ class AttendanceController extends Controller
         $header = [
             'name' => 'Verdana',
             'size' => 16,
-            'bold' => true
+            'bold' => true,
         ];
 
         $text = $section->addText('Attendance Events for '.$yesterday->format('j F'), $header);
