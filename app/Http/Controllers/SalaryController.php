@@ -40,7 +40,6 @@ class SalaryController extends Controller
         } else {
             return redirect('/salary')->with('errors', 'Salary run authorisation error');
         }
-
     }
 
     /**
