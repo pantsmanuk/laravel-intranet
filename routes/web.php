@@ -29,6 +29,10 @@ Route::post('/report', 'AttendanceController@store')->name('attendance.store');
 Route::get('/audit', 'AuditController@index')->name('audit');
 Route::get('/log', 'DownloadController@index')->name('log');
 Route::post('/log', 'DownloadController@select')->name('log.select');
+Route::get('/salary', 'SalaryController@index')->name('salary');
+Route::get('/salary/{secret}/authorise', 'SalaryController@authorise')->name('salary.authorise');
+
+Route::get('/salary/dummy', 'SalaryController@dummy')->name('salary.dummy'); // @todo REMOVE BEFORE PRODUCTION TESTING!!!
 
 Route::resource('absences', 'AbsenceController');
 Route::resource('absencetypes', 'AbsenceTypeController');
