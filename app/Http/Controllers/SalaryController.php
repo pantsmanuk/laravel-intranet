@@ -45,13 +45,14 @@ class SalaryController extends Controller
 
     /**
      * Output a "test secret".
+     *
      * @todo REMOVE BEFORE PRODUCTION TESTING BEGINS
      */
     public function dummy()
     {
         $data = Salary::latest('run_date')->firstOrFail();
 
-        $secret = Crypt::encryptString($data->id . '%' . $data->run_date);
-        echo 'http://attendance.test/salary/' . $secret . '/authorise' . PHP_EOL;
+        $secret = Crypt::encryptString($data->id.'%'.$data->run_date);
+        echo 'http://attendance.test/salary/'.$secret.'/authorise'.PHP_EOL;
     }
 }

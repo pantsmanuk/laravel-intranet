@@ -37,7 +37,7 @@
                 </div>
             </div>
         @endif
-        <?php $secret = Illuminate\Support\Facades\Crypt::encryptString($holiday_id . ' ' . $uuid);?>
+        <?php $secret = Illuminate\Support\Facades\Crypt::encryptString($holiday_id.' '.$uuid);?>
         <div class="row">
             <p>To approve the holiday, please click on the following link:</p>
             <a href="http://attendance.test/holidays/{{$secret}}/approve" class="btn btn-primary">Approve holiday
