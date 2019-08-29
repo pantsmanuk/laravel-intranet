@@ -344,7 +344,7 @@ class HolidayController extends Controller
 
             return redirect('/holidays')->with('success', 'Holiday request approved');
         } else {
-            return redirect('/holidays')->with('error', 'Approval error');
+            return redirect('/holidays')->with('errors', 'Holiday request approval error');
         }
     }
 
@@ -391,7 +391,7 @@ class HolidayController extends Controller
 
             return redirect('/holidays')->with('success', 'Holiday request denied');
         } else {
-            return redirect('/holidays')->with('error', 'Denial error');
+            return redirect('/holidays')->with('errors', 'Holiday request denial error');
         }
     }
 }
