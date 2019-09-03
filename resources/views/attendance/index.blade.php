@@ -6,7 +6,12 @@
             <div class="table-responsive">
                 <h4>On-site attendance for {{\Illuminate\Support\Facades\Date::now('Europe/London')->format('j F')}}</h4>
                 <hr>
-
+                <?php $value = (array) $errors;?>
+                @if(reset($value))
+                <div class="alert alert-danger">
+                    {{$errors}}
+                </div>
+                @else
                 <table class="table table-bordered table-striped">
                     <thead>
                     <tr class="table-info">
@@ -62,6 +67,7 @@
                     </tr>
                     </tbody>
                 </table>
+                @endif
             </div>
         </div>
     </div>
