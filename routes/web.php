@@ -32,7 +32,8 @@ Route::post('/log', 'DownloadController@select')->name('log.select');
 Route::get('/salary', 'SalaryController@index')->name('salary');
 Route::get('/salary/{secret}/authorise', 'SalaryController@authorise')->name('salary.authorise');
 
-Route::get('/salary/dummy', 'SalaryController@dummy')->name('salary.dummy'); // @todo REMOVE BEFORE PRODUCTION TESTING!!!
+// @todo REMOVE BEFORE PRODUCTION TESTING!!!
+Route::get('/salary/dummy', 'SalaryController@dummy')->name('salary.dummy');
 
 Route::resource('absences', 'AbsenceController');
 Route::resource('absencetypes', 'AbsenceTypeController');

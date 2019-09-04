@@ -52,6 +52,24 @@ class SalaryController extends Controller
         $data = Salary::latest('run_date')->firstOrFail();
 
         $secret = Crypt::encryptString($data->id.'%'.$data->run_date);
-        echo 'http://attendance.test/salary/'.$secret.'/authorise'.PHP_EOL;
+        echo '<table border="1px">
+    <tr>
+        <td><strong>id</strong></td>
+        <td>'.$data->id.'</td>
+    </tr>
+    <tr>
+        <td><strong>run_date</strong></td>
+        <td>'.$data->run_date.'</td>
+    </tr>
+    <tr>
+        <td><strong>unencrypted string</strong></td>
+        <td>'.$data->id.'%'.$data->run_date.'</td>
+    </tr>
+    <tr>
+        <td><strong>encrypted string</strong></td>
+        <td>'.$secret.'</td>
+    </tr>
+</table>';
+        echo '<p><a href="'.request()->getSchemeAndHttpHost().'/salary/'.$secret.'/authorise">'.request()->getSchemeAndHttpHost().'/salary/'.$secret.'/authorise</a></p>'.PHP_EOL;
     }
 }
