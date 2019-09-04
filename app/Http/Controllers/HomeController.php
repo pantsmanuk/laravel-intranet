@@ -75,7 +75,8 @@ class HomeController extends Controller
                     ->pluck('event')
                     ->first();
                 if (is_null($employee['door_event'])) {
-                    $employee['door_event'] = 1; // First touch should be an In
+                    // First touch should be "In", fake "currently Out" to force it
+                    $employee['door_event'] = 1;
                 }
 
                 return $employee;

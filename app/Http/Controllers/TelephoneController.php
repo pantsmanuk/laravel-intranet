@@ -17,8 +17,6 @@ class TelephoneController extends Controller
      */
     public function index()
     {
-        // Do a map to add in the user name from user_id, or flip this on it's head and base everything off
-        // UserTelephoneLookup in the first instance?
         $telephones = UserTelephone::select('users_telephones.id AS lookup_id', 'user_id', 'telephone_id',
             'u.name AS user_name', 't.name', 't.number')
             ->join('telephones AS t', 'users_telephones.telephone_id', '=', 't.id')
