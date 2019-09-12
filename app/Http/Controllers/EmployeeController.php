@@ -18,9 +18,9 @@ class EmployeeController extends Controller
     public function index()
     {
         // Start small, work up to everything...
-        $staff = User::select('users.id', 'name', 'e.started_at', 'e.ended_at', 'users.deleted_at', 'e.holiday_entitlement', 'e.holiday_carried_forward', 'e.days_per_week', 'w.workstate')
+        $staff = User::select('users.id', 'name', 'e.started_at', 'e.ended_at', 'users.deleted_at', 'e.holiday_entitlement', 'e.holiday_carried_forward', 'e.days_per_week', 'w.work_state')
             ->join('employees AS e', 'users.id', '=', 'e.id')
-            ->join('workstates AS w', 'e.default_workstate_id', '=', 'w.id')
+            ->join('work_states AS w', 'e.default_work_state_id', '=', 'w.id')
             ->withTrashed()
             ->get();
         $dt = Date::now()->timezone('Europe/London');

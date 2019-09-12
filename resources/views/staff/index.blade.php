@@ -37,7 +37,7 @@
                             <td>{{$user->days_per_week}}</td>
                             <td>{{$user->holiday_entitlement}}</td>
                             <td>{{$user->holiday_carried_forward}}</td>
-                            <td>{{$user->workstate}}</td>
+                            <td>{{$user->work_state}}</td>
                             <td><a href="{{route('staff.edit', $user->id)}}" class="btn btn-primary"
                                    data-toggle="tooltip" data-placement="top" title="Edit staff member"><span
                                             class="fas fa-pencil-alt"></span></a></td>
