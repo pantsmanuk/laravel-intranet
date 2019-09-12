@@ -23,7 +23,7 @@ class FobController extends Controller
         ];
 
         $fobs = Fob::orderBy('created_at', 'DESC')
-            ->get();
+            ->paginate();
         $fobs->map(function ($fob) use ($fob_names) {
             $fob['fob_name'] = $fob_names[$fob['fob_id']];
             $fob['staff_name'] = User::where('id', $fob['user_id'])

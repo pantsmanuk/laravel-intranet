@@ -8,7 +8,7 @@
                 <hr>
                 @if(session()->get('success'))
                     <div class="alert alert-success">
-                        {{session()->get('success')}}
+                        {{ session()->get('success') }}
                     </div>
                 @endif
                 <table class="table table-bordered table-striped">
@@ -25,10 +25,10 @@
                     @foreach ($configs as $value)
                         <?php $t_count = $loop->count;?>
                         <tr>
-                            <td>{{$value->id}}</td>
-                            <td>{{$value->name}}</td>
-                            <td>{{$value->value}}</td>
-                            <td><a href="{{route('config.edit', $value->id)}}" class="btn btn-primary"
+                            <td>{{ $value->id }}</td>
+                            <td>{{ $value->name }}</td>
+                            <td>{{ $value->value }}</td>
+                            <td><a href="{{ route('config.edit', $value->id) }}" class="btn btn-primary"
                                    data-toggle="tooltip" data-placement="top" title="Edit configuration pair"><span
                                             class="fas fa-pencil-alt"></span></a></td>
                             <td>
@@ -43,11 +43,14 @@
                         </tr>
                     @endforeach
                     <tr class="table-info">
-                        <td colspan="5"><strong>Total:</strong> {{$t_count}}</td>
+                        <td colspan="5"><strong>Total:</strong> {{ $t_count }}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row justify-content-end">
+            {{ $configs->links('pagination::bootstrap-4') }}
         </div>
         <div class="row justify-content-center">
             <a href="{{ route('config.create') }}" class="btn btn-info">New configuration key/value pair</a>

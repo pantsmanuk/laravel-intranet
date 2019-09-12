@@ -295,7 +295,7 @@ class AttendanceController extends Controller
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save('../storage/app/public/'.$filename);
 
-        Mail::to(Config::where('name', '=', 'email_attendance')->pluck('value')->first())
+        Mail::to(Config::getValue('email_attendance'))
             ->send(new Timesheet([
                 'attachment_filename' => '../storage/app/public/'.$filename,
                 'timesheet_date'      => $yesterday->format('j F'),

@@ -30,15 +30,15 @@
                     @foreach ($staff as $user)
                         <?php $t_count = $loop->count;?>
                         <tr<?php if (!is_null($user->deleted_at)) echo ' class="table-warning"'?>>
-                            <td>{{$user->id}}</td>
-                            <td>{{$user->name}}</td>
-                            <td>{{$user->started_at}}</td>
-                            <td>{{$user->ended_at}}</td>
-                            <td>{{$user->days_per_week}}</td>
-                            <td>{{$user->holiday_entitlement}}</td>
-                            <td>{{$user->holiday_carried_forward}}</td>
-                            <td>{{$user->work_state}}</td>
-                            <td><a href="{{route('staff.edit', $user->id)}}" class="btn btn-primary"
+                            <td>{{ $user->id }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->started_at }}</td>
+                            <td>{{ $user->ended_at }}</td>
+                            <td>{{ $user->days_per_week }}</td>
+                            <td>{{ $user->holiday_entitlement }}</td>
+                            <td>{{ $user->holiday_carried_forward }}</td>
+                            <td>{{ $user->work_state }}</td>
+                            <td><a href="{{ route('staff.edit', $user->id) }}" class="btn btn-primary"
                                    data-toggle="tooltip" data-placement="top" title="Edit staff member"><span
                                             class="fas fa-pencil-alt"></span></a></td>
                             <td>
@@ -53,11 +53,14 @@
                         </tr>
                     @endforeach
                     <tr class="table-info">
-                        <td colspan="10"><strong>Total:</strong> {{$t_count}}</td>
+                        <td colspan="10"><strong>Total:</strong> {{ $t_count }}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row justify-content-end">
+            {{ $staff->links() }}
         </div>
         <div class="row justify-content-center">
             <a href="{{ route('staff.create') }}" class="btn btn-info">New staff member</a>

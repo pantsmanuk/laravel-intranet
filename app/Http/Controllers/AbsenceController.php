@@ -18,19 +18,18 @@ class AbsenceController extends Controller
      */
     public function index()
     {
-        $dtYearStart = Date::parse(Config::select('value')->where('name', 'holidays_start')->get()
-            ->pluck('value')->implode(''), 'Europe/London');
-        $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
-            ->pluck('value')->implode(''), 'Europe/London');
+        $dtYearStart = Date::parse(Config::getValue('holidays_start'), 'Europe/London');
+        $dtYearEnd = Date::parse(Config::getValue('holidays_end'), 'Europe/London');
         $sYear = $dtYearStart->format('Y').'-'.$dtYearEnd->format('Y');
 
         $absences = Absence::select('absences.id', 'users.name AS user_name', 'started_at', 'ended_at', 'absence_id',
             'absence_types.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
             ->join('users', 'absences.user_id', '=', 'users.id')
             ->join('absence_types', 'absences.absence_id', '=', 'absence_types.id')
-            ->whereDate('started_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))
-            ->whereDate('ended_at', '<=', $dtYearEnd->format('Y-m-d H:i:s'))
-            ->get();
+            ->whereDate('started_at', '>=', $dtYearStart->toDateTimeString())
+            ->whereDate('ended_at', '<=', $dtYearEnd->toDateTimeString())
+            ->orderBy('started_at', 'desc')
+            ->paginate();
 
         return view('absences.index')->with(['sYear' => $sYear, 'absences' => $absences]);
     }
@@ -92,10 +91,8 @@ class AbsenceController extends Controller
     {
         $absence = Absence::findOrFail($id);
 
-        $dtYearStart = Date::parse(Config::select('value')->where('name', 'holidays_start')->get()
-            ->pluck('value')->implode(''), 'Europe/London');
-        $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
-            ->pluck('value')->implode(''), 'Europe/London');
+        $dtYearStart = Date::parse(Config::getValue('holidays_start'), 'Europe/London');
+        $dtYearEnd = Date::parse(Config::getValue('holidays_end'), 'Europe/London');
         $staff = User::select('id AS empref', 'name')
             ->whereDate('deleted_at', '>=', $dtYearStart->toDateTimeString())
             ->whereDate('deleted_at', '<=', $dtYearEnd->toDateTimeString())

@@ -14,7 +14,7 @@ class WorkStateController extends Controller
      */
     public function index()
     {
-        $work_states = WorkState::all();
+        $work_states = WorkState::paginate();
 
         return view('workstates.index')->with(['work_states' => $work_states]);
     }

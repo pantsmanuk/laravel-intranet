@@ -22,7 +22,7 @@ class TelephoneController extends Controller
             ->join('telephones AS t', 'users_telephones.telephone_id', '=', 't.id')
             ->join('users AS u', 'users_telephones.user_id', '=', 'u.id')
             ->orderByRaw('u.name, t.id ASC')
-            ->get();
+            ->paginate();
 
         return view('telephones.index')->with(['telephones' => $telephones]);
     }

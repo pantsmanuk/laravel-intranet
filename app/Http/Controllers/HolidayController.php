@@ -23,10 +23,8 @@ class HolidayController extends Controller
      */
     public function index()
     {
-        $dtYearStart = Date::parse(Config::select('value')->where('name', 'holidays_start')->get()
-            ->pluck('value')->implode(''), 'Europe/London');
-        $dtYearEnd = Date::parse(Config::select('value')->where('name', 'holidays_end')->get()
-            ->pluck('value')->implode(''), 'Europe/London');
+        $dtYearStart = Date::parse(Config::getValue('holidays_start'), 'Europe/London');
+        $dtYearEnd = Date::parse(Config::getValue('holidays_end'), 'Europe/London');
         $sYear = $dtYearStart->format('Y').'-'.$dtYearEnd->format('Y');
 
         $absences = Absence::select('absences.id', 'started_at', 'ended_at', 'absence_id', 'absence_types.name AS absence_type', 'note', 'days_paid', 'days_unpaid', 'approved')
@@ -34,7 +32,7 @@ class HolidayController extends Controller
             ->where('user_id', '=', auth()->id())
             ->whereDate('started_at', '>=', $dtYearStart->format('Y-m-d H:i:s'))
             ->whereDate('ended_at', '<=', $dtYearEnd->format('Y-m-d H:i:s'))
-            ->get();
+            ->paginate();
 
         return view('holidays.index')->with(['sYear' => $sYear, 'absences' => $absences]);
     }
@@ -127,7 +125,7 @@ class HolidayController extends Controller
             'user_name'        => Auth::user()->name,
         ];
 
-        Mail::to(Config::where('name', '=', 'email_approval')->pluck('value')->first())->send(new Approval($aRequest));
+        Mail::to(Config::getValue('email_approval'))->send(new Approval($aRequest));
 
         return redirect('/holidays')->with('success', 'Holiday requested');
     }
@@ -255,8 +253,7 @@ class HolidayController extends Controller
             'user_name'        => Auth::user()->name,
         ];
 
-        Mail::to(Config::where('name', '=', 'email_approval')->pluck('value')->first())
-            ->send(new Approval($aRequest));
+        Mail::to(Config::getValue('email_approval'))->send(new Approval($aRequest));
 
         return redirect('/holidays')->with('success', 'Holiday request updated');
     }
@@ -292,7 +289,7 @@ class HolidayController extends Controller
             $aRequest['user_name'] = Auth::user()->name;
 
             Mail::to(Auth::user()->email)
-                ->cc(Config::where('name', '=', 'email_notification')->pluck('value')->first())
+                ->cc(Config::getValue('email_notification'))
                 ->send(new Action($aRequest));
 
             return redirect('/holidays')->with('success', 'Holiday request deleted');
@@ -339,7 +336,7 @@ class HolidayController extends Controller
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();
 
             Mail::to(User::whereId($holiday->user_id)->pluck('email')->first())
-                ->cc(Config::where('name', '=', 'email_notification')->pluck('value')->first())
+                ->cc(Config::getValue('email_notification'))
                 ->send(new Action($aRequest));
 
             return redirect('/holidays')->with('success', 'Holiday request approved');
@@ -386,7 +383,7 @@ class HolidayController extends Controller
             $aRequest['user_name'] = User::whereId($holiday->user_id)->pluck('name')->first();
 
             Mail::to(User::whereId($holiday->user_id)->pluck('email')->first())
-                ->cc(Config::where('name', '=', 'email_notification')->pluck('value')->first())
+                ->cc(Config::getValue('email_notification'))
                 ->send(new Action($aRequest));
 
             return redirect('/holidays')->with('success', 'Holiday request denied');

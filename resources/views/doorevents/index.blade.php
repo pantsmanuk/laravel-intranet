@@ -8,7 +8,7 @@
                 <hr>
                 @if(session()->get('success'))
                     <div class="alert alert-success">
-                        {{session()->get('success')}}
+                        {{ session()->get('success') }}
                     </div>
                 @endif
                 <table class="table table-bordered table-striped">
@@ -23,14 +23,14 @@
                     </thead>
                     <tbody>
                     <?php $t_count = 0; $t_event = [0 => 'In', 1 => 'Out']?>
-                    @foreach ($doorevents as $value)
+                    @foreach ($door_events as $value)
                         <?php $t_count = $loop->count;?>
                         <tr>
-                            <td>{{$value->id}}</td>
-                            <td>{{$value->name}}</td>
-                            <td>{{$value->created_at}}</td>
-                            <td>{{$t_event[$value->event]}}</td>
-                            <td><a href="{{route('doorevents.edit', $value->id)}}" class="btn btn-primary"
+                            <td>{{ $value->id }}</td>
+                            <td>{{ $value->name }}</td>
+                            <td>{{ $value->created_at }}</td>
+                            <td>{{ $t_event[$value->event] }}</td>
+                            <td><a href="{{ route('doorevents.edit', $value->id) }}" class="btn btn-primary"
                                    data-toggle="tooltip" data-placement="top" title="Edit door event"><span
                                             class="fas fa-pencil-alt"></span></a></td>
                             <td>
@@ -44,11 +44,14 @@
                         </tr>
                     @endforeach
                     <tr class="table-info">
-                        <td colspan="6"><strong>Total:</strong> {{$t_count}}</td>
+                        <td colspan="6"><strong>Total:</strong> {{ $t_count }}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row justify-content-end">
+            {{ $door_events->links('pagination::bootstrap-4') }}
         </div>
         <div class="row justify-content-center">
             <a href="{{ route('doorevents.create') }}" class="btn btn-info">New door event</a>
