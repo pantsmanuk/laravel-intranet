@@ -14,7 +14,7 @@ class ConfigController extends Controller
      */
     public function index()
     {
-        $configs = Config::all();
+        $configs = Config::paginate();
 
         return view('config.index')->with(['configs' => $configs]);
     }
@@ -92,6 +92,6 @@ class ConfigController extends Controller
         $config = Config::findOrFail($id);
         $config->delete();
 
-        return redirect('/workstates')->with('success', 'Configuration key/value pair deleted');
+        return redirect('/config')->with('success', 'Configuration key/value pair deleted');
     }
 }

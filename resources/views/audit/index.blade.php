@@ -24,22 +24,25 @@
                     @foreach ($audit as $value)
                         <?php $t_count = $loop->count;?>
                         <tr>
-                            <td>{{\Illuminate\Support\Facades\Date::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
-                            <td>{{$value->user_name}}</td>
-                            <td>{{$value->ip_address}}</td>
-                            <td>{{$value->event}}</td>
-                            <td>{{$value->auditable_type}}</td>
-                            <td>{{$value->auditable_id}}</td>
-                            <td>{{$value->old_values}}</td>
-                            <td>{{$value->new_values}}</td>
+                            <td>{{ \Illuminate\Support\Facades\Date::parse($value->created_at)->format('d/m/Y H:i:s') }}</td>
+                            <td>{{ $value->user_name }}</td>
+                            <td>{{ $value->ip_address }}</td>
+                            <td>{{ $value->event }}</td>
+                            <td>{{ $value->auditable_type }}</td>
+                            <td>{{ $value->auditable_id }}</td>
+                            <td>{{ $value->old_values }}</td>
+                            <td>{{ $value->new_values }}</td>
                         </tr>
                     @endforeach
                     <tr class="table-info">
-                        <td colspan="5"><strong>Total:</strong> {{$t_count}}</td>
+                        <td colspan="8"><strong>Total:</strong> {{ $t_count }}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row justify-content-end">
+            {{ $audit->links('pagination::bootstrap-4') }}
         </div>
     </div>
 @endsection

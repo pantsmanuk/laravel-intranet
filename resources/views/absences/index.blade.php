@@ -4,11 +4,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="table-responsive">
-                <h4>Absences for {{$sYear}}</h4>
+                <h4>Absences for {{ $sYear }}</h4>
                 <hr>
                 @if(session()->get('success'))
                     <div class="alert alert-success">
-                        {{session()->get('success')}}
+                        {{ session()->get('success') }}
                     </div>
                 @endif
                 <table class="table table-bordered table-striped">
@@ -33,14 +33,14 @@
                     @foreach ($absences as $value)
                         <?php $t_count = $loop->count;?>
                         <tr>
-                            <td>{{$value->user_name}}</td>
-                            <td>{{$value->started_at}}</td>
-                            <td>{{$value->ended_at}}</td>
-                            <td>{{$value->absence_type}}</td>
-                            <td>{{$value->note}}</td>
-                            <td><?php echo ($value->absence_type == "Holiday") ? $t_approved[$value->approved] : "-"; ?></td>
-                            <td>{{$value->days_paid}}</td>
-                            <td>{{$value->days_unpaid}}</td>
+                            <td>{{ $value->user_name }}</td>
+                            <td>{{ $value->started_at }}</td>
+                            <td>{{ $value->ended_at }}</td>
+                            <td>{{ $value->absence_type }}</td>
+                            <td>{{ $value->note }}</td>
+                            <td>{{ ($value->absence_type == "Holiday") ? $t_approved[$value->approved] : "-" }}</td>
+                            <td>{{ $value->days_paid }}</td>
+                            <td>{{ $value->days_unpaid }}</td>
                             <td><a href="{{ route('absences.edit',$value->id) }}" class="btn btn-primary"
                                    data-toggle="tooltip" data-placement="top" title="Edit absence"><span
                                             class="fas fa-pencil-alt"></span></a></td>
@@ -55,11 +55,14 @@
                         </tr>
                     @endforeach
                     <tr class="table-info">
-                        <td colspan="10"><strong>Totals ({{$t_count}}):</strong></td>
+                        <td colspan="10"><strong>Totals ({{ $t_count }}):</strong></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row justify-content-end">
+            {{ $absences->links('pagination::bootstrap-4') }}
         </div>
         <div class="row justify-content-center">
             <!-- New holiday request -->

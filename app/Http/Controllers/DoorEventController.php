@@ -16,14 +16,15 @@ class DoorEventController extends Controller
      */
     public function index()
     {
-        $door_events = DoorEvent::orderBy('created_at', 'desc')->get();
+        $door_events = DoorEvent::orderBy('created_at', 'desc')
+            ->paginate();
         $door_events->map(function ($event) {
             $event['name'] = User::whereId($event['user_id'])->pluck('name')->first();
 
             return $event;
         });
 
-        return view('doorevents.index')->with(['doorevents' => $door_events]);
+        return view('doorevents.index')->with(['door_events' => $door_events]);
     }
 
     /**

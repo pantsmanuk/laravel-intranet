@@ -14,7 +14,9 @@ class AuditController extends Controller
      */
     public function index()
     {
-        $audit = Audit::all();
+        $audit = Audit::orderBy('created_at', 'desc')
+            ->paginate();
+
         $audit->map(function ($entry) {
             $entry['user_name'] = User::where('id', $entry['user_id'])->pluck('name')->first();
 

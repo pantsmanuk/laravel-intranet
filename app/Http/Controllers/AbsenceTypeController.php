@@ -14,9 +14,9 @@ class AbsenceTypeController extends Controller
      */
     public function index()
     {
-        $absenceLookup = AbsenceType::all();
+        $absenceLookup = AbsenceType::paginate();
 
-        return view('absencetypes.index')->with(['abstypes' => $absenceLookup]);
+        return view('absencetypes.index')->with(['absence_types' => $absenceLookup]);
     }
 
     /**

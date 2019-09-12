@@ -25,10 +25,10 @@
                     @foreach ($fobs as $fob)
                         <?php $t_count = $loop->count;?>
                         <tr>
-                            <td>{{\Illuminate\Support\Facades\Date::parse($fob->created_at)->format('d/m/Y')}}</td>
-                            <td>{{$fob->fob_name}}</td>
-                            <td>{{$fob->staff_name}}</td>
-                            <td><a href="{{route('fobs.edit', $fob->id)}}" class="btn btn-primary" data-toggle="tooltip"
+                            <td>{{ \Illuminate\Support\Facades\Date::parse($fob->created_at)->format('d/m/Y') }}</td>
+                            <td>{{ $fob->fob_name }}</td>
+                            <td>{{ $fob->staff_name }}</td>
+                            <td><a href="{{ route('fobs.edit', $fob->id) }}" class="btn btn-primary" data-toggle="tooltip"
                                    data-placement="top" title="Edit fob assignment"><span
                                             class="fas fa-pencil-alt"></span></a></td>
                             <td>
@@ -43,11 +43,14 @@
                         </tr>
                     @endforeach
                     <tr class="table-info">
-                        <td colspan="5"><strong>Total:</strong> {{$t_count}}</td>
+                        <td colspan="5"><strong>Total:</strong> {{ $t_count }}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row justify-content-end">
+            {{ $fobs->links('pagination::bootstrap-4') }}
         </div>
         <div class="row justify-content-center">
             <a href="{{ route('fobs.create') }}" class="btn btn-info">New fob assignment</a>

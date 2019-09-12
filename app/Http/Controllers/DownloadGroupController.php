@@ -14,7 +14,8 @@ class DownloadGroupController extends Controller
      */
     public function index()
     {
-        $downloads = DownloadGroup::orderBy('created_at', 'desc')->get();
+        $downloads = DownloadGroup::orderBy('created_at', 'desc')
+            ->paginate();
 
         return view('downloads.index')->with(['downloads' => $downloads]);
     }

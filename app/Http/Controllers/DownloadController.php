@@ -15,7 +15,9 @@ class DownloadController extends Controller
      */
     public function index()
     {
-        $id = DownloadGroup::all()->pluck('id')->last();
+        $id = DownloadGroup::pluck('id')
+            ->last();
+
         $download_groups = DownloadGroup::all();
 
         $downloads = DB::connection('wordpress')
