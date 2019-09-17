@@ -61,12 +61,20 @@ class AbsenceController extends Controller
      */
     public function store(Request $request)
     {
+        $minUserId = User::whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->min('id');
+        $maxUserId = User::whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->max('id');
+        $minAbsenceTypeId = AbsenceType::min('id');
+        $maxAbsenceTypeId = AbsenceType::max('id');
         $validatedData = $request->validate([
-            'user_id'     => 'required|numeric|between:1,25',
+            'user_id'     => 'required|numeric|between:'.$minUserId.','.$maxUserId,
             'started_at'  => 'required|date',
             'ended_at'    => 'required|date',
-            'absence_id'  => 'required|numeric|between:1,11',
-            'note'        => 'string|max:80',
+            'absence_id'  => 'required|numeric|between:'.$minAbsenceTypeId.','.$maxAbsenceTypeId,
+            'note'        => 'string|max:80|nullable',
             'days_paid'   => 'required|numeric',
             'days_unpaid' => 'required|numeric',
         ]);
@@ -119,12 +127,20 @@ class AbsenceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $minUserId = User::whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->min('id');
+        $maxUserId = User::whereDate('deleted_at', '>=', Date::now('Europe/London')->toDateTimeString())
+            ->orWhereNull('deleted_at')
+            ->max('id');
+        $minAbsenceTypeId = AbsenceType::min('id');
+        $maxAbsenceTypeId = AbsenceType::max('id');
         $validatedData = $request->validate([
-            'user_id'     => 'required|numeric|between:1,25',
+            'user_id'     => 'required|numeric|between:'.$minUserId.','.$maxUserId,
             'started_at'  => 'required|date',
             'ended_at'    => 'required|date',
-            'absence_id'  => 'required|numeric|between:1,11',
-            'note'        => 'string|max:80',
+            'absence_id'  => 'required|numeric|between:'.$minAbsenceTypeId.','.$maxAbsenceTypeId,
+            'note'        => 'string|max:80|nullable',
             'days_paid'   => 'required|numeric',
             'days_unpaid' => 'required|numeric',
         ]);
