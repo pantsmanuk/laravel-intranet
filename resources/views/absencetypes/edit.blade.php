@@ -18,12 +18,12 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('absencetypes.update', $absenceLookup->id)}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
                             @method('PATCH')
-                            <label for="name">Name:</label>
+                            <label for="name" class="control-label">Name:</label>
                             <input class="form-control" aria-label="Absence type name" id="name" name="name" type="text"
-                                   value="{{$absenceLookup->name}}"/>
+                                   value="{{$absenceLookup->name}}" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update absence type</button>

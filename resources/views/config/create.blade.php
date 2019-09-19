@@ -18,16 +18,16 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('config.store')}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
-                            <label for="name">Key:</label>
+                            <label for="name" class="control-label">Key:</label>
                             <input class="form-control" aria-label="Configuration key" placeholder="Key" id="name"
-                                   name="name" type="text"/>
+                                   name="name" type="text" required/>
                         </div>
-                        <div class="form-group">
-                            <label for="value">Value:</label>
+                        <div class="form-group required">
+                            <label for="value" class="control-label">Value:</label>
                             <input class="form-control" aria-label="Configuration value" placeholder="Value" id="value"
-                                   name="value" type="text"/>
+                                   name="value" type="text" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Create configuration key/value pair</button>
