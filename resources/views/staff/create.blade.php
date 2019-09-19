@@ -18,19 +18,19 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('staff.store')}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
-                            <label for="name">Name:</label>
+                            <label for="name" class="control-label">Name:</label>
                             <input class="form-control" aria-label="Name" placeholder="Name" id="name" name="name"
                                    type="text"/>
                         </div>
-                        <div class="form-group">
-                            <label for="username">Username:</label>
+                        <div class="form-group required">
+                            <label for="username" class="control-label">Username:</label>
                             <input class="form-control" aria-label="Username" placeholder="Username" id="username"
                                    name="username" type="text"/>
                         </div>
-                        <div class="form-group">
-                            <label for="start">Start:</label>
+                        <div class="form-group required">
+                            <label for="start" class="control-label">Start:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" aria-label="Start date"
