@@ -18,22 +18,9 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('absences.store')}}">
-                        <?php
-                        /**
-                         * Fillable field list for reference:-
-                         *  xstaff_id integer empref
-                         *  xstart_at timestamp
-                         *  xend_at timestamp
-                         *  xabsence_id integer absence_lookup.id
-                         *  note string
-                         *  days_paid double
-                         *  days_unpaid double
-                         *  approved boolean
-                         **/
-                        ?>
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
-                            <label for="user_id">Staff member:</label>
+                            <label for="user_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
                                     aria-label="Staff member selection">
                                 @foreach($staff as $value)
@@ -42,8 +29,8 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="started_at">Start date/time:</label>
+                        <div class="form-group required">
+                            <label for="started_at" class="control-label">Start date/time:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="Start date/time"
@@ -55,8 +42,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="ended_at">End date/time:</label>
+                        <div class="form-group required">
+                            <label for="ended_at" class="control-label">End date/time:</label>
                             <div class="input-group date mb-3" id="endpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#endpicker"
                                        data-toggle="datetimepicker" placeholder="End date/time"
@@ -91,8 +78,8 @@
                                 });
                             });
                         </script>
-                        <div class="form-group">
-                            <label for="absence_id">Absence type:</label>
+                        <div class="form-group required">
+                            <label for="absence_id" class="control-label">Absence type:</label>
                             <select class="form-control" id="absence_id" name="absence_id"
                                     aria-label="Absence type selection">
                                 @foreach($absences as $value)
@@ -102,17 +89,17 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="note">Note:</label>
+                            <label for="note" class="control-label">Note:</label>
                             <input class="form-control" aria-label="Absence request note" placeholder="Note" id="note"
                                    name="note" type="text"/>
                         </div>
-                        <div class="form-group">
-                            <label for="days_paid">Days paid:</label>
+                        <div class="form-group required">
+                            <label for="days_paid" class="control-label">Days paid:</label>
                             <input class="form-control" aria-label="Days taken paid" placeholder="Days paid"
                                    id="days_paid" name="days_paid" type="text"/>
                         </div>
-                        <div class="form-group">
-                            <label for="days_unpaid">Days unpaid:</label>
+                        <div class="form-group required">
+                            <label for="days_unpaid" class="control-label">Days unpaid:</label>
                             <input class="form-control" aria-label="Days taken unpaid" placeholder="Days unpaid"
                                    id="days_unpaid" name="days_unpaid" type="text"/>
                         </div>
