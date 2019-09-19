@@ -22,7 +22,7 @@
                             @csrf
                             <label for="work_state" class="control-label">Work state:</label>
                             <input class="form-control" aria-label="Work state name" placeholder="Work state name"
-                                   id="work_state" name="work_state" type="text"/>
+                                   id="work_state" name="work_state" type="text" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Create work state</button>

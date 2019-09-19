@@ -23,7 +23,7 @@
                             @method('PATCH')
                             <label for="name" class="control-label">Name:</label>
                             <input class="form-control" aria-label="Absence type name" id="name" name="name" type="text"
-                                   value="{{$absenceLookup->name}}"/>
+                                   value="{{$absenceLookup->name}}" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update absence type</button>

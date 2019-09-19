@@ -23,7 +23,7 @@
                             @method('PATCH')
                             <label for="user_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
-                                    aria-label="Staff member selection">
+                                    aria-label="Staff member selection" required>
                                 @foreach($staff as $value)
                                     <option value="{{$value->id}}"
                                             aria-label="{{$value->name}}"<?php echo ($value->id == $lookup['user_id']) ? " selected" : "";?>>{{$value->name}}</option>
@@ -33,12 +33,12 @@
                         <div class="form-group required">
                             <label for="name" class="control-label">Description:</label>
                             <input class="form-control" aria-label="Telephone description" id="name" name="name"
-                                   type="text" value="{{$telephone->name}}"/>
+                                   type="text" value="{{$telephone->name}}" required/>
                         </div>
                         <div class="form-group required">
                             <label for="number" class="control-label">Number:</label>
                             <input class="form-control" aria-label="Telephone number" id="number" name="number"
-                                   type="text" value="{{$telephone->number}}"/>
+                                   type="text" value="{{$telephone->number}}" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update telephone</button>

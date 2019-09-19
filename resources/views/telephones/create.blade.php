@@ -22,7 +22,7 @@
                             @csrf
                             <label for="user_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
-                                    aria-label="Staff member selection">
+                                    aria-label="Staff member selection" required>
                                 @foreach($staff as $value)
                                     <option value="{{$value->id}}"
                                             aria-label="{{$value->name}}">{{$value->name}}</option>
@@ -32,12 +32,12 @@
                         <div class="form-group required">
                             <label for="name" class="control-label">Description:</label>
                             <input class="form-control" aria-label="Telephone description"
-                                   placeholder="Telephone description" id="name" name="name" type="text"/>
+                                   placeholder="Telephone description" id="name" name="name" type="text" required/>
                         </div>
                         <div class="form-group required">
                             <label for="number" class="control-label">Number:</label>
                             <input class="form-control" aria-label="Telephone number" placeholder="Telephone number"
-                                   id="number" name="number" type="text"/>
+                                   id="number" name="number" type="text" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Create telephone</button>

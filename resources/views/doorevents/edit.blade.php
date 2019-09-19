@@ -23,7 +23,7 @@
                             @method('PATCH')
                             <label for="user_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
-                                    aria-label="Staff member selection">
+                                    aria-label="Staff member selection" required>
                                 @foreach($staff as $value)
                                     <option value="{{$value->id}}"
                                             aria-label="{{$value->name}}"<?php echo ($value->id == $doorevent->user_id) ? ' selected' : '';?>>{{$value->name}}</option>
@@ -36,7 +36,7 @@
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" aria-label="Date and time"
                                        aria-describedby="start-addon" id="created_at" name="created_at" type="text"
-                                       value="{{$doorevent->created_at}}"/>
+                                       value="{{$doorevent->created_at}}" required/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>

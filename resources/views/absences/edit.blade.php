@@ -23,7 +23,7 @@
                             @method('PATCH')
                             <label for="staff_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
-                                    aria-label="Staff member selection">
+                                    aria-label="Staff member selection" required>
                                 @foreach($staff as $value)
                                     <option value="{{$value->empref}}"
                                             aria-label="{{$value->name}}"<?php echo ($value->empref == $absence->user_id) ? " selected" : "";?>>{{$value->name}}</option>
@@ -36,7 +36,7 @@
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="{{$absence->started_at}}"
                                        aria-label="Start date time" aria-describedby="start-addon" id="started_at"
-                                       name="started_at" type="text" value="{{$absence->started_at}}"/>
+                                       name="started_at" type="text" value="{{$absence->started_at}}" required/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
@@ -49,7 +49,7 @@
                                 <input class="form-control datetimepicker-input" data-target="#endpicker"
                                        data-toggle="datetimepicker" placeholder="{{$absence->ended_at}}"
                                        aria-label="End datetime" aria-describedby="end-addon" id="ended_at"
-                                       name="ended_at" type="text" value="{{$absence->ended_at}}"/>
+                                       name="ended_at" type="text" value="{{$absence->ended_at}}" required/>
                                 <div class="input-group-append" data-target="#endpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="end-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
@@ -82,7 +82,7 @@
                         <div class="form-group required">
                             <label for="absence_id" class="control-label">Absence type:</label>
                             <select class="form-control" id="absence_id" name="absence_id"
-                                    aria-label="Absence type selection">
+                                    aria-label="Absence type selection" required>
                                 @foreach($absences as $value)
                                     <option value="{{$value->id}}"
                                             aria-label="{{$value->name}}"<?php echo ($value->id == $absence->absence_id) ? " selected" : "";?>>{{$value->name}}</option>
@@ -97,12 +97,12 @@
                         <div class="form-group required">
                             <label for="days_paid" class="control-label">Days paid:</label>
                             <input class="form-control" aria-label="Days taken paid" placeholder="Days paid"
-                                   id="days_paid" name="days_paid" type="text" value="{{$absence->days_paid}}"/>
+                                   id="days_paid" name="days_paid" type="text" value="{{$absence->days_paid}}" required/>
                         </div>
                         <div class="form-group required">
                             <label for="days_unpaid" class="control-label">Days unpaid:</label>
                             <input class="form-control" aria-label="Days taken unpaid" placeholder="Days unpaid"
-                                   id="days_unpaid" name="days_unpaid" type="text" value="{{$absence->days_unpaid}}"/>
+                                   id="days_unpaid" name="days_unpaid" type="text" value="{{$absence->days_unpaid}}" required/>
                         </div>
                         <div class="form-group">
                             <input id="approved" name="approved" type="checkbox" data-toggle="toggle" data-on="Approved"

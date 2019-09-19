@@ -22,7 +22,7 @@
                             @csrf
                             <label for="user_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
-                                    aria-label="Staff member selection">
+                                    aria-label="Staff member selection" required>
                                 @foreach($staff as $value)
                                     <option value="{{$value->id}}"
                                             aria-label="{{$value->name}}">{{$value->name}}</option>
@@ -35,7 +35,7 @@
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="Date/time"
                                        aria-label="Date and time" aria-describedby="start-addon" id="created_at"
-                                       name="created_at" type="text"/>
+                                       name="created_at" type="text" required/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>

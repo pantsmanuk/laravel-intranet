@@ -26,7 +26,7 @@
                                 <input type="text" class="form-control datetimepicker-input" id="started_at"
                                        name="started_at" data-target="#startpicker" data-toggle="datetimepicker"
                                        aria-label="Start date" aria-describedby="start-addon"
-                                       value="{{$request['started_at']}}"/>
+                                       value="{{$request['started_at']}}" required/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>

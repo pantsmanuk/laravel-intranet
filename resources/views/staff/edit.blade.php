@@ -23,12 +23,12 @@
                             @method('PATCH')
                             <label for="name" class="control-label">Name:</label>
                             <input class="form-control" aria-label="Name" id="name" name="name" type="text"
-                                   value="{{$staff->name}}"/>
+                                   value="{{$staff->name}}" required/>
                         </div>
                         <div class="form-group required">
                             <label for="username" class="control-label">Username:</label>
                             <input class="form-control" aria-label="Username" id="username" name="username" type="text"
-                                   value="{{$staff->username}}"/>
+                                   value="{{$staff->username}}" required/>
                         </div>
                         <div class="form-group required">
                             <label for="start" class="control-label">Join date:</label>
@@ -36,7 +36,7 @@
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" aria-label="Join date"
                                        aria-describedby="start-addon" id="start" name="start" type="text"
-                                       value="{{$staff->started_at}}"/>
+                                       value="{{$staff->started_at}}" required/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
@@ -80,22 +80,22 @@
                         <div class="form-group required">
                             <label for="entitlement" class="control-label">Holiday entitlement:</label>
                             <input class="form-control" aria-label="Holiday Entitlement" id="entitlement"
-                                   name="entitlement" type="text" value="{{$staff->holiday_entitlement}}"/>
+                                   name="entitlement" type="text" value="{{$staff->holiday_entitlement}}" required/>
                         </div>
                         <div class="form-group required">
                             <label for="carried_forward" class="control-label">Holiday carried forward:</label>
                             <input class="form-control" aria-label="Holiday Carried Forward" id="carried_forward"
-                                   name="carried_forward" type="text" value="{{$staff->holiday_carried_forward}}"/>
+                                   name="carried_forward" type="text" value="{{$staff->holiday_carried_forward}}" required/>
                         </div>
                         <div class="form-group required">
                             <label for="days_per_week" class="control-label">Days per week:</label>
                             <input class="form-control" aria-label="Days Per Week" id="days_per_week"
-                                   name="days_per_week" type="text" value="{{$staff->days_per_week}}"/>
+                                   name="days_per_week" type="text" value="{{$staff->days_per_week}}" required/>
                         </div>
                         <div class="form-group required">
                             <label for="workstate_id" class="control-label">Default work state:</label>
                             <select class="form-control" id="workstate_id" name="workstate_id"
-                                    aria-label="Default work state selection">
+                                    aria-label="Default work state selection" required>
                                 @foreach($workstates as $value)
                                     <option value="{{$value->id}}"
                                             aria-label="{{$value->workstate}}"<?php echo ($value->id == $staff->default_workstate_id) ? " selected" : "";?>>{{$value->workstate}}</option>

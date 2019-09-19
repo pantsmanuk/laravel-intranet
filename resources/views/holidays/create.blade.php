@@ -24,7 +24,8 @@
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="Start date" aria-label="Start date"
-                                       aria-describedby="start-addon" id="started_at" name="started_at" type="text">
+                                       aria-describedby="start-addon" id="started_at" name="started_at" type="text"
+                                       required>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>

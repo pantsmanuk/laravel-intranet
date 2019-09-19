@@ -23,7 +23,7 @@
                             @method('PATCH')
                             <label for="work_state" class="control-label">Work state:</label>
                             <input class="form-control" aria-label="Work state name" id="work_state" name="work_state"
-                                   type="text" value="{{$work_state->work_state}}"/>
+                                   type="text" value="{{$work_state->work_state}}" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update work state</button>

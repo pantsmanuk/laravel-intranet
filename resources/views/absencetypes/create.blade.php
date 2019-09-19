@@ -22,7 +22,7 @@
                             @csrf
                             <label for="name" class="control-label">Name:</label>
                             <input class="form-control" aria-label="Absence type name" placeholder="Absence type name"
-                                   id="name" name="name" type="text"/>
+                                   id="name" name="name" type="text" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Create absence type</button>

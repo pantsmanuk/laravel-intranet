@@ -22,12 +22,12 @@
                             @csrf
                             <label for="name" class="control-label">Name:</label>
                             <input class="form-control" aria-label="Download group name"
-                                   placeholder="Download group name" id="name" name="name" type="text"/>
+                                   placeholder="Download group name" id="name" name="name" type="text" required/>
                         </div>
                         <div class="form-group required">
                             <label for="files" class="control-label">Files:</label>
                             <input class="form-control" aria-label="Files" placeholder="Files" id="files" name="files"
-                                   type="text"/>
+                                   type="text" required/>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Create download group</button>
