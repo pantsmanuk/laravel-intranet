@@ -5,7 +5,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Edit holiday request
+                    Holiday Request
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -18,10 +18,10 @@
                         </div>
                     @endif
                     <form method="post" action="{{route('holidays.update', $holiday->id)}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
                             @method('PATCH')
-                            <label for="started_at">Start:</label>
+                            <label for="started_at" class="control-label">Start:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input type="text" class="form-control datetimepicker-input" id="started_at"
                                        name="started_at" data-target="#startpicker" data-toggle="datetimepicker"
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="ended_at">End:</label>
+                            <label for="ended_at" class="control-label">End:</label>
                             <div class="input-group date mb-3" id="endpicker" data-target-input="nearest">
                                 <input type="text" class="form-control datetimepicker-input" id="ended_at" name="ended_at"
                                        data-target="#endpicker" data-toggle="datetimepicker" aria-label="End date"
@@ -104,7 +104,7 @@
                             });
                         </script>
                         <div class="form-group">
-                            <label for="note">Note:</label>
+                            <label for="note" class="control-label">Note:</label>
                             <input type="text" class="form-control" id="note" name="note" aria-label="Explanatory note"
                                    value="{{$holiday->note}}"/>
                         </div>

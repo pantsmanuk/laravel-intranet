@@ -5,7 +5,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Request a holiday
+                    Holiday Request
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -18,9 +18,9 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('holidays.store')}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
-                            <label for="started_at">Start date:</label>
+                            <label for="started_at" class="control-label">Start date:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="Start date" aria-label="Start date"
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="ended_at">End date:</label>
+                            <label for="ended_at" class="control-label">End date:</label>
                             <div class="input-group date mb-3" id="endpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#endpicker"
                                        data-toggle="datetimepicker" placeholder="End date" aria-label="End date"
@@ -95,7 +95,7 @@
                             });
                         </script>
                         <div class="form-group">
-                            <label for="note">Note:</label>
+                            <label for="note" class="control-label">Note:</label>
                             <input class="form-control" placeholder="Explanatory note" aria-label="Explanatory note"
                                    id="note" name="note" type="text">
                         </div>
