@@ -5,7 +5,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Edit absence
+                    Absence
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -18,38 +18,38 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('absences.update', $absence->id)}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
                             @method('PATCH')
-                            <label for="staff_id">Staff member:</label>
+                            <label for="staff_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
-                                    aria-label="Staff member selection">
+                                    aria-label="Staff member selection" required>
                                 @foreach($staff as $value)
                                     <option value="{{$value->empref}}"
                                             aria-label="{{$value->name}}"<?php echo ($value->empref == $absence->user_id) ? " selected" : "";?>>{{$value->name}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="started_at">Start date/time:</label>
+                        <div class="form-group required">
+                            <label for="started_at" class="control-label">Start date/time:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="{{$absence->started_at}}"
                                        aria-label="Start date time" aria-describedby="start-addon" id="started_at"
-                                       name="started_at" type="text" value="{{$absence->started_at}}"/>
+                                       name="started_at" type="text" value="{{$absence->started_at}}" required/>
                                 <div class="input-group-append" data-target="#startpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="start-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="ended_at">End date/time:</label>
+                        <div class="form-group required">
+                            <label for="ended_at" class="control-label">End date/time:</label>
                             <div class="input-group date mb-3" id="endpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#endpicker"
                                        data-toggle="datetimepicker" placeholder="{{$absence->ended_at}}"
                                        aria-label="End datetime" aria-describedby="end-addon" id="ended_at"
-                                       name="ended_at" type="text" value="{{$absence->ended_at}}"/>
+                                       name="ended_at" type="text" value="{{$absence->ended_at}}" required/>
                                 <div class="input-group-append" data-target="#endpicker" data-toggle="datetimepicker">
                                     <span class="input-group-text" id="end-addon"><span
                                                 class="fas fa-calendar-alt"></span></span>
@@ -79,10 +79,10 @@
                                 });
                             });
                         </script>
-                        <div class="form-group">
-                            <label for="absence_id">Absence type:</label>
+                        <div class="form-group required">
+                            <label for="absence_id" class="control-label">Absence type:</label>
                             <select class="form-control" id="absence_id" name="absence_id"
-                                    aria-label="Absence type selection">
+                                    aria-label="Absence type selection" required>
                                 @foreach($absences as $value)
                                     <option value="{{$value->id}}"
                                             aria-label="{{$value->name}}"<?php echo ($value->id == $absence->absence_id) ? " selected" : "";?>>{{$value->name}}</option>
@@ -90,24 +90,25 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="note">Note:</label>
+                            <label for="note" class="control-label">Note:</label>
                             <input class="form-control" aria-label="Absence request note" placeholder="Note" id="note"
                                    name="note" type="text" value="{{$absence->note}}"/>
                         </div>
-                        <div class="form-group">
-                            <label for="days_paid">Days paid:</label>
+                        <div class="form-group required">
+                            <label for="days_paid" class="control-label">Days paid:</label>
                             <input class="form-control" aria-label="Days taken paid" placeholder="Days paid"
-                                   id="days_paid" name="days_paid" type="text" value="{{$absence->days_paid}}"/>
+                                   id="days_paid" name="days_paid" type="text" value="{{$absence->days_paid}}" required/>
+                        </div>
+                        <div class="form-group required">
+                            <label for="days_unpaid" class="control-label">Days unpaid:</label>
+                            <input class="form-control" aria-label="Days taken unpaid" placeholder="Days unpaid"
+                                   id="days_unpaid" name="days_unpaid" type="text" value="{{$absence->days_unpaid}}" required/>
                         </div>
                         <div class="form-group">
-                            <label for="days_unpaid">Days unpaid:</label>
-                            <input class="form-control" aria-label="Days taken unpaid" placeholder="Days unpaid"
-                                   id="days_unpaid" name="days_unpaid" type="text" value="{{$absence->days_unpaid}}"/>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" aria-label="Absence approved" id="approved" name="approved"
-                                   type="checkbox"<?php echo ($absence->approved) ? " checked" : "";?> />
-                            <label class="form-check-label" for="approved">Approved</label>
+                            <input id="approved" name="approved" type="checkbox" data-toggle="toggle" data-on="Approved"
+                                   data-off="Unapproved" data-onstyle="success"
+                                   data-offstyle="danger"<?php echo ($absence->approved) ? ' checked' : '';?> />
+                            <label for="approved" class="control-label">Approved?</label>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update absence</button>
@@ -118,4 +119,7 @@
             </div>
         </div>
     </div>
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/css/bootstrap4-toggle.min.css"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/js/bootstrap4-toggle.min.js"></script>
 @endsection
