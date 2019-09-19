@@ -18,9 +18,9 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('doorevents.store')}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
-                            <label for="user_id">Staff member:</label>
+                            <label for="user_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
                                     aria-label="Staff member selection">
                                 @foreach($staff as $value)
@@ -29,8 +29,8 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="created_at">Date/time:</label>
+                        <div class="form-group required">
+                            <label for="created_at" class="control-label">Date/time:</label>
                             <div class="input-group date mb-3" id="startpicker" data-target-input="nearest">
                                 <input class="form-control datetimepicker-input" data-target="#startpicker"
                                        data-toggle="datetimepicker" placeholder="Date/time"
@@ -52,7 +52,7 @@
                         </script>
                         <div class="form-group">
                             <input id="event" name="event" type="checkbox" data-toggle="toggle" data-on="Out"
-                                   data-off="In" data-onstyle="danger" data-offstyle="success"/> <label for="event">In/out?</label>
+                                   data-off="In" data-onstyle="danger" data-offstyle="success"/> <label for="event" class="control-label">In/out?</label>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Create door event</button>
