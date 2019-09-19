@@ -18,14 +18,14 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('downloads.store')}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
-                            <label for="name">Name:</label>
+                            <label for="name" class="control-label">Name:</label>
                             <input class="form-control" aria-label="Download group name"
                                    placeholder="Download group name" id="name" name="name" type="text"/>
                         </div>
-                        <div class="form-group">
-                            <label for="files">Files:</label>
+                        <div class="form-group required">
+                            <label for="files" class="control-label">Files:</label>
                             <input class="form-control" aria-label="Files" placeholder="Files" id="files" name="files"
                                    type="text"/>
                         </div>
