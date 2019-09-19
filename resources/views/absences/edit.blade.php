@@ -5,7 +5,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Edit absence
+                    Absence
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -104,10 +104,11 @@
                             <input class="form-control" aria-label="Days taken unpaid" placeholder="Days unpaid"
                                    id="days_unpaid" name="days_unpaid" type="text" value="{{$absence->days_unpaid}}"/>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" aria-label="Absence approved" id="approved" name="approved"
-                                   type="checkbox"<?php echo ($absence->approved) ? " checked" : "";?> />
-                            <label class="form-check-label" for="approved">Approved</label>
+                        <div class="form-group">
+                            <input id="approved" name="approved" type="checkbox" data-toggle="toggle" data-on="Approved"
+                                   data-off="Unapproved" data-onstyle="success"
+                                   data-offstyle="danger"<?php echo ($absence->approved) ? ' checked' : '';?> />
+                            <label for="approved" class="control-label">Approved?</label>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update absence</button>
@@ -118,4 +119,7 @@
             </div>
         </div>
     </div>
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/css/bootstrap4-toggle.min.css"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/js/bootstrap4-toggle.min.js"></script>
 @endsection
