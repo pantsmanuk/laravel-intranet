@@ -18,10 +18,10 @@
                         </div><br/>
                     @endif
                     <form method="post" action="{{route('telephones.update', $lookup['id'])}}">
-                        <div class="form-group">
+                        <div class="form-group required">
                             @csrf
                             @method('PATCH')
-                            <label for="user_id">Staff member:</label>
+                            <label for="user_id" class="control-label">Staff member:</label>
                             <select class="form-control" id="user_id" name="user_id"
                                     aria-label="Staff member selection">
                                 @foreach($staff as $value)
@@ -30,13 +30,13 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="name">Description:</label>
+                        <div class="form-group required">
+                            <label for="name" class="control-label">Description:</label>
                             <input class="form-control" aria-label="Telephone description" id="name" name="name"
                                    type="text" value="{{$telephone->name}}"/>
                         </div>
-                        <div class="form-group">
-                            <label for="number">Number:</label>
+                        <div class="form-group required">
+                            <label for="number" class="control-label">Number:</label>
                             <input class="form-control" aria-label="Telephone number" id="number" name="number"
                                    type="text" value="{{$telephone->number}}"/>
                         </div>
